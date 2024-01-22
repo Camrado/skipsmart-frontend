@@ -1,9 +1,15 @@
-import { createStore } from "vuex";
+import { createStore } from 'vuex';
+
+import { User } from '@/store/modules/User';
 
 export default createStore({
-  state: {},
-  getters: {},
+  state: {
+    url: 'http://localhost:3000/api/v1'
+  },
   mutations: {},
   actions: {},
-  modules: {},
+  getters: {
+    GET_URL: (state) => state.url
+  },
+  modules: { User }
 });

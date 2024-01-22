@@ -1,0 +1,87 @@
+.el-button {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.timetable-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  background-color: #121629;
+  border-radius: 20px;
+  padding: 0 12px;
+  height: 11vh;
+  margin-bottom: 10px;
+  color: #fffffe;
+
+  &-number {
+    width: 5vw;
+    text-align: center;
+    font-size: 18px;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    color: #b8c1ec;
+  }
+
+  &-subject {
+    width: calc(85vw - 116px);
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  }
+
+  &-group {
+    position: absolute;
+    right: calc(6vw + 104px);
+    bottom: 5px;
+    font-weight: lighter;
+    font-family: 'Courier New', Courier, monospace;
+    font-style: italic;
+    color: #b8c1ec;
+  }
+
+  &-buttons {
+    width: 92px;
+  }
+}
+
+.attended-lesson {
+  border: 1px solid #66c23a;
+}
+
+.skipped-lesson {
+  border: 1px solid #f89898;
+}
+
+.upload-button {
+  background-color: #b8c1ec !important;
+  border-color: #b8c1ec !important;
+  color: #232946;
+  margin-top: 10px;
+  width: 100%;
+  height: 6vh;
+  font-size: 18px;
+  font-weight: bold;
+
+  &.is-disabled {
+    background-color: #d7dcf1 !important;
+    border-color: #d7dcf1 !important;
+    color: #8792ca;
+  }
+}
+
+.timetable-date-container {
+  padding: 20px 0;
+  width: 100%;
+  text-align: center;
+}
+
+.timetable-date {
+  font-size: 24px;
+  font-weight: bold;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  color: #b8c1ec;
+}
