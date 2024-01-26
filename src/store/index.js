@@ -5,7 +5,7 @@ import { Timetable } from '@/store/modules/Timetable';
 
 export default createStore({
   state: {
-    url: 'http://localhost:3000/api/v1'
+    url: 'https://good-ruby-hare-toga.cyclic.app/api/v1'
   },
   mutations: {},
   actions: {},
