@@ -19,6 +19,7 @@
         </RouterLink>
       </div>
     </div>
+
     <div class="block-1-1">
       <div class="container">
         <h2>How To Install The App?</h2>
