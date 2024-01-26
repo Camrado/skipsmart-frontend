@@ -23,13 +23,14 @@
   &-number {
     width: 5vw;
     text-align: center;
-    font-size: 18px;
+    font-size: 20px;
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
     color: #b8c1ec;
   }
 
   &-subject {
     width: calc(85vw - 116px);
+    font-size: 17px;
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
   }
 
@@ -74,9 +75,35 @@
 }
 
 .timetable-date-container {
-  padding: 20px 0;
+  padding: 15px 0;
   width: 100%;
   text-align: center;
+  // background-color: #121629;
+
+  .el-input {
+    height: 35px;
+    &__wrapper {
+      background: none;
+      border-radius: 20px;
+      box-shadow: 0 0 0 2px #fffffe inset;
+
+      &.is-focus {
+        box-shadow: 0 0 0 2px #b8c1ec inset;
+      }
+    }
+
+    &__prefix {
+      margin-left: 10px;
+    }
+
+    &__inner {
+      text-align: center;
+      font-size: 18px;
+      font-weight: bold;
+      font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+      color: #fffffe;
+    }
+  }
 }
 
 .timetable-date {
@@ -84,4 +111,39 @@
   font-weight: bold;
   font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
   color: #b8c1ec;
+}
+
+// .cell {
+//   height: 30px;
+//   padding: 3px 0;
+//   box-sizing: border-box;
+// }
+// .cell .text {
+//   width: 24px;
+//   height: 24px;
+//   display: block;
+//   margin: 0 auto;
+//   line-height: 24px;
+//   position: absolute;
+//   left: 50%;
+//   transform: translateX(-50%);
+//   border-radius: 50%;
+// }
+// .cell.current .text {
+//   background: #626aef;
+//   color: #fff;
+// }
+.red-marked-date {
+  color: red !important;
+
+  &::after {
+    position: absolute;
+    content: '';
+    border-radius: 50%;
+    width: 6px;
+    height: 6px;
+    background-color: red;
+    bottom: 5%;
+    right: calc(50% - 3px);
+  }
 }

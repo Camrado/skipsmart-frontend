@@ -1,22 +1,36 @@
 <template>
-  <NavBar />
+  <!-- <NavBar /> -->
+  <h1 class="site-title">
+    <img src="../assets/images/logo-transparent.png" /><span class="logo-text">SkipSmart</span> - Timetable
+  </h1>
+
+  <div class="timetable-date-container">
+    <el-date-picker
+      v-model="timetableDate"
+      type="date"
+      placeholder="Pick a day"
+      format="DD/MM/YYYY"
+      :disabled-date="isDateDisabled"
+      :cell-class-name="isDateUnfilled"
+      :prefix-icon="ArrowDownBold"
+      :editable="false"
+      :clearable="false"
+    />
+  </div>
   <div class="container">
-    <div class="timetable-date-container">
-      <div class="timetable-date">{{ dateToString(state.date) }}</div>
-    </div>
     <br />
     <div
       v-loading="state.loadingData"
-      v-for="subject in state.timetable"
+      v-for="subject in state.timetable.lessons"
       :key="subject.period"
       class="timetable-row"
       :class="{
-        'attended-lesson': state.timetable.find((lesson) => lesson.period == subject.period)?.attended ?? false,
-        'skipped-lesson': state.timetable.find((lesson) => lesson.period == subject.period)?.attended === false ?? false
+        'attended-lesson': state.timetable.lessons.find((lesson) => lesson.period == subject.period)?.attended ?? false,
+        'skipped-lesson': state.timetable.lessons.find((lesson) => lesson.period == subject.period)?.attended === false ?? false
       }"
     >
       <div class="timetable-row-number">{{ subject.period }}</div>
-      <div class="timetable-row-subject">{{ subject.subject }}</div>
+      <div class="timetable-row-subject">{{ subject.course }}</div>
       <div class="timetable-row-group">{{ subject.group }}</div>
       <div class="timetable-row-buttons">
         <el-button size="large" type="success" :icon="Check" circle @click="addSubjectToForm(subject.period, true)" />
@@ -40,18 +54,18 @@
 </template>
 
 <script>
-import { watch, reactive } from 'vue';
+import { watch, reactive, ref, onMounted } from 'vue';
 import { useToast } from 'vue-toastification';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
-import NavBar from '@/components/NavBar.vue';
+// import NavBar from '@/components/NavBar.vue';
 import dateToString from '@/assets/js/dateToString';
 import App from '@/App.vue';
-import { Check, Close, Upload } from '@element-plus/icons-vue';
+import { Check, Close, Upload, ArrowDownBold } from '@element-plus/icons-vue';
 
 export default {
   name: 'TimetableView',
-  components: { NavBar },
+  // components: { NavBar },
 
   setup() {
     const store = useStore();
@@ -59,35 +73,36 @@ export default {
     const toast = useToast();
     const { appMounted } = App.setup();
 
+    const timetableDate = ref(store.getters['Timetable/GET_DATE']);
     const state = reactive({
-      loadingData: true,
+      loadingData: false,
       buttonLoading: false,
-      buttonDisabled: true,
-      date: new Date('2024-02-07'),
-      timetable: [
-        {
-          period: 1,
-          subject: 'UE000 Subject',
-          group: ''
-        },
-        {
-          period: 2,
-          subject: 'UE000 Subject',
-          group: ''
-        },
-        {
-          period: 3,
-          subject: 'UE000 Subject / PW',
-          group: `Group ${store.getters['User/GET_GROUP']}`
-        },
-        {
-          period: 4,
-          subject: 'UE000 Subject',
-          group: ''
-        }
-      ],
-      form: {
-        lessons: []
+      buttonDisabled: false,
+      isAttendanceChanged: false,
+      isDateUpdated: false,
+      timetable: {
+        lessons: [
+          {
+            period: 1,
+            course: 'UE000 Subject',
+            group: ''
+          },
+          {
+            period: 2,
+            course: 'UE000 Subject',
+            group: ''
+          },
+          {
+            period: 3,
+            course: 'UE000 Subject',
+            group: ''
+          },
+          {
+            period: 4,
+            course: 'UE000 Subject',
+            group: ''
+          }
+        ]
       }
     });
 
@@ -98,28 +113,50 @@ export default {
           router.push('/');
         } else {
           getTimetable();
+          store.dispatch('Timetable/DOWNLOAD_UNMARKED_DATES');
         }
       }
     });
 
-    function addSubjectToForm(period, attended) {
-      let lessonInTimetable = state.timetable.find((subject) => subject.period == period);
-      let lessonInLessons = state.form.lessons.find((subject) => subject.period == period);
+    watch(timetableDate, (newDate) => {
+      store.dispatch('Timetable/SET_DATE', newDate);
+      state.isDateUpdated = true;
+      getTimetable();
+    });
 
-      if (!lessonInLessons) {
-        state.form.lessons.push({
-          course: lessonInTimetable.subject,
-          attended,
-          period: +lessonInTimetable.period
-        });
-      } else {
-        lessonInLessons.attended = attended;
+    onMounted(() => {
+      // Load timetable from VueX if there is one
+      if (store.getters['Timetable/GET_TIMETABLE']?.lessons.length !== 0) {
+        state.timetable = store.getters['Timetable/GET_TIMETABLE'];
       }
-      lessonInTimetable.attended = attended;
+    });
+
+    // Change the attended property of the course
+    function addSubjectToForm(period, attended) {
+      let lesson = state.timetable.lessons.find((subject) => subject.period == period);
+      lesson.attended = attended;
+      state.isAttendanceChanged = true;
     }
 
     async function getTimetable() {
-      const date = dateToString(state.date);
+      if (store.getters['Timetable/GET_TIMETABLE']?.lessons.length !== 0 && !state.isDateUpdated) return;
+
+      state.loadingData = true;
+      state.buttonDisabled = true;
+
+      if (state.timetable.lessons.length === 0) {
+        state.timetable = {
+          lessons: [
+            {
+              period: 1,
+              course: 'UE000 Subject',
+              group: ''
+            }
+          ]
+        };
+      }
+
+      const date = dateToString(timetableDate.value);
       const token = localStorage.getItem(store.getters['User/GET_JWT_KEY']);
 
       const response = await fetch(store.getters['GET_URL'] + `/timetable/${date}`, {
@@ -131,9 +168,17 @@ export default {
 
       if (response.status === 200) {
         const data = await response.json();
+
         const myGroup = store.getters['User/GET_GROUP'];
-        state.timetable = data.lessons;
-        state.timetable = state.timetable.filter((subject) => !subject.group || subject.group.includes(myGroup));
+
+        state.timetable.lessons = data.lessons;
+        state.timetable.lessons = state.timetable.lessons.filter((subject) => !subject.group || subject.group.includes(myGroup));
+
+        store.dispatch('Timetable/SET_TIMETABLE', state.timetable);
+        state.isDateUpdated = false;
+
+        state.isAttendanceChanged = false;
+
         state.loadingData = false;
         state.buttonDisabled = false;
       } else if (response.status === 500) {
@@ -146,13 +191,32 @@ export default {
     }
 
     async function updateAttendance() {
-      if (state.form.lessons.length == 0) {
+      if (state.isAttendanceChanged === false) {
         return toast.warning('Change attendance status of at least one subject.');
       }
 
       state.buttonLoading = true;
-      state.form.date = dateToString(state.date);
+
+      let requestBody = { lessons: [] };
+
       const token = localStorage.getItem(store.getters['User/GET_JWT_KEY']);
+
+      let isDateMarked = true;
+      for (let subject of state.timetable.lessons) {
+        if (!(subject.attended === true || subject.attended === false)) {
+          isDateMarked = false;
+          break;
+        }
+      }
+
+      requestBody.isDateMarked = isDateMarked;
+      requestBody.date = dateToString(timetableDate.value);
+
+      for (let subject of state.timetable.lessons) {
+        if (subject.attended === true || subject.attended === false) {
+          requestBody.lessons.push(subject);
+        }
+      }
 
       const response = await fetch(store.getters['GET_URL'] + '/attendance', {
         method: 'POST',
@@ -160,14 +224,20 @@ export default {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(state.form)
+        body: JSON.stringify(requestBody)
       });
 
       if (response.status === 200) {
         const data = await response.json();
+
+        state.isAttendanceChanged = false;
+
+        store.dispatch('Timetable/SET_TIMETABLE', state.timetable);
+
         state.buttonLoading = false;
-        state.form = { lessons: [] };
         toast.success(data.msg);
+
+        store.dispatch('Timetable/DOWNLOAD_UNMARKED_DATES');
       } else if (response.status === 500) {
         state.buttonLoading = false;
         return toast.error('Sorry. We have got some server errors. Please try again later.');
@@ -177,7 +247,37 @@ export default {
       }
     }
 
-    return { state, dateToString, Check, Close, Upload, addSubjectToForm, updateAttendance };
+    function isDateDisabled(date) {
+      // ! Change the date
+      if (date > new Date('2024-02-10') || date < new Date(2024, 0, 29, 0, 0, 0)) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    const isDateUnfilled = (date) => {
+      const unmarkedDates = store.getters['Timetable/GET_UNMARKED_DATES'];
+      date.setUTCHours(0);
+      date.setDate(date.getDate() + 1);
+      if (unmarkedDates.includes(date.toISOString())) {
+        return 'red-marked-date';
+      }
+    };
+
+    return {
+      state,
+      timetableDate,
+      dateToString,
+      Check,
+      Close,
+      Upload,
+      addSubjectToForm,
+      updateAttendance,
+      isDateDisabled,
+      isDateUnfilled,
+      ArrowDownBold
+    };
   }
 };
 </script>

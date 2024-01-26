@@ -7,8 +7,7 @@
       <span></span>
       <ul id="menu">
         <li><RouterLink to="/">Home</RouterLink></li>
-        <li><RouterLink to="/contact">Contact</RouterLink></li>
-        <li><RouterLink to="/timetable">Timetable</RouterLink></li>
+        <!-- <li><RouterLink to="/contact">Contact</RouterLink></li> -->
         <br /><br />
         <hr />
         <li><RouterLink to="/login">Sign In</RouterLink></li>
@@ -82,7 +81,7 @@ nav {
   height: 2px;
   margin-bottom: 5px;
   position: relative;
-  background: #ffffff;
+  background: #b8c1ec;
   border-radius: 3px;
   z-index: 1;
   transform-origin: 5px 0px;

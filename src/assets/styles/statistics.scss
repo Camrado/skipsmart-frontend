@@ -1,0 +1,116 @@
+.statistics {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+
+  .el-select {
+    margin-top: 15px;
+    margin-left: 20%;
+    width: 60%;
+    height: 35px;
+
+    &__wrapper {
+      background-color: #121629;
+      padding: 0 20px;
+      border-radius: 20px;
+    }
+
+    &__selected-item {
+      color: #b9b9b9;
+      font-size: 16px;
+    }
+
+    &__prefix {
+      margin-left: 10px;
+    }
+
+    &__inner {
+      text-align: center;
+      font-size: 18px;
+      font-weight: bold;
+      font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+      color: #fffffe;
+    }
+  }
+
+  &-pie-charts {
+    margin-top: 30px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    canvas {
+      width: 48vw !important;
+      height: 48vw !important;
+    }
+  }
+
+  &-progress-bars {
+    width: 90%;
+    margin-left: 5%;
+    margin-top: 40px;
+
+    .el-progress {
+      width: 80% !important;
+    }
+
+    .el-progress-bar {
+      &__outer {
+        background: #094067;
+      }
+
+      &__innerText {
+        font-size: 16px;
+        font-weight: bold;
+        color: #121629;
+      }
+    }
+
+    &-one {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      margin-bottom: 20px;
+
+      .el-progress-bar__inner {
+        background-color: #ffd803 !important;
+      }
+    }
+    &-two {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+
+      .el-progress-bar__inner {
+        background-color: #00ebc7 !important;
+      }
+    }
+
+    .el-button {
+      width: 24px;
+      height: 24px;
+    }
+  }
+
+  &-table {
+    margin-left: 5%;
+    margin-top: 40px;
+    width: 90%;
+
+    .el-table {
+      background-color: #121629 !important;
+      --el-table-tr-bg-color: #121629;
+      --el-table-text-color: #b8c1ec;
+      font-size: 16px;
+
+      &__header-wrapper {
+        display: none;
+      }
+    }
+  }
+}

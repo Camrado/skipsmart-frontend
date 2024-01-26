@@ -1,6 +1,7 @@
 <template>
   <Preloader v-if="showPreloader" />
   <router-view />
+  <BottomNavBar v-if="store.getters['User/GET_IS_SIGNED_IN']" />
 </template>
 
 <script>
@@ -8,9 +9,10 @@ import { onMounted, ref } from 'vue';
 import { useStore } from 'vuex';
 import { useToast } from 'vue-toastification';
 import Preloader from '@/components/Preloader.vue';
+import BottomNavBar from './components/BottomNavBar.vue';
 
 export default {
-  components: { Preloader },
+  components: { Preloader, BottomNavBar },
 
   setup() {
     const store = useStore();
@@ -78,7 +80,7 @@ export default {
       }, 500);
     });
 
-    return { appMounted, showPreloader };
+    return { appMounted, showPreloader, store };
   }
 };
 </script>

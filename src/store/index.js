@@ -1,6 +1,7 @@
 import { createStore } from 'vuex';
 
 import { User } from '@/store/modules/User';
+import { Timetable } from '@/store/modules/Timetable';
 
 export default createStore({
   state: {
@@ -11,5 +12,5 @@ export default createStore({
   getters: {
     GET_URL: (state) => state.url
   },
-  modules: { User }
+  modules: { User, Timetable }
 });

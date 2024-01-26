@@ -6,9 +6,8 @@
   </RouterLink>
   <div class="sign-in-block">
     <div class="sign-header">
-      <img src="@/assets/images/logo.svg" alt="Attendance Recorder Logo" />
-      <h1>Attendance</h1>
-      <h1>Recorder</h1>
+      <img src="@/assets/images/logo-transparent.png" alt="Attendance Recorder Logo" />
+      <h1 class="logo-text">SkipSmart</h1>
     </div>
     <el-form :model="state.form" status-icon :rules="state.formRules" label-position="top" class="sign-form">
       <el-form-item label="Username" prop="username">

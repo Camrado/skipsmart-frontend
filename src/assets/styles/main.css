@@ -1,11 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Roboto+Mono:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@600&family=Poppins&display=swap');
 
 html, body {
-    /* background: #004643; */
+    /* background: #f9f4ef; */
     background-color: #232946;
     color: #F4FEF6;
     font-family: 'Roboto', sans-serif;
     scroll-behavior: smooth;
+}
+
+.logo-text {
+    font-family: 'Nunito', sans-serif;
 }
 
 * {
@@ -18,4 +24,26 @@ html, body {
 .container {
     width: 96vw;
     margin: 0 2vw;
+}
+
+.site-title {
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #121629;
+    font-size: 27px;
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+    font-weight: lighter;
+}
+
+.site-title span {
+    font-weight: 600;
+    margin-right: 10px;
+}
+
+.site-title img {
+    margin-right: 10px;
+    height: 40px;
 }

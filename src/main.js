@@ -25,4 +25,4 @@ const options = {
   rtl: false //right to left
 };
 
-createApp(App).use(store).use(router).use(ElementPlus).use(Toast, options).mount('#app');
+createApp(App).use(store).use(ElementPlus).use(Toast, options).use(router).mount('#app');

@@ -7,11 +7,8 @@
   <div class="sign-up-block">
     <div class="sign-header">
       <div class="sign-header-logo">
-        <img src="@/assets/images/logo.svg" alt="Attendance Recorder Logo" />
-        <p>
-          Attendance <br />
-          Recorder
-        </p>
+        <img src="@/assets/images/logo-transparent.png" alt="Attendance Recorder Logo" />
+        <p class="logo-text">SkipSmart</p>
       </div>
       <h1>Sign Up</h1>
     </div>
@@ -67,7 +64,7 @@ export default {
         username: '',
         password: '',
         group: undefined,
-        term: undefined
+        term: 2
       },
       formRules: {
         username: [{ validator: usernameValidator, trigger: 'blur' }],
