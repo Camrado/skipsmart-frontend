@@ -134,6 +134,9 @@ export default {
 
 <style lang="scss">
 .settings {
+  min-height: 100vh;
+  margin-bottom: 100px;
+
   h1 {
     margin-top: 20px;
     text-align: center;
