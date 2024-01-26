@@ -53,12 +53,12 @@
     }
 
     &-text {
-      position: absolute;
+      position: relative;
+      top: 140px;
       margin-left: 15vw;
       width: 70vw;
       text-align: center;
       z-index: 2;
-      bottom: 29vh;
 
       h2 {
         font-size: 25px;

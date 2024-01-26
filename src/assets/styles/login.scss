@@ -95,6 +95,13 @@
     font-family: 'Open Sans', sans-serif;
     font-weight: 400;
     color: #001e1d !important;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
   }
 
   .sign-link {
@@ -108,12 +115,4 @@
       color: #7fc7d9;
     }
   }
-}
-
-.sign-background-image-cat {
-  position: absolute;
-  left: 5vw;
-  width: 90vw;
-  bottom: 15px;
-  z-index: 2;
 }

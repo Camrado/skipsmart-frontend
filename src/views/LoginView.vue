@@ -23,7 +23,6 @@
       <RouterLink to="/register">Sign Up Now</RouterLink>
     </div>
   </div>
-  <img src="@/assets/images/cat_for_background.svg" alt="Background Image" class="sign-background-image-cat" />
 </template>
 
 <script>

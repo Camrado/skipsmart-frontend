@@ -38,7 +38,6 @@
       <RouterLink to="/login">Login</RouterLink>
     </div>
   </div>
-  <img src="@/assets/images/dog_for_background.svg" alt="Background Image" class="sign-background-image-dog" />
 </template>
 
 <script>
