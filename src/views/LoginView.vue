@@ -10,10 +10,10 @@
       <h1 class="logo-text">SkipSmart</h1>
     </div>
     <el-form :model="state.form" status-icon :rules="state.formRules" label-position="top" class="sign-form">
-      <el-form-item label="Username" prop="username">
+      <el-form-item label="Username (Your Edupage username)" prop="username">
         <el-input v-model="state.form.username" placeholder="Username" :prefix-icon="User" size="large" clearable />
       </el-form-item>
-      <el-form-item label="Password" prop="password">
+      <el-form-item label="Password (Your Edupage password)" prop="password">
         <el-input v-model="state.form.password" placeholder="Password" :prefix-icon="Lock" size="large" show-password clearable />
       </el-form-item>
     </el-form>
