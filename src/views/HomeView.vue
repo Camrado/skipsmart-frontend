@@ -6,14 +6,17 @@
       <div class="block-1-text">
         <h2>Record The Attendance</h2>
         <p>With SkipSmart no more attendance haze, clarity's in sight. Get real-time data, make studying a delight.</p>
-        <el-button v-if="!store.getters['User/GET_IS_SIGNED_IN']">
-          <RouterLink to="/login">Sign In</RouterLink
-          ><el-icon class="el-icon--right"><img src="../assets/images/arrow-right.png" /></el-icon>
-        </el-button>
-        <el-button v-if="store.getters['User/GET_IS_SIGNED_IN']">
-          <RouterLink to="/timetable">Timetable</RouterLink
-          ><el-icon class="el-icon--right"><img src="../assets/images/arrow-right.png" /></el-icon>
-        </el-button>
+
+        <RouterLink to="/login" v-if="!store.getters['User/GET_IS_SIGNED_IN']">
+          <el-button>
+            Sign In<el-icon class="el-icon--right"><img src="../assets/images/arrow-right.png" /></el-icon>
+          </el-button>
+        </RouterLink>
+        <RouterLink to="/timetable" v-if="store.getters['User/GET_IS_SIGNED_IN']">
+          <el-button>
+            Timetable<el-icon class="el-icon--right"><img src="../assets/images/arrow-right.png" /></el-icon>
+          </el-button>
+        </RouterLink>
       </div>
     </div>
     <div class="block-2">

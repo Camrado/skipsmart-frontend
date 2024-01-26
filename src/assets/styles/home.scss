@@ -71,6 +71,19 @@
         font-size: 15px;
         margin-bottom: 10px;
       }
+
+      a {
+        text-decoration: none;
+        color: #001e1d;
+        -webkit-tap-highlight-color: transparent;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+
       .el-button {
         z-index: 2 !important;
         margin-top: 10px;
@@ -83,18 +96,6 @@
         font-weight: bolder;
         font-family: 'Nunito', sans-serif;
         color: #001e1d !important;
-        -webkit-tap-highlight-color: transparent;
-        -webkit-touch-callout: none;
-        -webkit-user-select: none;
-        -khtml-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-
-        a {
-          text-decoration: none;
-          color: #001e1d;
-        }
 
         .el-icon--right {
           img {
