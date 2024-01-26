@@ -5,7 +5,7 @@ import { Timetable } from '@/store/modules/Timetable';
 
 export default createStore({
   state: {
-    url: 'https://good-ruby-hare-toga.cyclic.app/api/v1'
+    url: 'https://skipsmart.onrender.com/api/v1'
   },
   mutations: {},
   actions: {},
