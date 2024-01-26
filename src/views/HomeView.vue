@@ -19,6 +19,41 @@
         </RouterLink>
       </div>
     </div>
+    <div class="block-1-1">
+      <div class="container">
+        <h2>How To Install The App?</h2>
+        <p>You can seamlessly download our app onto your mobile device using both Google Chrome and Safari.</p>
+        <br />
+        <p>Simply go to our website and follow the instructions tailored to your specific device:</p>
+        <br />
+        <h3>On IPhone:</h3>
+        <p>
+          Go to our website. If you are using Google Chrome you will see the share button at the top right corner. And if you are
+          using Safari browser, this button would be at the bottom middle.
+        </p>
+        <br />
+        <img src="../assets/images/iphone-chrome-step-1.png" alt="IPhone Chrome Step 1" />
+        <br /><br />
+        <img src="../assets/images/iphone-safari-step-1.png" alt="IPhone Safari Step 1" />
+        <br /><br />
+        <p>After that a menu will pop up. Click on the "Add to Home Screen" and the download process will start</p>
+        <br />
+        <img src="../assets/images/iphone-step-2.jpg" alt="IPhone Step 2" />
+        <br /><br />
+        <h3>On Android:</h3>
+        <p>Go to our website on Google Chrome and click on the three dots that you can see at the top right corner.</p>
+        <br />
+        <img src="../assets/images/android-step-1.jpg" alt="Android Step 1" />
+        <br /><br />
+        <p>
+          After that you will see the menu pop up. You will see there the option "Install The App". Click on it and the download
+          process will start.
+        </p>
+        <br />
+        <img src="../assets/images/android-step-2.jpg" alt="Android Step 2" />
+        <br /><br />
+      </div>
+    </div>
     <div class="block-2">
       <div class="white-background">
         <div class="container">
