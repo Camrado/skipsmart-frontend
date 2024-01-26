@@ -4,7 +4,7 @@ export const Timetable = {
   namespaced: true,
 
   state: {
-    date: new Date('2024-02-09'), // ! change to new Date()
+    date: new Date('2024-02-02'), // ! change to new Date()
     unmarkedDates: [],
     timetable: {
       lessons: []
