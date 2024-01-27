@@ -25,12 +25,12 @@
           <el-option label="2" value="2"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="Term" prop="term" size="large">
+      <!-- <el-form-item label="Term" prop="term" size="large">
         <el-select v-model="state.form.term" placeholder="Term Number" default="1">
           <el-option label="1" value="1"></el-option>
           <el-option label="2" value="2"></el-option>
         </el-select>
-      </el-form-item>
+      </el-form-item> -->
     </el-form>
     <el-button type="primary" @click="sumbitSignUpForm()" :loading="state.loadingBtn" id="sign-up-button">Sign Up</el-button>
     <div class="sign-link">
