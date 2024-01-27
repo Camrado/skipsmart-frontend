@@ -114,7 +114,7 @@ export default {
         store.dispatch('User/SET_TERM', data.student.term_number);
         localStorage.setItem(store.getters['User/GET_JWT_KEY'], data.token);
         let expireDate = new Date(data.expireDate);
-        expireDate.setHours(expireDate.getHours() - 3);
+        expireDate.setDate(expireDate.getDate() - 1);
         localStorage.setItem(store.getters['User/GET_EXPIRE_DATE_KEY'], expireDate);
 
         state.loadingBtn = false;
