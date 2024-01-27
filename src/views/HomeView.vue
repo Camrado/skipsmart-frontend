@@ -9,7 +9,7 @@
 
         <RouterLink to="/register" v-if="!store.getters['User/GET_IS_SIGNED_IN']">
           <el-button>
-            Sign In<el-icon class="el-icon--right"><img src="../assets/images/arrow-right.png" /></el-icon>
+            Sign Up<el-icon class="el-icon--right"><img src="../assets/images/arrow-right.png" /></el-icon>
           </el-button>
         </RouterLink>
         <RouterLink to="/timetable" v-if="store.getters['User/GET_IS_SIGNED_IN']">
