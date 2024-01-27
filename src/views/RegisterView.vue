@@ -19,7 +19,7 @@
       <el-form-item label="Password (Your Edupage password)" prop="password">
         <el-input v-model="state.form.password" placeholder="Password" :prefix-icon="Lock" size="large" show-password clearable />
       </el-form-item>
-      <el-form-item label="Group" prop="group" size="large">
+      <el-form-item label="Subgroup" prop="group" size="large">
         <el-select v-model="state.form.group" placeholder="Subgroup Number" default="1">
           <el-option label="1" value="1"></el-option>
           <el-option label="2" value="2"></el-option>
