@@ -89,9 +89,11 @@ export default {
         if (!store.getters['User/GET_IS_SIGNED_IN']) {
           toast.info('You need to be signed in to access this page.');
           router.push('/');
+          state.loadingData = false;
         } else {
           if (store.getters['Timetable/GET_ARE_UNMARKED_DATES_LOADED'] === false) {
             state.loadingData = true;
+
             try {
               await store.dispatch('Timetable/DOWNLOAD_UNMARKED_DATES');
             } catch {
@@ -102,14 +104,17 @@ export default {
           if (store.getters['Timetable/GET_UNMARKED_DATES'].length !== 0) {
             toast.warning('Complete all unmarked dates up to now to proceed to statistics page.');
             router.push('/timetable');
+            state.loadingData = false;
+          } else {
+            downloadSubjects();
           }
-
-          downloadSubjects();
         }
       }
     });
 
     onMounted(() => {
+      if (store.getters['Timetable/GET_ARE_UNMARKED_DATES_LOADED'] === true) state.loadingData = false;
+
       // Load subjects list from VueX if there is one
       if (store.getters['Statistics/GET_SUBJECTS_LIST'].length !== 0) {
         state.subjects = store.getters['Statistics/GET_SUBJECTS_LIST'];
@@ -136,7 +141,8 @@ export default {
     watch(selectedSubject, async (newSubject) => {
       if (newSubject) {
         if (newSubject == store.getters['Statistics/GET_CURRENT_SUBJECT']) {
-          return insertDataToChart();
+          insertDataToChart();
+          return;
         }
 
         store.dispatch('Statistics/SET_CURRENT_SUBJECT', newSubject);

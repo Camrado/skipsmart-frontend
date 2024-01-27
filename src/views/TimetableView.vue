@@ -1,5 +1,4 @@
 <template>
-  <!-- <NavBar /> -->
   <div class="timetable">
     <h1 class="site-title">
       <img src="../assets/images/logo-transparent.png" /><span class="logo-text">SkipSmart</span> - Timetable
@@ -60,14 +59,12 @@ import { watch, reactive, ref, onMounted } from 'vue';
 import { useToast } from 'vue-toastification';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
-// import NavBar from '@/components/NavBar.vue';
 import dateToString from '@/assets/js/dateToString';
 import App from '@/App.vue';
 import { Check, Close, Upload, ArrowDownBold } from '@element-plus/icons-vue';
 
 export default {
   name: 'TimetableView',
-  // components: { NavBar },
 
   setup() {
     const store = useStore();
@@ -136,8 +133,10 @@ export default {
     // Change the attended property of the course
     function addSubjectToForm(period, attended) {
       let lesson = state.timetable.lessons.find((subject) => subject.period == period);
-      lesson.attended = attended;
-      state.isAttendanceChanged = true;
+      if (lesson.attended != attended) {
+        lesson.attended = attended;
+        state.isAttendanceChanged = true;
+      }
     }
 
     async function getTimetable() {

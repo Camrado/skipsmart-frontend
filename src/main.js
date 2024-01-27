@@ -28,7 +28,7 @@ const optionsToast = {
 
 // vue3-touch-events options
 const optionsTouch = {
-  swipeTolerance: 70 // px
+  swipeTolerance: 50 // px
 };
 
 createApp(App).use(store).use(ElementPlus).use(Toast, optionsToast).use(router).use(Vue3TouchEvents, optionsTouch).mount('#app');
