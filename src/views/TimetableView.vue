@@ -251,7 +251,7 @@ export default {
 
     function isDateDisabled(date) {
       // ! Change the date
-      if (date > new Date('2024-02-02') || date < new Date(2024, 0, 29, 0, 0, 0)) {
+      if (date > new Date() || date < new Date(2024, 0, 29, 0, 0, 0)) {
         return true;
       } else {
         return false;
