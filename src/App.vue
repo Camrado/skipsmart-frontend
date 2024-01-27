@@ -74,7 +74,7 @@ export default {
         // store.dispatch('User/SET_SEMESTER', data.semester);
       } else {
         store.dispatch('User/SET_SIGNED_IN', false);
-        toast.error(data.msg);
+        toast.error(data.msg ?? 'Some error has ocurred. Please try again later.');
       }
 
       appMounted.value = true;

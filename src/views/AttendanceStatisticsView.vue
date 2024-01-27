@@ -79,7 +79,7 @@ export default {
       subjects: [],
       statistics: {},
       statisticsTable: [],
-      loadingData: false,
+      loadingData: true,
       attendedProgressBar: 0,
       skippedProgressBar: 0
     });
@@ -113,8 +113,6 @@ export default {
     });
 
     onMounted(() => {
-      if (store.getters['Timetable/GET_ARE_UNMARKED_DATES_LOADED'] === true) state.loadingData = false;
-
       // Load subjects list from VueX if there is one
       if (store.getters['Statistics/GET_SUBJECTS_LIST'].length !== 0) {
         state.subjects = store.getters['Statistics/GET_SUBJECTS_LIST'];
@@ -123,6 +121,8 @@ export default {
 
       // Load statistics and statistics table from VueX if there is one
       if (store.getters['Statistics/GET_STATISTICS_TABLE'].length !== 0) {
+        state.loadingData = false;
+
         state.statisticsTable = store.getters['Statistics/GET_STATISTICS_TABLE'];
 
         state.statistics = store.getters['Statistics/GET_STATISTICS'];

@@ -74,7 +74,7 @@ export default {
 
     const timetableDate = ref(store.getters['Timetable/GET_DATE']);
     const state = reactive({
-      loadingData: false,
+      loadingData: true,
       buttonLoading: false,
       buttonDisabled: false,
       isAttendanceChanged: false,
@@ -127,6 +127,7 @@ export default {
       // Load timetable from VueX if there is one
       if (store.getters['Timetable/GET_TIMETABLE']?.lessons.length !== 0) {
         state.timetable = store.getters['Timetable/GET_TIMETABLE'];
+        state.loadingData = false;
       }
     });
 
