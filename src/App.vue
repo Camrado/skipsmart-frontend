@@ -1,7 +1,9 @@
 <template>
   <Preloader v-if="showPreloader" />
-  <router-view />
-  <BottomNavBar v-if="store.getters['User/GET_IS_SIGNED_IN']" />
+  <div class="test" v-touch:swipe.left="changePageLeft" v-touch:swipe.right="changePageRight">
+    <router-view />
+    <BottomNavBar v-if="store.getters['User/GET_IS_SIGNED_IN']" />
+  </div>
 </template>
 
 <script>
@@ -10,12 +12,15 @@ import { useStore } from 'vuex';
 import { useToast } from 'vue-toastification';
 import Preloader from '@/components/Preloader.vue';
 import BottomNavBar from './components/BottomNavBar.vue';
+import { useRoute, useRouter } from 'vue-router';
 
 export default {
   components: { Preloader, BottomNavBar },
 
   setup() {
     const store = useStore();
+    const route = useRoute();
+    const router = useRouter();
     const toast = useToast();
     let appMounted = ref(false);
     let showPreloader = ref(true);
@@ -80,7 +85,33 @@ export default {
       }, 500);
     });
 
-    return { appMounted, showPreloader, store };
+    function changePageLeft() {
+      if (!store.getters['User/GET_IS_SIGNED_IN']) return;
+
+      console.log('test');
+
+      if (route.name == 'home') {
+        router.push('/timetable');
+      } else if (route.name == 'timetable') {
+        router.push('/me/attendance-statistics');
+      } else if (route.name == 'attendance-statistics') {
+        router.push('/me/settings');
+      }
+    }
+
+    function changePageRight() {
+      if (!store.getters['User/GET_IS_SIGNED_IN']) return;
+
+      if (route.name == 'settings') {
+        router.push('/me/attendance-statistics');
+      } else if (route.name == 'attendance-statistics') {
+        router.push('/timetable');
+      } else if (route.name == 'timetable') {
+        router.push('/');
+      }
+    }
+
+    return { appMounted, showPreloader, store, changePageLeft, changePageRight };
   }
 };
 </script>

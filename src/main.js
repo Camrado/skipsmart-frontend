@@ -8,9 +8,10 @@ import Toast from 'vue-toastification';
 import 'vue-toastification/dist/index.css';
 import ElementPlus from 'element-plus';
 import 'element-plus/dist/index.css';
+import Vue3TouchEvents from 'vue3-touch-events';
 
 // vue-toastification options
-const options = {
+const optionsToast = {
   position: 'bottom-left',
   timeout: 3000,
   closeOnClick: true,
@@ -25,4 +26,9 @@ const options = {
   rtl: false //right to left
 };
 
-createApp(App).use(store).use(ElementPlus).use(Toast, options).use(router).mount('#app');
+// vue3-touch-events options
+const optionsTouch = {
+  swipeTolerance: 70 // px
+};
+
+createApp(App).use(store).use(ElementPlus).use(Toast, optionsToast).use(router).use(Vue3TouchEvents, optionsTouch).mount('#app');

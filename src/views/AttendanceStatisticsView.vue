@@ -79,7 +79,7 @@ export default {
       subjects: [],
       statistics: {},
       statisticsTable: [],
-      loadingData: undefined,
+      loadingData: false,
       attendedProgressBar: 0,
       skippedProgressBar: 0
     });
@@ -90,33 +90,64 @@ export default {
           toast.info('You need to be signed in to access this page.');
           router.push('/');
         } else {
-          state.loadingData = true;
           if (store.getters['Timetable/GET_ARE_UNMARKED_DATES_LOADED'] === false) {
-            await store.dispatch('Timetable/DOWNLOAD_UNMARKED_DATES');
+            state.loadingData = true;
+            try {
+              await store.dispatch('Timetable/DOWNLOAD_UNMARKED_DATES');
+            } catch {
+              state.loadingData = false;
+            }
           }
 
           if (store.getters['Timetable/GET_UNMARKED_DATES'].length !== 0) {
             toast.warning('Complete all unmarked dates up to now to proceed to statistics page.');
             router.push('/timetable');
           }
+
           downloadSubjects();
-          state.loadingData = false;
         }
       }
     });
 
     onMounted(() => {
-      state.loadingData = true;
+      // Load subjects list from VueX if there is one
+      if (store.getters['Statistics/GET_SUBJECTS_LIST'].length !== 0) {
+        state.subjects = store.getters['Statistics/GET_SUBJECTS_LIST'];
+        selectedSubject.value = store.getters['Statistics/GET_CURRENT_SUBJECT'];
+      }
+
+      // Load statistics and statistics table from VueX if there is one
+      if (store.getters['Statistics/GET_STATISTICS_TABLE'].length !== 0) {
+        state.statisticsTable = store.getters['Statistics/GET_STATISTICS_TABLE'];
+
+        state.statistics = store.getters['Statistics/GET_STATISTICS'];
+
+        state.attendedProgressBar = (
+          ((state.statistics.attendedLessons + state.statistics.skippedLessons) / state.statistics.totalLessons) *
+          100
+        ).toFixed(1);
+        state.skippedProgressBar = (
+          (state.statistics.skippedLessons / (state.statistics.skippedLessons + state.statistics.remainingSkips)) *
+          100
+        ).toFixed(1);
+      }
     });
 
     watch(selectedSubject, async (newSubject) => {
       if (newSubject) {
+        if (newSubject == store.getters['Statistics/GET_CURRENT_SUBJECT']) {
+          return insertDataToChart();
+        }
+
+        store.dispatch('Statistics/SET_CURRENT_SUBJECT', newSubject);
         await getAttendanceStatus();
         insertDataToChart();
       }
     });
 
     async function downloadSubjects() {
+      if (store.getters['Statistics/GET_SUBJECTS_LIST'].length !== 0) return;
+
       const token = localStorage.getItem(store.getters['User/GET_JWT_KEY']);
 
       const response = await fetch(store.getters['GET_URL'] + '/attendance/subjects', {
@@ -129,7 +160,12 @@ export default {
       if (response.status === 200) {
         const data = await response.json();
         state.subjects = data.subjects;
-        selectedSubject.value = state.subjects[0][1];
+        store.dispatch('Statistics/SET_SUBJECTS_LIST', state.subjects);
+        store.dispatch('Statistics/SET_CURRENT_SUBJECT', state.subjects[0][0]);
+        selectedSubject.value = state.subjects[0][0];
+
+        await getAttendanceStatus();
+        insertDataToChart();
       } else {
         return toast.error('Some error has occured. Please try again later.');
       }
@@ -150,6 +186,7 @@ export default {
       if (response.status === 200) {
         const data = await response.json();
         state.statistics = data.attendanceStatus;
+        store.dispatch('Statistics/SET_STATISTICS', data.attendanceStatus);
 
         state.attendedProgressBar = (
           ((state.statistics.attendedLessons + state.statistics.skippedLessons) / state.statistics.totalLessons) *
@@ -174,6 +211,8 @@ export default {
           if (type == 'course') continue;
           state.statisticsTable.push({ type: tableKeys[type], value: state.statistics[type] });
         }
+
+        store.dispatch('Statistics/SET_STATISTICS_TABLE', state.statisticsTable);
 
         state.loadingData = false;
       } else {

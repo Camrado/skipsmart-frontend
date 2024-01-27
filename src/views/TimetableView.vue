@@ -1,55 +1,57 @@
 <template>
   <!-- <NavBar /> -->
-  <h1 class="site-title">
-    <img src="../assets/images/logo-transparent.png" /><span class="logo-text">SkipSmart</span> - Timetable
-  </h1>
+  <div class="timetable">
+    <h1 class="site-title">
+      <img src="../assets/images/logo-transparent.png" /><span class="logo-text">SkipSmart</span> - Timetable
+    </h1>
 
-  <div class="timetable-date-container">
-    <el-date-picker
-      v-model="timetableDate"
-      type="date"
-      placeholder="Pick a day"
-      format="DD/MM/YYYY"
-      :disabled-date="isDateDisabled"
-      :cell-class-name="isDateUnfilled"
-      :prefix-icon="ArrowDownBold"
-      :editable="false"
-      :clearable="false"
-    />
-  </div>
-  <div class="container" style="margin-bottom: 100px">
-    <br />
-    <div
-      v-loading="state.loadingData"
-      v-for="subject in state.timetable.lessons"
-      :key="subject.period"
-      class="timetable-row"
-      :class="{
-        'attended-lesson': state.timetable.lessons.find((lesson) => lesson.period == subject.period)?.attended ?? false,
-        'skipped-lesson': state.timetable.lessons.find((lesson) => lesson.period == subject.period)?.attended === false ?? false
-      }"
-    >
-      <div class="timetable-row-number">{{ subject.period }}</div>
-      <div class="timetable-row-subject">{{ subject.course }}</div>
-      <div class="timetable-row-group">{{ subject.group }}</div>
-      <div class="timetable-row-buttons">
-        <el-button size="large" type="success" :icon="Check" circle @click="addSubjectToForm(subject.period, true)" />
-        <el-button size="large" type="danger" :icon="Close" circle @click="addSubjectToForm(subject.period, false)" />
-      </div>
+    <div class="timetable-date-container">
+      <el-date-picker
+        v-model="timetableDate"
+        type="date"
+        placeholder="Pick a day"
+        format="DD/MM/YYYY"
+        :disabled-date="isDateDisabled"
+        :cell-class-name="isDateUnfilled"
+        :prefix-icon="ArrowDownBold"
+        :editable="false"
+        :clearable="false"
+      />
     </div>
+    <div class="container" style="margin-bottom: 100px">
+      <br />
+      <div
+        v-loading="state.loadingData"
+        v-for="subject in state.timetable.lessons"
+        :key="subject.period"
+        class="timetable-row"
+        :class="{
+          'attended-lesson': state.timetable.lessons.find((lesson) => lesson.period == subject.period)?.attended ?? false,
+          'skipped-lesson': state.timetable.lessons.find((lesson) => lesson.period == subject.period)?.attended === false ?? false
+        }"
+      >
+        <div class="timetable-row-number">{{ subject.period }}</div>
+        <div class="timetable-row-subject">{{ subject.course }}</div>
+        <div class="timetable-row-group">{{ subject.group }}</div>
+        <div class="timetable-row-buttons">
+          <el-button size="large" type="success" :icon="Check" circle @click="addSubjectToForm(subject.period, true)" />
+          <el-button size="large" type="danger" :icon="Close" circle @click="addSubjectToForm(subject.period, false)" />
+        </div>
+      </div>
 
-    <el-button
-      size="large"
-      round
-      type="primary"
-      :icon="Upload"
-      :loading="state.buttonLoading"
-      class="upload-button"
-      :disabled="state.buttonDisabled"
-      @click="updateAttendance()"
-    >
-      Update
-    </el-button>
+      <el-button
+        size="large"
+        round
+        type="primary"
+        :icon="Upload"
+        :loading="state.buttonLoading"
+        class="upload-button"
+        :disabled="state.buttonDisabled"
+        @click="updateAttendance()"
+      >
+        Update
+      </el-button>
+    </div>
   </div>
 </template>
 

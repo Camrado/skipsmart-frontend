@@ -1,4 +1,4 @@
-import { useToast } from 'vue-toastification';
+// import { useToast } from 'vue-toastification';
 
 export const Timetable = {
   namespaced: true,
@@ -42,7 +42,7 @@ export const Timetable = {
     },
 
     async DOWNLOAD_UNMARKED_DATES({ rootGetters, commit }) {
-      const toast = useToast();
+      // const toast = useToast();
 
       const token = localStorage.getItem(rootGetters['User/GET_JWT_KEY']);
       const response = await fetch(rootGetters['GET_URL'] + '/attendance/unmarked-dates', {
@@ -57,7 +57,7 @@ export const Timetable = {
         commit('SET_UNMARKED_DATES', data.unmarkedDates);
         commit('SET_ARE_UNMARKED_DATES_LOADED', true);
       } else {
-        toast.error("Couldn't retrieve unmarked dates. Please try again later.");
+        // toast.error("Couldn't retrieve unmarked dates. Please try again later.");
       }
     }
   },
