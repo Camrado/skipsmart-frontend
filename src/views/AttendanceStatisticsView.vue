@@ -102,7 +102,9 @@ export default {
           }
 
           if (store.getters['Timetable/GET_UNMARKED_DATES'].length !== 0) {
-            toast.warning('Complete all unmarked dates up to now to proceed to statistics page.');
+            toast.warning(
+              'Complete all unmarked dates up to now (they are marked red in calendar) to proceed to statistics page.'
+            );
             router.push('/timetable');
             state.loadingData = false;
           } else {

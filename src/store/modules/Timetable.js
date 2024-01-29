@@ -34,6 +34,12 @@ export const Timetable = {
     SET_UNMARKED_DATES({ commit }, unmarkedDates) {
       commit('SET_UNMARKED_DATES', unmarkedDates);
     },
+    REMOVE_MARKED_DATE({ commit, getters }, markedDate) {
+      let unmarkedDates = getters.GET_UNMARKED_DATES;
+      let newUnmarkedDates = unmarkedDates.filter((date) => date != markedDate);
+
+      commit('SET_UNMARKED_DATES', newUnmarkedDates);
+    },
     SET_ARE_UNMARKED_DATES_LOADED({ commit }, areUnmarkedDatesLoaded) {
       commit('SET_ARE_UNMARKED_DATES_LOADED', areUnmarkedDatesLoaded);
     },

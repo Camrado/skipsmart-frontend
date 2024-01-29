@@ -239,7 +239,11 @@ export default {
         state.buttonLoading = false;
         toast.success(data.msg);
 
-        store.dispatch('Timetable/DOWNLOAD_UNMARKED_DATES');
+        if (isDateMarked) {
+          let markedDate = new Date(dateToString(timetableDate.value));
+          markedDate = markedDate.toISOString();
+          store.dispatch('Timetable/REMOVE_MARKED_DATE', markedDate);
+        }
       } else if (response.status === 500) {
         state.buttonLoading = false;
         return toast.error('Sorry. We have got some server errors. Please try again later.');
@@ -278,7 +282,8 @@ export default {
       updateAttendance,
       isDateDisabled,
       isDateUnfilled,
-      ArrowDownBold
+      ArrowDownBold,
+      store
     };
   }
 };
