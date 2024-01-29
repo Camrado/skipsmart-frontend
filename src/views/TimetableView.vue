@@ -175,6 +175,7 @@ export default {
 
       if (lesson.attended === attended) return;
 
+      const lastLessonAttended = lesson.attended;
       lesson.attended = attended;
 
       let requestBody = { lessons: [lesson] };
@@ -214,10 +215,10 @@ export default {
           store.dispatch('Timetable/REMOVE_MARKED_DATE', markedDate);
         }
       } else if (response.status === 500) {
-        state.buttonLoading = false;
+        lesson.attended = lastLessonAttended;
         return toast.error('Sorry. We have got some server errors. Please try again later.');
       } else {
-        state.buttonLoading = false;
+        lesson.attended = lastLessonAttended;
         return toast.error('Some error has occured. Please try again later.');
       }
     }
