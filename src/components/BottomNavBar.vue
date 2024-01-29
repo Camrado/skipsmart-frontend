@@ -115,7 +115,7 @@ export default {
 }
 
 .navigation-container {
-  z-index: 6;
+  z-index: 10000000;
   position: fixed;
   bottom: -1px;
   height: 115px;

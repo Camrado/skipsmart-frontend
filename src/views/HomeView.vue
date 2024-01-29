@@ -83,13 +83,7 @@
           </ul>
           <br />
           <img src="../assets/images/home-page-timetable-2.png" alt="Photo 2" />
-          <br /><br />
-          <p>
-            Once you've marked your attendance for the day, click the update button. Your records will be saved, keeping you
-            organized and in control.
-          </p>
           <br />
-          <img src="../assets/images/home-page-timetable-3.png" alt="Photo 3" />
           <br />
         </div>
       </div>

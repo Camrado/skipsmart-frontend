@@ -33,23 +33,10 @@
         <div class="timetable-row-subject">{{ subject.course }}</div>
         <div class="timetable-row-group">{{ subject.group }}</div>
         <div class="timetable-row-buttons">
-          <el-button size="large" type="success" :icon="Check" circle @click="addSubjectToForm(subject.period, true)" />
-          <el-button size="large" type="danger" :icon="Close" circle @click="addSubjectToForm(subject.period, false)" />
+          <el-button size="large" type="success" :icon="Check" circle @click="updateAttendance(subject.period, true)" />
+          <el-button size="large" type="danger" :icon="Close" circle @click="updateAttendance(subject.period, false)" />
         </div>
       </div>
-
-      <el-button
-        size="large"
-        round
-        type="primary"
-        :icon="Upload"
-        :loading="state.buttonLoading"
-        class="upload-button"
-        :disabled="state.buttonDisabled"
-        @click="updateAttendance()"
-      >
-        Update
-      </el-button>
     </div>
   </div>
 </template>
@@ -131,15 +118,6 @@ export default {
       }
     });
 
-    // Change the attended property of the course
-    function addSubjectToForm(period, attended) {
-      let lesson = state.timetable.lessons.find((subject) => subject.period == period);
-      if (lesson.attended != attended) {
-        lesson.attended = attended;
-        state.isAttendanceChanged = true;
-      }
-    }
-
     async function getTimetable() {
       if (store.getters['Timetable/GET_TIMETABLE']?.lessons.length !== 0 && !state.isDateUpdated) return;
 
@@ -192,14 +170,14 @@ export default {
       }
     }
 
-    async function updateAttendance() {
-      if (state.isAttendanceChanged === false) {
-        return toast.warning('Change attendance status of at least one subject.');
-      }
+    async function updateAttendance(period, attended) {
+      let lesson = state.timetable.lessons.find((subject) => subject.period == period);
 
-      state.buttonLoading = true;
+      if (lesson.attended === attended) return;
 
-      let requestBody = { lessons: [] };
+      lesson.attended = attended;
+
+      let requestBody = { lessons: [lesson] };
 
       const token = localStorage.getItem(store.getters['User/GET_JWT_KEY']);
 
@@ -214,12 +192,6 @@ export default {
       requestBody.isDateMarked = isDateMarked;
       requestBody.date = dateToString(timetableDate.value);
 
-      for (let subject of state.timetable.lessons) {
-        if (subject.attended === true || subject.attended === false) {
-          requestBody.lessons.push(subject);
-        }
-      }
-
       const response = await fetch(store.getters['GET_URL'] + '/attendance', {
         method: 'POST',
         headers: {
@@ -232,11 +204,8 @@ export default {
       if (response.status === 200) {
         const data = await response.json();
 
-        state.isAttendanceChanged = false;
-
         store.dispatch('Timetable/SET_TIMETABLE', state.timetable);
 
-        state.buttonLoading = false;
         toast.success(data.msg);
 
         if (isDateMarked) {
@@ -278,7 +247,6 @@ export default {
       Check,
       Close,
       Upload,
-      addSubjectToForm,
       updateAttendance,
       isDateDisabled,
       isDateUnfilled,
