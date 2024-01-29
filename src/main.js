@@ -12,7 +12,7 @@ import Vue3TouchEvents from 'vue3-touch-events';
 
 // vue-toastification options
 const optionsToast = {
-  position: 'bottom-left',
+  position: 'top-left',
   timeout: 2000,
   closeOnClick: true,
   pauseOnFocusLoss: true,
