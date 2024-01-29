@@ -62,8 +62,6 @@ export default {
     const timetableDate = ref(store.getters['Timetable/GET_DATE']);
     const state = reactive({
       loadingData: true,
-      buttonLoading: false,
-      buttonDisabled: false,
       isAttendanceChanged: false,
       isDateUpdated: false,
       timetable: {
@@ -122,7 +120,6 @@ export default {
       if (store.getters['Timetable/GET_TIMETABLE']?.lessons.length !== 0 && !state.isDateUpdated) return;
 
       state.loadingData = true;
-      state.buttonDisabled = true;
 
       if (state.timetable.lessons.length === 0) {
         state.timetable = {
@@ -160,7 +157,6 @@ export default {
         state.isAttendanceChanged = false;
 
         state.loadingData = false;
-        state.buttonDisabled = false;
       } else if (response.status === 500) {
         state.loadingData = false;
         return toast.error('Sorry. We have got some server errors. Please try again later.');
