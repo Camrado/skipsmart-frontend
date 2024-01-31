@@ -8,7 +8,8 @@ export const Statistics = {
     currentSubject: '',
     isSubjectChanged: false,
     statistics: {},
-    statisticsTable: []
+    statisticsTable: [],
+    isTimetableUpdated: false
   },
 
   mutations: {
@@ -26,6 +27,9 @@ export const Statistics = {
     },
     SET_STATISTICS_TABLE(state, content) {
       state.statisticsTable = content;
+    },
+    SET_IS_TIMETABLE_UPDATED(state, content) {
+      state.isTimetableUpdated = content;
     }
   },
 
@@ -44,6 +48,9 @@ export const Statistics = {
     },
     SET_STATISTICS_TABLE({ commit }, statisticsTable) {
       commit('SET_STATISTICS_TABLE', statisticsTable);
+    },
+    SET_IS_TIMETABLE_UPDATED({ commit }, isTimetableUpdated) {
+      commit('SET_IS_TIMETABLE_UPDATED', isTimetableUpdated);
     }
   },
 
@@ -52,6 +59,7 @@ export const Statistics = {
     GET_CURRENT_SUBJECT: (state) => state.currentSubject,
     GET_IS_SUBJECT_CHANGED: (state) => state.isSubjectChanged,
     GET_STATISTICS: (state) => state.statistics,
-    GET_STATISTICS_TABLE: (state) => state.statisticsTable
+    GET_STATISTICS_TABLE: (state) => state.statisticsTable,
+    GET_IS_TIMETABLE_UPDATED: (state) => state.isTimetableUpdated
   }
 };

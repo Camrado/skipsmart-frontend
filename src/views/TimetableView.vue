@@ -202,6 +202,7 @@ export default {
         const data = await response.json();
 
         store.dispatch('Timetable/SET_TIMETABLE', state.timetable);
+        store.dispatch('Statistics/SET_IS_TIMETABLE_UPDATED', true);
 
         toast.success(data.msg);
 

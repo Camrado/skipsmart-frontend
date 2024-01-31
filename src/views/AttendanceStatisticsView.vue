@@ -114,15 +114,20 @@ export default {
       }
     });
 
-    onMounted(() => {
+    onMounted(async () => {
       // Load subjects list from VueX if there is one
       if (store.getters['Statistics/GET_SUBJECTS_LIST'].length !== 0) {
         state.subjects = store.getters['Statistics/GET_SUBJECTS_LIST'];
         selectedSubject.value = store.getters['Statistics/GET_CURRENT_SUBJECT'];
       }
 
+      if(store.getters['Statistics/GET_IS_TIMETABLE_UPDATED'] === true) {
+        await getAttendanceStatus();
+        insertDataToChart();
+        store.dispatch('Statistics/SET_IS_TIMETABLE_UPDATED', false);
+      }
       // Load statistics and statistics table from VueX if there is one
-      if (store.getters['Statistics/GET_STATISTICS_TABLE'].length !== 0) {
+      else if (store.getters['Statistics/GET_STATISTICS_TABLE'].length !== 0) {
         state.loadingData = false;
 
         state.statisticsTable = store.getters['Statistics/GET_STATISTICS_TABLE'];
