@@ -203,7 +203,7 @@ export default {
       if (response.status === 200) {
         store.dispatch('Statistics/SET_IS_TIMETABLE_UPDATED', true);
         
-        const data = await response.json();
+        // const data = await response.json();
 
         store.dispatch('Timetable/SET_TIMETABLE', state.timetable);
 
