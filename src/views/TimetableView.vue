@@ -159,10 +159,12 @@ export default {
         state.loadingData = false;
       } else if (response.status === 500) {
         state.loadingData = false;
-        return toast.error('Sorry. We have got some server errors. Please try again later.');
+        // return toast.error('Sorry. We have got some server errors. Please try again later.');
+        return;
       } else {
         state.loadingData = false;
-        return toast.error('Some error has occured. Please try again later.');
+        // return toast.error('Some error has occured. Please try again later.');
+        return;
       }
     }
 
@@ -205,7 +207,7 @@ export default {
 
         store.dispatch('Timetable/SET_TIMETABLE', state.timetable);
 
-        toast.success(data.msg);
+        // toast.success(data.msg);
 
         if (isDateMarked) {
           let markedDate = new Date(dateToString(timetableDate.value));
@@ -214,10 +216,12 @@ export default {
         }
       } else if (response.status === 500) {
         lesson.attended = lastLessonAttended;
-        return toast.error('Sorry. We have got some server errors. Please try again later.');
+        // return toast.error('Sorry. We have got some server errors. Please try again later.');
+        return;
       } else {
         lesson.attended = lastLessonAttended;
-        return toast.error('Some error has occured. Please try again later.');
+        // return toast.error('Some error has occured. Please try again later.');
+        return;
       }
     }
 

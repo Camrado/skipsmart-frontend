@@ -180,7 +180,8 @@ export default {
         await getAttendanceStatus();
         insertDataToChart();
       } else {
-        return toast.error('Some error has occured. Please try again later.');
+        // return toast.error('Some error has occured. Please try again later.');
+        return;
       }
     }
 
@@ -230,7 +231,8 @@ export default {
         state.loadingData = false;
       } else {
         state.loadingData = false;
-        return toast.error('Some error has occured. Please try again later.');
+        // return toast.error('Some error has occured. Please try again later.');
+        return;
       }
     }
 
