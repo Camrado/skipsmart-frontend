@@ -1,0 +1,159 @@
+@import 'variables.scss';
+
+.settings-page {
+  .header {
+    position: relative;
+    z-index: 100;
+    top: 0;
+    left: 0;
+    background-color: $background-color;
+    width: 100%;
+    height: 70px;
+    padding: 3vw;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    &-logo {
+      width: 50%;
+      display: flex;
+      align-items: center;
+
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+
+      img {
+        width: 35px;
+        margin-right: 10px;
+      }
+
+      span {
+        font-family: 'Comfortaa', sans-serif;
+        font-optical-sizing: auto;
+        font-weight: 700;
+        font-style: normal;
+        font-size: 22px;
+        color: $text-color;
+      }
+    }
+  }
+
+  .settings-header {
+    margin-top: 30px;
+    display: flex;
+    align-items: center;
+
+    img {
+      width: 70px;
+      height: 70px;
+      margin-right: 20px;
+    }
+
+    div {
+      h1 {
+        font-family: 'Josefin Sans', sans-serif;
+        font-optical-sizing: auto;
+        font-weight: 700;
+        font-style: normal;
+        font-size: 24px;
+        line-height: 1.2;
+        color: $primary-color;
+      }
+
+      h2 {
+        font-family: 'Josefin Sans', sans-serif;
+        font-optical-sizing: auto;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 17px;
+        line-height: 1.2;
+        margin-bottom: 0;
+        color: $secondary-color;
+      }
+    }
+  }
+
+  hr {
+    margin: 15px 0 30px 0;
+    border-color: $secondary-color;
+  }
+
+  h2 {
+    font-family: 'Josefin Sans', sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: $primary-color;
+  }
+
+  .el-form-item {
+    margin-bottom: 30px;
+
+    label {
+      font-family: 'Zain', sans-serif;
+      font-weight: 400;
+      font-style: normal;
+      font-size: 22px;
+      color: $text-color;
+      margin-bottom: 5px !important;
+    }
+
+    .el-input__wrapper {
+      padding: 3px 15px;
+    }
+
+    .el-select__wrapper {
+      padding: 15px;
+    }
+
+    .el-input__inner,
+    .el-select__selection {
+      font-family: 'Zain', sans-serif;
+      font-weight: 400;
+      font-style: normal;
+      font-size: 20px;
+    }
+  }
+
+  .el-button {
+    z-index: 2 !important;
+    color: $background-color !important;
+    background-color: $primary-color !important;
+    border-color: $primary-color !important;
+    border-radius: 50px !important;
+    width: 100%;
+    padding: 22px 25px;
+    font-family: 'Zain', sans-serif;
+    font-weight: 300;
+    font-style: normal;
+    font-size: 23px;
+
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+
+  .change-subgroups {
+    margin-top: 50px;
+  }
+
+  .logout {
+    margin-top: 50px;
+    margin-bottom: 180px;
+
+    .el-button {
+      background-color: $accent-color !important;
+      border-color: $accent-color !important;
+    }
+  }
+}

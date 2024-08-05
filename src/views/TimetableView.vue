@@ -1,40 +1,54 @@
 <template>
   <div class="timetable">
-    <h1 class="site-title">
-      <img src="../assets/images/logo-transparent.png" /><span class="logo-text">SkipSmart</span> - Timetable
-    </h1>
+    <div class="header">
+      <div class="header-logo">
+        <img src="../assets/images/logo-round-background.png" alt="SkipSmart Logo" />
+        <span>SkipSmart</span>
+      </div>
+      <div class="header-button"></div>
+    </div>
 
     <div class="timetable-date-container">
-      <el-date-picker
-        v-model="timetableDate"
-        type="date"
-        placeholder="Pick a day"
-        format="DD/MM/YYYY"
-        :disabled-date="isDateDisabled"
-        :cell-class-name="isDateUnfilled"
-        :prefix-icon="ArrowDownBold"
-        :editable="false"
-        :clearable="false"
-      />
+      <div class="container">
+        <el-date-picker
+          v-model="timetableDate"
+          type="date"
+          placeholder="Pick a day"
+          format="DD/MM/YYYY"
+          :disabled-date="isDateDisabled"
+          :cell-class-name="isDateUnfilled"
+          :prefix-icon="ArrowDownBold"
+          :editable="false"
+          :clearable="false"
+        />
+      </div>
     </div>
+
     <div class="container" style="margin-bottom: 100px">
       <br />
       <div
         v-loading="state.loadingData"
         v-for="subject in state.timetable.lessons"
         :key="subject.period"
-        class="timetable-row"
-        :class="{
-          'attended-lesson': state.timetable.lessons.find((lesson) => lesson.period == subject.period)?.attended ?? false,
-          'skipped-lesson': state.timetable.lessons.find((lesson) => lesson.period == subject.period)?.attended === false ?? false
-        }"
+        class="timetable-row-container"
       >
-        <div class="timetable-row-number">{{ subject.period }}</div>
-        <div class="timetable-row-subject">{{ subject.course }}</div>
-        <div class="timetable-row-group">{{ subject.group }}</div>
-        <div class="timetable-row-buttons">
-          <el-button size="large" type="success" :icon="Check" circle @click="updateAttendance(subject.period, true)" />
-          <el-button size="large" type="danger" :icon="Close" circle @click="updateAttendance(subject.period, false)" />
+        <div
+          class="timetable-row"
+          :class="{
+            'attended-lesson': state.timetable.lessons.find((lesson) => lesson.period == subject.period)?.hasAttended ?? false,
+            'skipped-lesson':
+              state.timetable.lessons.find((lesson) => lesson.period == subject.period)?.hasAttended === false ?? false
+          }"
+        >
+          <div class="timetable-row-number">{{ subject.period }}</div>
+          <div class="timetable-row-subject">{{ subject.courseName }}</div>
+          <div class="timetable-row-group" v-if="subject.facultySubgroup !== 0 || subject.languageSubgroup !== 0">
+            Group {{ subject.languageSubgroup === 0 ? subject.facultySubgroup : subject.languageSubgroup }}
+          </div>
+          <div class="timetable-row-buttons">
+            <el-button size="large" :icon="Check" @click="updateAttendance(subject.period, true)" />
+            <el-button size="large" :icon="Close" @click="updateAttendance(subject.period, false)" />
+          </div>
         </div>
       </div>
     </div>
@@ -43,12 +57,12 @@
 
 <script>
 import { watch, reactive, ref, onMounted } from 'vue';
-import { useToast } from 'vue-toastification';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import dateToString from '@/assets/js/dateToString';
 import App from '@/App.vue';
 import { Check, Close, Upload, ArrowDownBold } from '@element-plus/icons-vue';
+import { ElMessage } from 'element-plus';
 
 export default {
   name: 'TimetableView',
@@ -56,7 +70,6 @@ export default {
   setup() {
     const store = useStore();
     const router = useRouter();
-    const toast = useToast();
     const { appMounted } = App.setup();
 
     const timetableDate = ref(store.getters['Timetable/GET_DATE']);
@@ -68,23 +81,31 @@ export default {
         lessons: [
           {
             period: 1,
-            course: 'UE000 Subject',
-            group: ''
+            courseName: 'UE000 Subject',
+            courseId: '',
+            facultySubgroup: 0,
+            languageSubgroup: 0
           },
           {
             period: 2,
-            course: 'UE000 Subject',
-            group: ''
+            courseName: 'UE000 Subject',
+            courseId: '',
+            facultySubgroup: 0,
+            languageSubgroup: 0
           },
           {
             period: 3,
-            course: 'UE000 Subject',
-            group: ''
+            courseName: 'UE000 Subject',
+            courseId: '',
+            languageSubgroup: 0,
+            facultySubgroup: 0
           },
           {
             period: 4,
-            course: 'UE000 Subject',
-            group: ''
+            courseName: 'UE000 Subject',
+            courseId: '',
+            languageSubgroup: 0,
+            facultySubgroup: 0
           }
         ]
       }
@@ -93,10 +114,10 @@ export default {
     watch(appMounted, (appMounted) => {
       if (appMounted) {
         if (!store.getters['User/GET_IS_SIGNED_IN']) {
-          toast.info('You need to be signed in to access this page.');
+          ElMessage.info({ message: 'You need to be signed in to access this page.', showClose: true });
           router.push('/');
         } else {
-          getTimetable();
+          loadTimetableData();
           store.dispatch('Timetable/DOWNLOAD_UNMARKED_DATES');
         }
       }
@@ -105,134 +126,221 @@ export default {
     watch(timetableDate, (newDate) => {
       store.dispatch('Timetable/SET_DATE', newDate);
       state.isDateUpdated = true;
-      getTimetable();
+      loadTimetableData();
     });
 
     onMounted(() => {
-      // Load timetable from VueX if there is one
       if (store.getters['Timetable/GET_TIMETABLE']?.lessons.length !== 0) {
         state.timetable = store.getters['Timetable/GET_TIMETABLE'];
         state.loadingData = false;
       }
     });
 
-    async function getTimetable() {
+    async function loadTimetableData() {
       if (store.getters['Timetable/GET_TIMETABLE']?.lessons.length !== 0 && !state.isDateUpdated) return;
 
       state.loadingData = true;
 
-      if (state.timetable.lessons.length === 0) {
-        state.timetable = {
-          lessons: [
-            {
-              period: 1,
-              course: 'UE000 Subject',
-              group: ''
-            }
-          ]
-        };
-      }
-
-      const date = dateToString(timetableDate.value);
-      const token = localStorage.getItem(store.getters['User/GET_JWT_KEY']);
-
-      const response = await fetch(store.getters['GET_URL'] + `/timetable/${date}`, {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${token}`
+      try {
+        if (state.timetable.lessons.length === 0) {
+          state.timetable = {
+            lessons: [
+              {
+                period: 1,
+                courseName: 'UE000 Subject',
+                courseId: '',
+                facultySubgroup: 0,
+                languageSubgroup: 0
+              }
+            ]
+          };
         }
-      });
 
-      if (response.status === 200) {
-        const data = await response.json();
+        await Promise.all([getTimetable(), getAttendances()]);
 
-        const myGroup = store.getters['User/GET_GROUP'];
-
-        state.timetable.lessons = data.lessons;
-        state.timetable.lessons = state.timetable.lessons.filter((subject) => !subject.group || subject.group.includes(myGroup));
+        state.timetable.lessons.sort((a, b) => a.period - b.period);
 
         store.dispatch('Timetable/SET_TIMETABLE', state.timetable);
         state.isDateUpdated = false;
+      } catch {
+        return ElMessage.error({ message: 'Some error has occured. Please try again later.', showClose: true });
+      } finally {
+        state.loadingData = false;
+      }
+    }
 
-        state.isAttendanceChanged = false;
+    async function getTimetable() {
+      const date = dateToString(timetableDate.value);
+      const token = localStorage.getItem(store.getters['User/GET_JWT_LKEY']);
 
-        state.loadingData = false;
-      } else if (response.status === 500) {
-        state.loadingData = false;
-        return toast.error('Sorry. We have got some server errors. Please try again later.');
-      } else {
-        state.loadingData = false;
-        return toast.error('Some error has occured. Please try again later.');
+      try {
+        const response = await fetch(store.getters['GET_URL'] + `/attendances/timetable/${date}`, {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        if (response.status === 200) {
+          const lessons = await response.json();
+
+          const languageSubgroup = store.getters['User/GET_LANGUAGE_SUBGROUP'];
+          const facultySubgroup = store.getters['User/GET_FACULTY_SUBGROUP'];
+
+          if (state.timetable.lessons[0].courseName === 'UE000 Subject') {
+            state.timetable.lessons = lessons.filter((subject) => {
+              if (subject.languageSubgroup === 0 && subject.facultySubgroup === 0) return true;
+              if (subject.languageSubgroup === languageSubgroup && subject.facultySubgroup === 0) return true;
+              if (subject.languageSubgroup === 0 && subject.facultySubgroup === facultySubgroup) return true;
+            });
+          } else {
+            let filteredLessons = lessons.filter((subject) => {
+              if (subject.languageSubgroup === 0 && subject.facultySubgroup === 0) return true;
+              if (subject.languageSubgroup === languageSubgroup && subject.facultySubgroup === 0) return true;
+              if (subject.languageSubgroup === 0 && subject.facultySubgroup === facultySubgroup) return true;
+            });
+
+            for (let i = 0; i < state.timetable.lessons.length; i++) {
+              let lessonPeriod = state.timetable.lessons[i].period;
+              let lesson = filteredLessons.find((lesson) => Number(lesson.period) === Number(lessonPeriod));
+
+              if (lesson) {
+                state.timetable.lessons[i].courseName = lesson.courseName;
+                state.timetable.lessons[i].courseId = lesson.courseId;
+                state.timetable.lessons[i].facultySubgroup = lesson.facultySubgroup;
+                state.timetable.lessons[i].languageSubgroup = lesson.languageSubgroup;
+              }
+            }
+          }
+        } else if (response.status === 500) {
+          return ElMessage.error({
+            message: 'Sorry. We have got some server errors. Please try again later.',
+            showClose: true,
+            grouping: true
+          });
+        } else {
+          return ElMessage.error({ message: 'Some error has occured. Please try again later.', showClose: true, grouping: true });
+        }
+      } catch {
+        return ElMessage.error({ message: 'Some error has occured. Please try again later.', showClose: true, grouping: true });
+      }
+    }
+
+    async function getAttendances() {
+      try {
+        const date = dateToString(timetableDate.value);
+        const token = localStorage.getItem(store.getters['User/GET_JWT_LKEY']);
+
+        const response = await fetch(store.getters['GET_URL'] + `/attendances/${date}`, {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        if (response.status === 200) {
+          const attendances = await response.json();
+
+          if (state.timetable.lessons[0].courseName === 'UE000 Subject') {
+            state.timetable.lessons = attendances;
+          } else {
+            for (let i = 0; i < state.timetable.lessons.length; i++) {
+              let lessonPeriod = state.timetable.lessons[i].period;
+              let attendance = attendances.find((subject) => Number(subject.period) === Number(lessonPeriod));
+
+              if (attendance) {
+                state.timetable.lessons[i].hasAttended = attendance.hasAttended;
+              } else {
+                state.timetable.lessons[i].hasAttended = null;
+              }
+            }
+          }
+        } else if (response.status === 500) {
+          return ElMessage.error({
+            message: 'Sorry. We have got some server errors. Please try again later.',
+            showClose: true,
+            grouping: true
+          });
+        } else {
+          return ElMessage.error({ message: 'Some error has occured. Please try again later.', showClose: true, grouping: true });
+        }
+      } catch {
+        return ElMessage.error({ message: 'Some error has occured. Please try again later.', showClose: true, grouping: true });
       }
     }
 
     async function updateAttendance(period, attended) {
       let lesson = state.timetable.lessons.find((subject) => subject.period == period);
 
-      if (lesson.attended === attended) return;
+      if (lesson.hasAttended === attended) return;
 
-      const lastLessonAttended = lesson.attended;
-      lesson.attended = attended;
+      const lastLessonAttended = lesson.hasAttended;
+      lesson.hasAttended = attended;
 
-      let requestBody = { lessons: [lesson] };
-
-      const token = localStorage.getItem(store.getters['User/GET_JWT_KEY']);
+      const token = localStorage.getItem(store.getters['User/GET_JWT_LKEY']);
 
       let isDateMarked = true;
       for (let subject of state.timetable.lessons) {
-        if (!(subject.attended === true || subject.attended === false)) {
+        if (!(subject.hasAttended === true || subject.hasAttended === false)) {
           isDateMarked = false;
           break;
         }
       }
 
-      requestBody.isDateMarked = isDateMarked;
-      requestBody.date = dateToString(timetableDate.value);
+      try {
+        const response = await fetch(store.getters['GET_URL'] + '/attendances/record-attendance', {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            period: Number(lesson.period),
+            hasAttended: lesson.hasAttended,
+            isDateMarked,
+            attendanceDate: dateToString(timetableDate.value),
+            courseId: lesson.courseId
+          })
+        });
 
-      const response = await fetch(store.getters['GET_URL'] + '/attendance', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(requestBody)
-      });
+        if (response.status === 200) {
+          store.dispatch('Timetable/SET_TIMETABLE', state.timetable);
+          store.dispatch('Statistics/CLEAR_STATISTICS');
 
-      if (response.status === 200) {
-        const data = await response.json();
-
-        store.dispatch('Timetable/SET_TIMETABLE', state.timetable);
-
-        toast.success(data.msg);
-
-        if (isDateMarked) {
-          let markedDate = new Date(dateToString(timetableDate.value));
-          markedDate = markedDate.toISOString();
-          store.dispatch('Timetable/REMOVE_MARKED_DATE', markedDate);
+          if (isDateMarked) {
+            let markedDate = dateToString(timetableDate.value);
+            store.dispatch('Timetable/REMOVE_MARKED_DATE', markedDate);
+          }
+        } else if (response.status === 500) {
+          lesson.hasAttended = lastLessonAttended;
+          return ElMessage.error({
+            message: 'Sorry. We have got some server errors. Please try again later.',
+            showClose: true,
+            grouping: true
+          });
+        } else {
+          lesson.hasAttended = lastLessonAttended;
+          return ElMessage.error({ message: 'Some error has occured. Please try again later.', showClose: true, grouping: true });
         }
-      } else if (response.status === 500) {
-        lesson.attended = lastLessonAttended;
-        return toast.error('Sorry. We have got some server errors. Please try again later.');
-      } else {
-        lesson.attended = lastLessonAttended;
-        return toast.error('Some error has occured. Please try again later.');
+      } catch {
+        lesson.hasAttended = lastLessonAttended;
+        return ElMessage.error({ message: 'Some error has occured. Please try again later.', showClose: true, grouping: true });
       }
     }
 
-    function isDateDisabled(date) {
-      // ! Change the date
-      if (date > new Date() || date < new Date(2024, 0, 29, 0, 0, 0)) {
-        return true;
-      } else {
-        return false;
-      }
+    function isDateDisabled() {
+      // if (date > new Date() || date < new Date(2024, 8, 2, 0, 0, 0)) {
+      // return true;
+      // } else {
+      return false;
+      // }
     }
 
     const isDateUnfilled = (date) => {
       const unmarkedDates = store.getters['Timetable/GET_UNMARKED_DATES'];
       date.setUTCHours(0);
       date.setDate(date.getDate() + 1);
-      if (unmarkedDates.includes(date.toISOString())) {
+      if (unmarkedDates.includes(date.toISOString().split('T')[0])) {
         return 'red-marked-date';
       }
     };

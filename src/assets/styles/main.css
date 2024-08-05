@@ -1,17 +1,28 @@
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Roboto+Mono:wght@300&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Nunito&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@600&family=Poppins&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Zain:wght@200;300;400;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap');
 
 html, body {
-    /* background: #f9f4ef; */
-    background-color: #232946;
-    color: #F4FEF6;
-    font-family: 'Roboto', sans-serif;
+    background-color: #f9f7f6;
+    color: #021627;
+    font-family: 'Josefin Sans', sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
     scroll-behavior: smooth;
 }
 
-.logo-text {
-    font-family: 'Nunito', sans-serif;
+.el-message {
+    font-family: 'Zain', sans-serif;
+    font-weight: 300;
+    font-style: normal;
+    font-size: 22px;
+}
+
+.el-message__content {
+    width: 80vw;
+    font-size: 19px !important;
 }
 
 * {
@@ -22,28 +33,6 @@ html, body {
 }
 
 .container {
-    width: 96vw;
-    margin: 0 2vw;
-}
-
-.site-title {
-    height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #121629;
-    font-size: 27px;
-    text-align: center;
-    font-family: 'Poppins', sans-serif;
-    font-weight: lighter;
-}
-
-.site-title span {
-    font-weight: 600;
-    margin-right: 10px;
-}
-
-.site-title img {
-    margin-right: 10px;
-    height: 40px;
+    width: 92vw;
+    margin: 0 4vw;
 }

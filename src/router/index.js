@@ -7,7 +7,7 @@ const routes = [
     name: 'home',
     component: HomeView,
     meta: {
-      title: 'Home Page - SmartSkip'
+      title: 'Home Page - SkipSmart'
     }
   },
   {
@@ -15,7 +15,7 @@ const routes = [
     name: 'login',
     component: () => import(/* webpackChunkName: "login" */ '../views/LoginView.vue'),
     meta: {
-      title: 'Sign In Page - SmartSkip'
+      title: 'Sign In Page - SkipSmart'
     }
   },
   {
@@ -23,7 +23,7 @@ const routes = [
     name: 'register',
     component: () => import(/* webpackChunkName: "login" */ '../views/RegisterView.vue'),
     meta: {
-      title: 'Sign Up Page - SmartSkip'
+      title: 'Sign Up Page - SkipSmart'
     }
   },
   {
@@ -31,7 +31,7 @@ const routes = [
     name: 'timetable',
     component: () => import(/* webpackChunkName: "timetable" */ '../views/TimetableView.vue'),
     meta: {
-      title: 'Timetable - SmartSkip'
+      title: 'Timetable - SkipSmart'
     }
   },
   {
@@ -39,7 +39,7 @@ const routes = [
     name: 'attendance-statistics',
     component: () => import(/* webpackChunkName: "attendance-statistics" */ '../views/AttendanceStatisticsView.vue'),
     meta: {
-      title: 'Attendance Statistics - SmartSkip'
+      title: 'Attendance Statistics - SkipSmart'
     }
   },
   {
@@ -47,7 +47,7 @@ const routes = [
     name: 'settings',
     component: () => import(/* webpackChunkName: "settings" */ '../views/SettingsView.vue'),
     meta: {
-      title: 'Settings - SmartSkip'
+      title: 'Settings - SkipSmart'
     }
   },
   {
@@ -55,7 +55,7 @@ const routes = [
     name: 'NotFound',
     component: () => import(/* webpackChunkName: "404" */ '@/views/NotFoundView.vue'),
     meta: {
-      title: '404 Page Not Found - SmartSkip'
+      title: '404 Page Not Found - SkipSmart'
     }
   }
 ];

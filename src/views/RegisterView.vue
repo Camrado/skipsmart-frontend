@@ -1,53 +1,152 @@
 <template>
-  <div class="sign-up-background"></div>
-  <RouterLink to="/" class="go-back">
-    <img src="@/assets/images/arrow-left.png" alt="Left Arrow" />
-    <p>Go Back</p>
-  </RouterLink>
-  <div class="sign-up-block">
-    <div class="sign-header">
-      <div class="sign-header-logo">
-        <img src="@/assets/images/logo-transparent.png" alt="Attendance Recorder Logo" />
-        <p class="logo-text">SkipSmart</p>
+  <div class="sign-up-page">
+    <div class="header">
+      <RouterLink to="/">
+        <div class="header-logo">
+          <img src="../assets/images/logo-round-background.png" alt="SkipSmart Logo" />
+          <span>SkipSmart</span>
+        </div>
+      </RouterLink>
+      <div class="header-button">
+        <RouterLink to="/login"><el-button>Log in</el-button></RouterLink>
       </div>
-      <h1>Sign Up</h1>
     </div>
-    <el-form :model="state.form" status-icon :rules="state.formRules" label-position="top" class="sign-form">
-      <el-form-item label="Username (Your Edupage username)" prop="username">
-        <el-input v-model="state.form.username" placeholder="Username" :prefix-icon="User" size="large" clearable />
-      </el-form-item>
-      <el-form-item label="Password (Your Edupage password)" prop="password">
-        <el-input v-model="state.form.password" placeholder="Password" :prefix-icon="Lock" size="large" show-password clearable />
-      </el-form-item>
-      <el-form-item label="Subgroup" prop="group" size="large">
-        <el-select v-model="state.form.group" placeholder="Subgroup Number" default="1">
-          <el-option label="1" value="1"></el-option>
-          <el-option label="2" value="2"></el-option>
-        </el-select>
-      </el-form-item>
-      <!-- <el-form-item label="Term" prop="term" size="large">
-        <el-select v-model="state.form.term" placeholder="Term Number" default="1">
-          <el-option label="1" value="1"></el-option>
-          <el-option label="2" value="2"></el-option>
-        </el-select>
-      </el-form-item> -->
-    </el-form>
-    <el-button type="primary" @click="sumbitSignUpForm()" :loading="state.loadingBtn" id="sign-up-button">Sign Up</el-button>
-    <div class="sign-link">
-      <span>Already have an account?</span>
-      <RouterLink to="/login">Login</RouterLink>
+    <div class="slide" v-if="state.showFirstSlide">
+      <div class="container">
+        <h1>Create your account!</h1>
+
+        <el-form :model="state.form" status-icon :rules="state.formRules" label-position="top">
+          <el-form-item label="First Name" prop="firstName">
+            <el-input v-model="state.form.firstName" placeholder="First name" size="large" clearable />
+          </el-form-item>
+          <el-form-item label="Last Name" prop="lastName">
+            <el-input v-model="state.form.lastName" placeholder="Last name" size="large" clearable />
+          </el-form-item>
+          <el-form-item label="UFAZ Email" prop="email">
+            <el-input v-model="state.form.email" placeholder="UFAZ Email" size="large" clearable />
+          </el-form-item>
+        </el-form>
+
+        <a href="#"><button class="scale-button" @click="showTheSecondSlide">Continue</button></a>
+
+        <div class="other-option">
+          <hr />
+          <p>Already have an account? <RouterLink to="/login">Log In</RouterLink></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide" v-if="state.showSecondSlide">
+      <div class="container">
+        <div class="slide-header">
+          <img src="../assets/images/arrow-left.png" alt="Arrow Left Image" @click="showTheFirstSlide" />
+          <h1>Create your account!</h1>
+        </div>
+
+        <el-form :model="state.form" status-icon :rules="state.formRules" label-position="top">
+          <el-form-item label="Group">
+            <el-select v-model="state.form.groupId" placeholder="Group">
+              <el-option
+                v-for="group in state.groups"
+                v-bind:key="group.id"
+                :label="group.groupName"
+                :value="group.id"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </el-form>
+
+        <a href="#"><button class="scale-button" @click="showTheThirdSlide">Continue</button></a>
+
+        <div class="other-option">
+          <hr />
+          <p>Already have an account? <RouterLink to="/login">Log In</RouterLink></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide" v-if="state.showThirdSlide">
+      <div class="container">
+        <div class="slide-header">
+          <img src="../assets/images/arrow-left.png" alt="Arrow Left Image" @click="showTheSecondSlide" />
+          <h1>Create your account!</h1>
+        </div>
+
+        <el-form :model="state.form" status-icon :rules="state.formRules" label-position="top" v-if="!state.isTheGroupFirstYear">
+          <el-form-item label="Language Subgroup">
+            <el-select v-model="state.form.languageSubgroup" placeholder="Language Subgroup">
+              <el-option label="1" value="1"></el-option>
+              <el-option label="2" value="2"></el-option>
+            </el-select>
+          </el-form-item>
+
+          <el-form-item label="Faculty Subgroup">
+            <el-select v-model="state.form.facultySubgroup" placeholder="Faculty Subgroup">
+              <el-option label="1" value="1"></el-option>
+              <el-option label="2" value="2"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-form>
+
+        <el-form :model="state.form" status-icon :rules="state.formRules" label-position="top" v-if="state.isTheGroupFirstYear">
+          <el-form-item label="Subgroup">
+            <el-select v-model="subgroupForFirstYearStudents" placeholder="Subgroup">
+              <el-option label="1" value="1"></el-option>
+              <el-option label="2" value="2"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-form>
+
+        <a href="#"><button class="scale-button" @click="showTheFourthSlide">Continue</button></a>
+
+        <div class="other-option">
+          <hr />
+          <p>Already have an account? <RouterLink to="/login">Log In</RouterLink></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide" v-if="state.showFourthSlide">
+      <div class="container">
+        <div class="slide-header">
+          <img src="../assets/images/arrow-left.png" alt="Arrow Left Image" @click="showTheThirdSlide" />
+          <h1>Create your account!</h1>
+        </div>
+
+        <el-form :model="state.form" status-icon :rules="state.formRules" label-position="top">
+          <el-form-item label="Password" prop="password">
+            <el-input v-model="state.form.password" placeholder="Password" size="large" clearable type="password" show-password />
+          </el-form-item>
+        </el-form>
+
+        <el-button @click="sumbitSignUpForm" :loading="state.loadingBtn">Sign Up</el-button>
+
+        <div class="other-option">
+          <hr />
+          <p>Already have an account? <RouterLink to="/login">Log In</RouterLink></p>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { isUsernameValid, usernameValidator, isPasswordValid, passwordValidator } from '@/assets/js/validators/userValidators.js';
+import {
+  isFirstNameValid,
+  firstNameValidator,
+  isLastNameValid,
+  lastNameValidator,
+  isPasswordValid,
+  passwordValidator,
+  isEmailValid,
+  ufazEmailValidator
+} from '@/assets/js/validators/userValidators.js';
 import { User, Lock } from '@element-plus/icons-vue';
-import { watch, reactive } from 'vue';
-import { useToast } from 'vue-toastification';
+import { watch, reactive, computed } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import App from '@/App.vue';
+import { ElMessage } from 'element-plus';
 
 export default {
   name: 'RegisterView',
@@ -55,91 +154,207 @@ export default {
   setup() {
     const store = useStore();
     const router = useRouter();
-    const toast = useToast();
     const { appMounted } = App.setup();
 
     const state = reactive({
       form: {
-        username: '',
+        firstName: '',
+        lastName: '',
+        email: '',
         password: '',
-        group: undefined,
-        term: 2
+        groupId: undefined,
+        languageSubgroup: undefined,
+        facultySubgroup: undefined
       },
       formRules: {
-        username: [{ validator: usernameValidator, trigger: 'blur' }],
-        password: [{ validator: passwordValidator, trigger: 'blur' }],
-        group: [{ required: true, message: 'Please select a group number', trigger: 'blur' }],
-        term: [{ required: true, message: 'Please select a term number', trigger: 'blur' }]
+        firstName: [{ validator: firstNameValidator, trigger: 'blur' }],
+        lastName: [{ validator: lastNameValidator, trigger: 'blur' }],
+        email: [{ validator: ufazEmailValidator, trigger: 'blur' }],
+        password: [{ validator: passwordValidator, trigger: 'blur' }]
       },
-      loadingBtn: false
+      loadingBtn: false,
+      showFirstSlide: true,
+      showSecondSlide: false,
+      showThirdSlide: false,
+      showFourthSlide: false,
+      isTheGroupFirstYear: false,
+      groups: []
     });
 
-    watch(appMounted, (appMounted) => {
+    watch(appMounted, async (appMounted) => {
       if (appMounted) {
         if (store.getters['User/GET_IS_SIGNED_IN']) {
-          toast.info("You're already signed in.");
+          ElMessage.info({ message: 'You are already signed in.', showClose: true });
           router.push('/');
+        } else {
+          try {
+            const response = await fetch(store.getters['GET_URL'] + '/groups/all', {
+              method: 'GET'
+            });
+
+            const groups = await response.json();
+
+            if (response.status === 200) {
+              state.groups = groups;
+            } else {
+              ElMessage.error({ message: 'Server Error. Failed to fetch groups. Please try again later.', showClose: true });
+              router.push('/');
+            }
+          } catch {
+            ElMessage.error({ message: 'Server Error. Failed to fetch groups. Please try again later.', showClose: true });
+            router.push('/');
+          }
         }
       }
     });
 
+    function showTheFirstSlide() {
+      state.showFirstSlide = true;
+      state.showSecondSlide = false;
+      state.showThirdSlide = false;
+      state.showFourthSlide = false;
+    }
+
+    function showTheSecondSlide() {
+      if (isFirstNameValid && isLastNameValid && isEmailValid) {
+        state.showFirstSlide = false;
+        state.showSecondSlide = true;
+        state.showThirdSlide = false;
+        state.showFourthSlide = false;
+      } else {
+        ElMessage.warning({ message: 'Fill all the fields correctly!', showClose: true });
+      }
+    }
+
+    const subgroupForFirstYearStudents = computed({
+      get() {
+        return state.form.languageSubgroup;
+      },
+      set(value) {
+        state.form.languageSubgroup = value;
+        state.form.facultySubgroup = value;
+      }
+    });
+
+    function showTheThirdSlide() {
+      if (state.form.groupId) {
+        let firstYearGroupIds = state.groups.slice(0, 5).map((group) => group.id);
+
+        if (firstYearGroupIds.includes(state.form.groupId)) {
+          state.isTheGroupFirstYear = true;
+        } else {
+          state.isTheGroupFirstYear = false;
+        }
+
+        state.showFirstSlide = false;
+        state.showSecondSlide = false;
+        state.showThirdSlide = true;
+        state.showFourthSlide = false;
+      } else {
+        ElMessage.warning({ message: 'Choose a group!', showClose: true });
+      }
+    }
+
+    function showTheFourthSlide() {
+      if (state.form.languageSubgroup && state.form.facultySubgroup) {
+        state.showFirstSlide = false;
+        state.showSecondSlide = false;
+        state.showThirdSlide = false;
+        state.showFourthSlide = true;
+      } else {
+        ElMessage.warning({ message: 'Choose a subgroup!', showClose: true });
+      }
+    }
+
     function sumbitSignUpForm() {
-      if (isUsernameValid && isPasswordValid) {
+      if (
+        isFirstNameValid &&
+        isLastNameValid &&
+        isEmailValid &&
+        isPasswordValid &&
+        state.form.groupId &&
+        state.form.languageSubgroup &&
+        state.form.facultySubgroup
+      ) {
         signUp();
       } else {
-        toast.warning('Fill all the fields correctly!');
+        ElMessage.warning({ message: 'Fill all the fields correctly!', showClose: true });
       }
     }
 
     async function signUp() {
       state.loadingBtn = true;
 
-      state.form.group = Number(state.form.group);
-      state.form.term = Number(state.form.term);
+      state.form.languageSubgroup = Number(state.form.languageSubgroup);
+      state.form.facultySubgroup = Number(state.form.facultySubgroup);
+      state.form.email = state.form.email.toLowerCase().trim();
+      state.form.firstName = state.form.email.trim();
+      state.form.lastName = state.form.email.trim();
 
-      const response = await fetch(store.getters['GET_URL'] + '/auth/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(state.form)
-      });
+      try {
+        const response = await fetch(store.getters['GET_URL'] + '/users/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(state.form)
+        });
 
-      const data = await response.json();
+        const data = await response.json();
 
-      if (response.status === 201) {
-        store.dispatch('User/SET_SIGNED_IN', true);
-        store.dispatch('User/SET_USERNAME', data.student.username);
-        store.dispatch('User/SET_GROUP', data.student.group_number);
-        store.dispatch('User/SET_TERM', data.student.term_number);
-        localStorage.setItem(store.getters['User/GET_JWT_KEY'], data.token);
-        let expireDate = new Date(data.expireDate);
-        expireDate.setDate(expireDate.getDate() - 1);
-        localStorage.setItem(store.getters['User/GET_EXPIRE_DATE_KEY'], expireDate);
+        if (response.status === 200) {
+          store.dispatch('User/SET_SIGNED_IN', true);
+          store.dispatch('User/SET_FIRSTNAME', state.form.firstName);
+          store.dispatch('User/SET_LASTNAME', state.form.lastName);
+          store.dispatch('User/SET_EMAIL', state.form.email);
+          store.dispatch('User/SET_GROUP_ID', state.form.groupId);
+          store.dispatch('User/SET_LANGUAGE_SUBGROUP', state.form.languageSubgroup);
+          store.dispatch('User/SET_FACULTY_SUBGROUP', state.form.facultySubgroup);
 
+          localStorage.setItem(store.getters['User/GET_JWT_LKEY'], data.accessToken);
+
+          let expirationDate = new Date(data.expirationDate);
+          expirationDate.setDate(expirationDate.getDate() - 1);
+          localStorage.setItem(store.getters['User/GET_EXPIRATION_DATE_KEY'], expirationDate);
+
+          state.loadingBtn = false;
+          ElMessage.success({ message: 'You have successfully signed up!', showClose: true });
+          router.push('/');
+        } else if (response.status === 400 && data.code === 'User.EmailIsAlreadyTaken') {
+          state.loadingBtn = false;
+          return ElMessage.error({ message: `${data.name}`, showClose: true });
+        } else if (response.status === 500) {
+          state.loadingBtn = false;
+          router.push('/');
+          return ElMessage.error({ message: 'Sorry. We have got some server errors. Please try again later.', showClose: true });
+        } else {
+          state.loadingBtn = false;
+          router.push('/');
+          return ElMessage.error({ message: 'Some error has occured. Please try again later.', showClose: true });
+        }
+      } catch (error) {
         state.loadingBtn = false;
-        toast.success(data.msg);
         router.push('/');
-      } else if (response.status === 500) {
-        state.loadingBtn = false;
-        return toast.error('Sorry. We have got some server errors. Please try again later.');
-      } else if ((response.status === 401 || response.status === 400) && data.msg) {
-        state.loadingBtn = false;
-        return toast.error(data.msg);
-      } else if (response.status === 401) {
-        state.loadingBtn = false;
-        return toast.error('Failed to register.');
-      } else {
-        state.loadingBtn = false;
-        return toast.error('Some error has occured. Please try again later.');
+        return ElMessage.error({ message: 'Some error has occured. Please try again later.', showClose: true });
       }
     }
 
-    return { state, sumbitSignUpForm, User, Lock };
+    return {
+      state,
+      sumbitSignUpForm,
+      User,
+      Lock,
+      showTheSecondSlide,
+      showTheFirstSlide,
+      showTheThirdSlide,
+      showTheFourthSlide,
+      subgroupForFirstYearStudents
+    };
   }
 };
 </script>
 
 <style lang="scss">
 @import '@/assets/styles/register.scss';
+@import '@/assets/styles/buttons.scss';
 </style>

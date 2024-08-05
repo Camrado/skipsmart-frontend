@@ -3,29 +3,37 @@ export const User = {
 
   state: {
     jwtKeyInLStorage: 'fnw3m43mn2fu52n3nxi4mqp23z3ifn4z44gh',
-    expireDateKey: 'expireDate',
-    group: undefined,
+    expirationDateKey: 'expirationDate',
+    groupId: undefined,
     isSignedIn: undefined,
-    username: '',
-    term: undefined,
-    semester: undefined
+    firstName: '',
+    lastName: '',
+    email: '',
+    languageSubgroup: undefined,
+    facultySubgroup: undefined
   },
 
   mutations: {
     SET_SIGNED_IN(state, content) {
       state.isSignedIn = content;
     },
-    SET_USERNAME(state, content) {
-      state.username = content;
+    SET_FIRSTNAME(state, content) {
+      state.firstName = content;
     },
-    SET_GROUP(state, content) {
-      state.group = content;
+    SET_LASTNAME(state, content) {
+      state.lastName = content;
     },
-    SET_TERM(state, content) {
-      state.term = content;
+    SET_EMAIL(state, content) {
+      state.email = content;
     },
-    SET_SEMESTER(state, content) {
-      state.semester = content;
+    SET_GROUP_ID(state, content) {
+      state.groupId = content;
+    },
+    SET_LANGUAGE_SUBGROUP(state, content) {
+      state.languageSubgroup = content;
+    },
+    SET_FACULTY_SUBGROUP(state, content) {
+      state.facultySubgroup = content;
     }
   },
 
@@ -33,27 +41,36 @@ export const User = {
     SET_SIGNED_IN({ commit }, isSignedIn) {
       commit('SET_SIGNED_IN', isSignedIn);
     },
-    SET_USERNAME({ commit }, username) {
-      commit('SET_USERNAME', username);
+    SET_FIRSTNAME({ commit }, firstName) {
+      commit('SET_FIRSTNAME', firstName);
     },
-    SET_GROUP({ commit }, group) {
-      commit('SET_GROUP', group);
+    SET_LASTNAME({ commit }, lastName) {
+      commit('SET_LASTNAME', lastName);
     },
-    SET_TERM({ commit }, term) {
-      commit('SET_TERM', term);
+    SET_EMAIL({ commit }, email) {
+      commit('SET_EMAIL', email);
     },
-    SET_SEMESTER({ commit }, semester) {
-      commit('SET_SEMESTER', semester);
+    SET_GROUP_ID({ commit }, groupId) {
+      commit('SET_GROUP_ID', groupId);
+    },
+    SET_LANGUAGE_SUBGROUP({ commit }, subgroup) {
+      commit('SET_LANGUAGE_SUBGROUP', subgroup);
+    },
+    SET_FACULTY_SUBGROUP({ commit }, subgroup) {
+      commit('SET_FACULTY_SUBGROUP', subgroup);
     }
   },
 
   getters: {
     GET_IS_SIGNED_IN: (state) => state.isSignedIn,
-    GET_USERNAME: (state) => state.username,
-    GET_JWT_KEY: (state) => state.jwtKeyInLStorage,
-    GET_GROUP: (state) => state.group,
-    GET_TERM: (state) => state.term,
-    GET_EXPIRE_DATE_KEY: (state) => state.expireDateKey,
-    GET_SEMESTER: (state) => state.semester
+    GET_FIRSTNAME: (state) => state.firstName,
+    GET_LASTNAME: (state) => state.lastName,
+    GET_EMAIL: (state) => state.email,
+    GET_GROUP_ID: (state) => state.groupId,
+    GET_LANGUAGE_SUBGROUP: (state) => state.languageSubgroup,
+    GET_FACULTY_SUBGROUP: (state) => state.facultySubgroup,
+
+    GET_JWT_LKEY: (state) => state.jwtKeyInLStorage,
+    GET_EXPIRATION_DATE_KEY: (state) => state.expirationDateKey
   }
 };

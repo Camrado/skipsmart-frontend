@@ -1,6 +1,6 @@
 <template>
   <div class="preloader">
-    <img src="@/assets/images/loading.gif" alt="Loading GIF" />
+    <img src="@/assets/images/loading.svg" alt="Loading GIF" />
   </div>
 </template>
 
@@ -12,20 +12,23 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '@/assets/styles/variables.scss';
+
 .preloader {
   width: 100vw;
   height: 100vh;
-  z-index: 1000000;
+  z-index: 10000000000000000;
   position: fixed;
   top: 0;
   left: 0;
-  background: #232946;
+  background: $preloader-color;
   display: flex;
   justify-content: center;
   align-items: center;
 
   img {
-    width: 30vw;
+    margin-top: -10vh;
+    width: 50vw;
   }
 }
 </style>

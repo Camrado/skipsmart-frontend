@@ -1,5 +1,3 @@
-// import { useToast } from 'vue-toastification';
-
 export const Statistics = {
   namespaced: true,
 
@@ -33,6 +31,9 @@ export const Statistics = {
     SET_SUBJECTS_LIST({ commit }, subjectsList) {
       commit('SET_SUBJECTS_LIST', subjectsList);
     },
+    CLEAR_SUBJECTS_LIST({ commit }) {
+      commit('SET_SUBJECTS_LIST', []);
+    },
     SET_CURRENT_SUBJECT({ commit }, currentSubject) {
       commit('SET_CURRENT_SUBJECT', currentSubject);
     },
@@ -44,6 +45,10 @@ export const Statistics = {
     },
     SET_STATISTICS_TABLE({ commit }, statisticsTable) {
       commit('SET_STATISTICS_TABLE', statisticsTable);
+    },
+    CLEAR_STATISTICS({ commit }) {
+      commit('SET_STATISTICS', {});
+      commit('SET_STATISTICS_TABLE', []);
     }
   },
 

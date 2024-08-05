@@ -1,4 +1,4 @@
-// import { useToast } from 'vue-toastification';
+import { ElMessage } from 'element-plus';
 
 export const Timetable = {
   namespaced: true,
@@ -46,12 +46,13 @@ export const Timetable = {
     SET_TIMETABLE({ commit }, timetable) {
       commit('SET_TIMETABLE', timetable);
     },
+    CLEAR_TIMETABLE({ commit }) {
+      commit('SET_TIMETABLE', { lessons: [] });
+    },
 
     async DOWNLOAD_UNMARKED_DATES({ rootGetters, commit }) {
-      // const toast = useToast();
-
-      const token = localStorage.getItem(rootGetters['User/GET_JWT_KEY']);
-      const response = await fetch(rootGetters['GET_URL'] + '/attendance/unmarked-dates', {
+      const token = localStorage.getItem(rootGetters['User/GET_JWT_LKEY']);
+      const response = await fetch(rootGetters['GET_URL'] + '/attendances/unmarked-dates', {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${token}`
@@ -59,11 +60,11 @@ export const Timetable = {
       });
 
       if (response.status === 200) {
-        const data = await response.json();
-        commit('SET_UNMARKED_DATES', data.unmarkedDates);
+        const unmarkedDates = await response.json();
+        commit('SET_UNMARKED_DATES', unmarkedDates);
         commit('SET_ARE_UNMARKED_DATES_LOADED', true);
       } else {
-        // toast.error("Couldn't retrieve unmarked dates. Please try again later.");
+        ElMessage.error({ message: "Couldn't retrieve unmarked dates. Please try again later.", showClose: true });
       }
     }
   },

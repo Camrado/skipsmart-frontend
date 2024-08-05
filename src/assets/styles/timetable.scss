@@ -1,5 +1,52 @@
+@import 'variables.scss';
+
 .timetable {
   min-height: 100vh;
+  margin-bottom: 100px;
+  // background-image: url('../assets/images/cool-background.png');
+  // background-repeat: no-repeat;
+  // background-size: auto;
+
+  .header {
+    position: relative;
+    z-index: 100;
+    top: 0;
+    left: 0;
+    background-color: $background-color;
+    width: 100%;
+    height: 70px;
+    padding: 3vw;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    &-logo {
+      width: 50%;
+      display: flex;
+      align-items: center;
+
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+
+      img {
+        width: 35px;
+        margin-right: 10px;
+      }
+
+      span {
+        font-family: 'Comfortaa', sans-serif;
+        font-optical-sizing: auto;
+        font-weight: 700;
+        font-style: normal;
+        font-size: 22px;
+        color: $text-color;
+      }
+    }
+  }
 
   .el-button {
     -webkit-tap-highlight-color: transparent;
@@ -11,131 +58,183 @@
     user-select: none;
   }
 
+  .timetable-row-container {
+    position: relative;
+    width: 100%;
+    height: 110px;
+    margin-bottom: 15px;
+  }
+
   .timetable-row {
+    position: relative;
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between;
     position: relative;
-    background-color: #121629;
-    border-radius: 20px;
-    padding: 0 12px;
-    height: 11vh;
-    margin-bottom: 10px;
+    background-color: $timetable-background-color;
+    border-radius: 15px;
+    border-top-left-radius: 0px;
     color: #fffffe;
 
     &-number {
-      width: 5vw;
+      position: absolute;
+      top: 0;
+      left: 0;
+      padding: 5px 15px 5px 8px;
+      background-color: $timetable-period-color;
+      border: 1px solid $timetable-period-color;
+      border-bottom-right-radius: 100%;
       text-align: center;
+      font-family: 'Comfortaa', sans-serif;
+      font-optical-sizing: auto;
+      font-weight: 700;
+      font-style: normal;
       font-size: 20px;
-      font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-      color: #b8c1ec;
+      color: $text-color;
     }
 
     &-subject {
-      width: calc(85vw - 116px);
-      font-size: 17px;
-      font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+      width: 100%;
+      padding-top: 10px;
+      padding-left: 20px;
+      font-family: 'Zain', sans-serif;
+      font-weight: 500;
+      font-style: normal;
+      font-size: 23px;
+      color: $primary-color;
     }
 
     &-group {
       position: absolute;
-      right: calc(6vw + 104px);
-      bottom: 5px;
-      font-weight: lighter;
-      font-family: 'Courier New', Courier, monospace;
+      right: 70px;
+      bottom: 0;
+      font-family: 'Zain', sans-serif;
+      font-weight: 500;
       font-style: italic;
-      color: #b8c1ec;
+      font-size: 22px;
+      color: $timetable-group-color;
     }
 
     &-buttons {
-      width: 92px;
+      position: relative;
+      width: 70px;
+      height: 100%;
+
+      .el-button:nth-child(1) {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 50px;
+        height: 50%;
+        background-color: $timetable-check-sign-color;
+        color: $primary-color;
+        border: none;
+        border-radius: 0;
+        border-top-right-radius: 13px;
+
+        .el-icon {
+          font-size: 17px;
+        }
+      }
+
+      .el-button:nth-child(2) {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 50px;
+        height: 50%;
+        background-color: $timetable-cross-sign-color;
+        color: $primary-color;
+        border: none;
+        border-radius: 0;
+        border-bottom-right-radius: 13px;
+
+        .el-icon {
+          font-size: 17px;
+        }
+      }
     }
   }
 
   .attended-lesson {
-    border: 1px solid #66c23a;
+    position: absolute;
+    width: 94%;
+    right: 0;
+
+    &::before {
+      transition: all 0.5s;
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -6%;
+      width: 4%;
+      height: 100%;
+      border-radius: 50px;
+      background-color: $timetable-attended-color;
+    }
   }
 
   .skipped-lesson {
-    border: 1px solid #f89898;
-  }
+    position: absolute;
+    width: 94%;
+    right: 0;
 
-  .upload-button {
-    background-color: #b8c1ec !important;
-    border-color: #b8c1ec !important;
-    color: #232946;
-    margin-top: 10px;
-    width: 100%;
-    height: 6vh;
-    font-size: 18px;
-    font-weight: bold;
-
-    &.is-disabled {
-      background-color: #d7dcf1 !important;
-      border-color: #d7dcf1 !important;
-      color: #8792ca;
+    &::before {
+      content: '';
+      transition: all 0.5s;
+      border-radius: 50px;
+      position: absolute;
+      top: 0;
+      left: -6%;
+      width: 4%;
+      height: 100%;
+      background-color: $timetable-skipped-color;
     }
   }
 
   .timetable-date-container {
-    padding: 15px 0;
+    margin: 20px 0 35px 0;
     width: 100%;
     text-align: center;
-    // background-color: #121629;
 
     .el-input {
-      height: 35px;
+      width: 100%;
+      height: 100%;
+      background-color: $timetable-date-color;
+      border-radius: 10px;
+      border-top-left-radius: 0px;
+      border-bottom-right-radius: 0px;
+
       &__wrapper {
+        padding: 8px 0;
         background: none;
-        border-radius: 20px;
-        box-shadow: 0 0 0 2px #fffffe inset;
+        border-radius: 10px;
+        border-top-left-radius: 0px;
+        border-bottom-right-radius: 0px;
+        // box-shadow: 0 0 0 2px $timetable-group-color inset;
 
         &.is-focus {
-          box-shadow: 0 0 0 2px #b8c1ec inset;
+          // box-shadow: 0 0 0 2px $secondary-color inset;
         }
       }
 
       &__prefix {
-        margin-left: 10px;
+        position: absolute;
+        left: 10%;
+        color: $background-color;
       }
 
       &__inner {
         text-align: center;
-        font-size: 18px;
-        font-weight: bold;
-        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-        color: #fffffe;
+        font-family: 'Zain', sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 22px;
+        color: $background-color;
       }
     }
   }
-
-  .timetable-date {
-    font-size: 24px;
-    font-weight: bold;
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    color: #b8c1ec;
-  }
-
-  // .cell {
-  //   height: 30px;
-  //   padding: 3px 0;
-  //   box-sizing: border-box;
-  // }
-  // .cell .text {
-  //   width: 24px;
-  //   height: 24px;
-  //   display: block;
-  //   margin: 0 auto;
-  //   line-height: 24px;
-  //   position: absolute;
-  //   left: 50%;
-  //   transform: translateX(-50%);
-  //   border-radius: 50%;
-  // }
-  // .cell.current .text {
-  //   background: #626aef;
-  //   color: #fff;
-  // }
 }
 
 .red-marked-date {
@@ -145,10 +244,10 @@
     position: absolute;
     content: '';
     border-radius: 50%;
-    width: 6px;
-    height: 6px;
+    width: 5px;
+    height: 5px;
     background-color: red;
     bottom: 5%;
-    right: calc(50% - 3px);
+    right: calc(50% - 2.5px);
   }
 }

@@ -1,14 +1,53 @@
-let isUsernameValid = false;
+let isFirstNameValid = false;
 
-function usernameValidator(rule, value, callback) {
+function firstNameValidator(rule, value, callback) {
   if (!value) {
-    isUsernameValid = false;
-    callback(new Error('Username field is required'));
+    isFirstNameValid = false;
+    callback(new Error('First name field is required'));
   } else if (value.includes('@')) {
-    isUsernameValid = false;
-    callback(new Error('Please use the Username not the Email'));
+    isFirstNameValid = false;
+    callback(new Error('Please fill your fist name not the email'));
+  } else if (value.length < 3) {
+    isFirstNameValid = false;
+    callback(new Error('First name must be at least 3 characters'));
   } else {
-    isUsernameValid = true;
+    isFirstNameValid = true;
+    callback();
+  }
+}
+
+let isLastNameValid = false;
+
+function lastNameValidator(rule, value, callback) {
+  if (!value) {
+    isLastNameValid = false;
+    callback(new Error('Last name field is required'));
+  } else if (value.includes('@')) {
+    isLastNameValid = false;
+    callback(new Error('Please fill your last name not the email'));
+  } else if (value.length < 5) {
+    isLastNameValid = false;
+    callback(new Error('Last name must be at least 5 characters'));
+  } else {
+    isLastNameValid = true;
+    callback();
+  }
+}
+
+let isEmailValid = false;
+
+function ufazEmailValidator(rule, value, callback) {
+  if (!value) {
+    isEmailValid = false;
+    callback(new Error('Email field is required'));
+  } else if (!value.endsWith('@ufaz.az')) {
+    isEmailValid = false;
+    callback(new Error('Please provide valid ufaz email with @ufaz.az'));
+  } else if (value.length < 12) {
+    isEmailValid = false;
+    callback(new Error('Email must be at least 12 characters'));
+  } else {
+    isEmailValid = true;
     callback();
   }
 }
@@ -19,10 +58,22 @@ function passwordValidator(rule, value, callback) {
   if (!value) {
     isPasswordValid = false;
     callback(new Error('Password field is required'));
+  } else if (value.length < 8) {
+    isEmailValid = false;
+    callback(new Error('Password must be at least 8 characters'));
   } else {
     isPasswordValid = true;
     callback();
   }
 }
 
-export { isUsernameValid, usernameValidator, isPasswordValid, passwordValidator };
+export {
+  isFirstNameValid,
+  isLastNameValid,
+  firstNameValidator,
+  lastNameValidator,
+  isPasswordValid,
+  passwordValidator,
+  ufazEmailValidator,
+  isEmailValid
+};

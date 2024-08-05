@@ -1,38 +1,49 @@
 <template>
-  <div class="sign-in-background"></div>
-  <RouterLink to="/" class="go-back">
-    <img src="@/assets/images/arrow-left.png" alt="Left Arrow" />
-    <p>Go Back</p>
-  </RouterLink>
-  <div class="sign-in-block">
-    <div class="sign-header">
-      <img src="@/assets/images/logo-transparent.png" alt="Attendance Recorder Logo" />
-      <h1 class="logo-text">SkipSmart</h1>
+  <div class="login-page">
+    <div class="header">
+      <RouterLink to="/">
+        <div class="header-logo">
+          <img src="../assets/images/logo-round-background.png" alt="SkipSmart Logo" />
+          <span>SkipSmart</span>
+        </div>
+      </RouterLink>
+      <div class="header-button">
+        <RouterLink to="/register"><el-button>Sign Up</el-button></RouterLink>
+      </div>
     </div>
-    <el-form :model="state.form" status-icon :rules="state.formRules" label-position="top" class="sign-form">
-      <el-form-item label="Username (Your Edupage username)" prop="username">
-        <el-input v-model="state.form.username" placeholder="Username" :prefix-icon="User" size="large" clearable />
-      </el-form-item>
-      <el-form-item label="Password (Your Edupage password)" prop="password">
-        <el-input v-model="state.form.password" placeholder="Password" :prefix-icon="Lock" size="large" show-password clearable />
-      </el-form-item>
-    </el-form>
-    <el-button type="primary" @click="sumbitSignInForm()" :loading="state.loadingBtn" id="sign-in-button">Sign In</el-button>
-    <div class="sign-link">
-      <span>Don't have an account?</span>
-      <RouterLink to="/register">Sign Up Now</RouterLink>
+
+    <div class="slide">
+      <div class="container">
+        <h1>Welcome Back!</h1>
+
+        <el-form :model="state.form" status-icon :rules="state.formRules" label-position="top">
+          <el-form-item label="Email" prop="email">
+            <el-input v-model="state.form.email" placeholder="Email" size="large" clearable />
+          </el-form-item>
+          <el-form-item label="Password" prop="password">
+            <el-input v-model="state.form.password" placeholder="Password" size="large" clearable type="password" show-password />
+          </el-form-item>
+        </el-form>
+
+        <el-button @click="sumbitSignInForm" :loading="state.loadingBtn">Log In</el-button>
+
+        <div class="other-option">
+          <hr />
+          <p>Still haven't made an account? <RouterLink to="/register">Sign Up</RouterLink></p>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { isUsernameValid, usernameValidator, isPasswordValid, passwordValidator } from '@/assets/js/validators/userValidators.js';
+import { isEmailValid, isPasswordValid, passwordValidator, ufazEmailValidator } from '@/assets/js/validators/userValidators.js';
 import { User, Lock } from '@element-plus/icons-vue';
 import { reactive, watch } from 'vue';
-import { useToast } from 'vue-toastification';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import App from '@/App.vue';
+import { ElMessage } from 'element-plus';
 
 export default {
   name: 'LoginView',
@@ -40,16 +51,15 @@ export default {
   setup() {
     const store = useStore();
     const router = useRouter();
-    const toast = useToast();
     const { appMounted } = App.setup();
 
     const state = reactive({
       form: {
-        username: '',
+        email: '',
         password: ''
       },
       formRules: {
-        username: [{ validator: usernameValidator, trigger: 'blur' }],
+        email: [{ validator: ufazEmailValidator, trigger: 'blur' }],
         password: [{ validator: passwordValidator, trigger: 'blur' }]
       },
       loadingBtn: false
@@ -58,55 +68,83 @@ export default {
     watch(appMounted, (appMounted) => {
       if (appMounted) {
         if (store.getters['User/GET_IS_SIGNED_IN']) {
-          toast.info("You're already signed in.");
+          ElMessage.info({ message: 'You are already signed in.', showClose: true });
           router.push('/');
         }
       }
     });
 
     function sumbitSignInForm() {
-      if (isUsernameValid && isPasswordValid) {
+      if (isEmailValid && isPasswordValid) {
         signIn();
       } else {
-        toast.warning('Fill all the fields correctly!');
+        ElMessage.warning({ message: 'Fill all the fields correctly!', showClose: true });
       }
     }
 
     async function signIn() {
       state.loadingBtn = true;
 
-      const response = await fetch(store.getters['GET_URL'] + '/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(state.form)
-      });
+      state.form.email = state.form.email.toLowerCase().trim();
 
-      if (response.status === 200) {
-        const data = await response.json();
+      try {
+        const loginResponse = await fetch(store.getters['GET_URL'] + '/users/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(state.form)
+        });
 
-        store.dispatch('User/SET_SIGNED_IN', true);
-        store.dispatch('User/SET_USERNAME', data.student.username);
-        store.dispatch('User/SET_GROUP', data.student.group_number);
-        store.dispatch('User/SET_TERM', data.student.term_number);
-        localStorage.setItem(store.getters['User/GET_JWT_KEY'], data.token);
-        let expireDate = new Date(data.expireDate);
-        expireDate.setDate(expireDate.getDate() - 1);
-        localStorage.setItem(store.getters['User/GET_EXPIRE_DATE_KEY'], expireDate);
+        if (loginResponse.status === 200) {
+          const loginData = await loginResponse.json();
 
+          const getMeResponse = await fetch(store.getters['GET_URL'] + '/users/me', {
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${loginData.accessToken}`
+            }
+          });
+
+          if (getMeResponse.status === 200) {
+            const userData = await getMeResponse.json();
+
+            store.dispatch('User/SET_SIGNED_IN', true);
+            store.dispatch('User/SET_FIRSTNAME', userData.firstName);
+            store.dispatch('User/SET_LASTNAME', userData.lastName);
+            store.dispatch('User/SET_EMAIL', userData.email);
+            store.dispatch('User/SET_GROUP_ID', userData.groupId);
+            store.dispatch('User/SET_LANGUAGE_SUBGROUP', userData.languageSubgroup);
+            store.dispatch('User/SET_FACULTY_SUBGROUP', userData.facultySubgroup);
+
+            localStorage.setItem(store.getters['User/GET_JWT_LKEY'], loginData.accessToken);
+            let expirationDate = new Date(loginData.expirationDate);
+            expirationDate.setDate(expirationDate.getDate() - 1);
+            localStorage.setItem(store.getters['User/GET_EXPIRATION_DATE_KEY'], expirationDate);
+
+            state.loadingBtn = false;
+            ElMessage.success({ message: 'You have successfully signed in!', showClose: true });
+            router.push('/');
+          } else {
+            state.loadingBtn = false;
+            router.push('/');
+            return ElMessage.error({ message: 'Some error has occured. Please try again later.', showClose: true });
+          }
+        } else if (loginResponse.status === 500) {
+          state.loadingBtn = false;
+          router.push('/');
+          return ElMessage.error({ message: 'Sorry. We have got some server errors. Please try again later.', showClose: true });
+        } else if (loginResponse.status === 401) {
+          state.loadingBtn = false;
+          return ElMessage.error({ message: 'The provided credentials are invalid.', showClose: true });
+        } else {
+          state.loadingBtn = false;
+          return ElMessage.error({ message: 'Some error has occured. Please try again later.', showClose: true });
+        }
+      } catch {
         state.loadingBtn = false;
-        toast.success(data.msg);
         router.push('/');
-      } else if (response.status === 500) {
-        state.loadingBtn = false;
-        return toast.error('Sorry. We have got some server errors. Please try again later.');
-      } else if (response.status === 401) {
-        state.loadingBtn = false;
-        return toast.error('Password or Username is not correct.');
-      } else {
-        state.loadingBtn = false;
-        return toast.error('Some error has occured. Please try again later.');
+        return ElMessage.error({ message: 'Some error has occured. Please try again later.', showClose: true });
       }
     }
 

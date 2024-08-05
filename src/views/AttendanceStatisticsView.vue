@@ -1,56 +1,62 @@
 <template>
-  <h1 class="site-title">
-    <img src="../assets/images/logo-transparent.png" /><span class="logo-text">SkipSmart</span> - Statistics
-  </h1>
-
-  <div class="container statistics">
-    <el-select v-model="selectedSubject" placeholder="Select the subject" size="large">
-      <el-option v-for="subject in state.subjects" :key="subject[0]" :label="subject[1]" :value="subject[0]" />
-    </el-select>
-
-    <div v-loading="state.loadingData">
-      <div class="statistics-pie-charts">
-        <canvas id="pieChart1"></canvas>
-        <canvas id="pieChart2"></canvas>
+  <div class="statistics-page">
+    <div class="header">
+      <div class="header-logo">
+        <img src="../assets/images/logo-round-background.png" alt="SkipSmart Logo" />
+        <span>SkipSmart</span>
       </div>
+      <div class="header-button"></div>
+    </div>
 
-      <div class="statistics-progress-bars">
-        <div class="statistics-progress-bars-one">
-          <el-progress :text-inside="true" :stroke-width="28" :percentage="+state.attendedProgressBar" />
-          <el-popover
-            placement="bottom-start"
-            title="Completed Lessons"
-            :width="200"
-            trigger="hover"
-            content="It displays the proportion of completed lessons, considering both attended and skipped, in relation to the total number of lessons."
-          >
-            <template #reference>
-              <el-button circle :icon="InfoFilled" type="primary"></el-button>
-            </template>
-          </el-popover>
+    <div class="container statistics" v-loading="state.loadingData">
+      <el-select v-model="selectedSubject" placeholder="Select the subject" size="large">
+        <el-option v-for="subject in state.subjects" :key="subject.id" :label="subject.courseName" :value="subject.id" />
+      </el-select>
+
+      <div>
+        <div class="statistics-pie-charts">
+          <canvas id="pieChart1"></canvas>
+          <canvas id="pieChart2"></canvas>
         </div>
 
-        <div class="statistics-progress-bars-two">
-          <el-progress :text-inside="true" :stroke-width="28" :percentage="+state.skippedProgressBar" />
-          <el-popover
-            placement="bottom-start"
-            title="Used Skips"
-            :width="200"
-            trigger="hover"
-            content="It shows the percentage of lessons that have been skipped in comparison to the total number of lessons that are skippable."
-          >
-            <template #reference>
-              <el-button circle :icon="InfoFilled" type="primary"></el-button>
-            </template>
-          </el-popover>
-        </div>
-      </div>
+        <div class="statistics-progress-bars">
+          <div class="statistics-progress-bars-one">
+            <el-progress :text-inside="true" :stroke-width="28" :percentage="+state.attendedProgressBar" />
+            <el-popover
+              placement="bottom-start"
+              title="Completed Lessons"
+              :width="200"
+              trigger="hover"
+              content="It displays the proportion of completed lessons, considering both attended and skipped, in relation to the total number of lessons."
+            >
+              <template #reference>
+                <el-button circle :icon="InfoFilled" type="primary"></el-button>
+              </template>
+            </el-popover>
+          </div>
 
-      <div class="statistics-table">
-        <el-table :data="state.statisticsTable">
-          <el-table-column prop="type" />
-          <el-table-column prop="value" width="70" />
-        </el-table>
+          <div class="statistics-progress-bars-two">
+            <el-progress :text-inside="true" :stroke-width="28" :percentage="+state.skippedProgressBar" />
+            <el-popover
+              placement="bottom-start"
+              title="Used Skips"
+              :width="200"
+              trigger="hover"
+              content="It shows the percentage of lessons that have been skipped in comparison to the total number of lessons that are skippable."
+            >
+              <template #reference>
+                <el-button circle :icon="InfoFilled" type="primary"></el-button>
+              </template>
+            </el-popover>
+          </div>
+        </div>
+
+        <div class="statistics-table">
+          <el-table :data="state.statisticsTable">
+            <el-table-column prop="type" />
+            <el-table-column prop="value" width="70" />
+          </el-table>
+        </div>
       </div>
     </div>
   </div>
@@ -58,11 +64,11 @@
 
 <script>
 import { watch, reactive, ref, onMounted } from 'vue';
-import { useToast } from 'vue-toastification';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import Chart from 'chart.js/auto';
 import { InfoFilled } from '@element-plus/icons-vue';
+import { ElMessage, ElMessageBox } from 'element-plus';
 import App from '@/App.vue';
 
 export default {
@@ -71,7 +77,6 @@ export default {
   setup() {
     const store = useStore();
     const router = useRouter();
-    const toast = useToast();
     const { appMounted } = App.setup();
 
     const selectedSubject = ref('');
@@ -87,7 +92,7 @@ export default {
     watch(appMounted, async (appMounted) => {
       if (appMounted) {
         if (!store.getters['User/GET_IS_SIGNED_IN']) {
-          toast.info('You need to be signed in to access this page.');
+          ElMessage.info({ message: 'You need to be signed in to access this page.', showClose: true });
           router.push('/');
           state.loadingData = false;
         } else {
@@ -102,19 +107,27 @@ export default {
           }
 
           if (store.getters['Timetable/GET_UNMARKED_DATES'].length !== 0) {
-            toast.warning(
-              'Complete all unmarked dates up to now (they are marked red in calendar) to proceed to statistics page.'
+            ElMessageBox.alert(
+              `<p style="margin-bottom: 10px">You need to mark all the dates before accessing the statistics page.
+                All unmarked dates are highlighted with <span style="color: red; font-style: italic;">red color</span> in calendar.</p>
+                <p><b>Unmarked dates:</b> ${store.getters['Timetable/GET_UNMARKED_DATES'].join(', ')}</p>`,
+              'How to access statistics?',
+              {
+                confirmButtonText: 'OK',
+                dangerouslyUseHTMLString: true
+              }
             );
+
             router.push('/timetable');
             state.loadingData = false;
           } else {
-            downloadSubjects();
+            await downloadSubjects();
           }
         }
       }
     });
 
-    onMounted(() => {
+    onMounted(async () => {
       // Load subjects list from VueX if there is one
       if (store.getters['Statistics/GET_SUBJECTS_LIST'].length !== 0) {
         state.subjects = store.getters['Statistics/GET_SUBJECTS_LIST'];
@@ -130,13 +143,21 @@ export default {
         state.statistics = store.getters['Statistics/GET_STATISTICS'];
 
         state.attendedProgressBar = (
-          ((state.statistics.attendedLessons + state.statistics.skippedLessons) / state.statistics.totalLessons) *
+          ((state.statistics.attendedLessonsNumber + state.statistics.skippedLessonsNumber) /
+            state.statistics.totalLessonsNumber) *
           100
         ).toFixed(1);
         state.skippedProgressBar = (
-          (state.statistics.skippedLessons / (state.statistics.skippedLessons + state.statistics.remainingSkips)) *
+          (state.statistics.skippedLessonsNumber /
+            (state.statistics.skippedLessonsNumber + state.statistics.remainingSkipsNumber)) *
           100
         ).toFixed(1);
+      } else {
+        if (store.getters['Statistics/GET_SUBJECTS_LIST'].length === 0) {
+          await downloadSubjects();
+        }
+        await getAttendanceStatistics();
+        insertDataToChart();
       }
     });
 
@@ -148,7 +169,7 @@ export default {
         }
 
         store.dispatch('Statistics/SET_CURRENT_SUBJECT', newSubject);
-        await getAttendanceStatus();
+        await getAttendanceStatistics();
         insertDataToChart();
       }
     });
@@ -156,76 +177,87 @@ export default {
     async function downloadSubjects() {
       if (store.getters['Statistics/GET_SUBJECTS_LIST'].length !== 0) return;
 
-      const token = localStorage.getItem(store.getters['User/GET_JWT_KEY']);
+      const token = localStorage.getItem(store.getters['User/GET_JWT_LKEY']);
 
-      const response = await fetch(store.getters['GET_URL'] + '/attendance/subjects', {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${token}`
+      try {
+        const response = await fetch(store.getters['GET_URL'] + '/courses/all', {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        if (response.status === 200) {
+          const data = await response.json();
+          state.subjects = data;
+          store.dispatch('Statistics/SET_SUBJECTS_LIST', state.subjects);
+          store.dispatch('Statistics/SET_CURRENT_SUBJECT', state.subjects[0].id);
+          selectedSubject.value = state.subjects[0].id;
+
+          await getAttendanceStatistics();
+          insertDataToChart();
+        } else {
+          return ElMessage.error({ message: 'Some error has occured. Please try again later.', grouping: true, showClose: true });
         }
-      });
-
-      if (response.status === 200) {
-        const data = await response.json();
-        state.subjects = data.subjects;
-        store.dispatch('Statistics/SET_SUBJECTS_LIST', state.subjects);
-        store.dispatch('Statistics/SET_CURRENT_SUBJECT', state.subjects[0][0]);
-        selectedSubject.value = state.subjects[0][0];
-
-        await getAttendanceStatus();
-        insertDataToChart();
-      } else {
-        return toast.error('Some error has occured. Please try again later.');
+      } catch {
+        return ElMessage.error({ message: 'Some error has occured. Please try again later.', grouping: true, showClose: true });
       }
     }
 
-    async function getAttendanceStatus() {
+    async function getAttendanceStatistics() {
       state.loadingData = true;
 
-      const token = localStorage.getItem(store.getters['User/GET_JWT_KEY']);
+      const token = localStorage.getItem(store.getters['User/GET_JWT_LKEY']);
 
-      const response = await fetch(store.getters['GET_URL'] + `/attendance/status/${selectedSubject.value}`, {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${token}`
+      try {
+        const response = await fetch(store.getters['GET_URL'] + `/attendances/statistics?courseId=${selectedSubject.value}`, {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        if (response.status === 200) {
+          const data = await response.json();
+          state.statistics = data;
+          store.dispatch('Statistics/SET_STATISTICS', data);
+
+          state.attendedProgressBar = (
+            ((state.statistics.attendedLessonsNumber + state.statistics.skippedLessonsNumber) /
+              state.statistics.totalLessonsNumber) *
+            100
+          ).toFixed(1);
+          state.skippedProgressBar = (
+            (state.statistics.skippedLessonsNumber /
+              (state.statistics.skippedLessonsNumber + state.statistics.remainingSkipsNumber)) *
+            100
+          ).toFixed(1);
+
+          let tableKeys = {
+            attendedLessonsNumber: 'Attended Lessons',
+            skippedLessonsNumber: 'Skipped Lessons',
+            remainingLessonsNumber: 'Remaining Lessons',
+            remainingSkipsNumber: 'Remaining Skips',
+            totalLessonsNumber: 'Total Lessons Number'
+          };
+
+          state.statisticsTable = [];
+
+          for (let type of Object.keys(state.statistics)) {
+            if (type == 'courseId') continue;
+            state.statisticsTable.push({ type: tableKeys[type], value: state.statistics[type] });
+          }
+
+          store.dispatch('Statistics/SET_STATISTICS_TABLE', state.statisticsTable);
+
+          state.loadingData = false;
+        } else {
+          state.loadingData = false;
+          return ElMessage.error({ message: 'Some error has occured. Please try again later.', grouping: true, showClose: true });
         }
-      });
-
-      if (response.status === 200) {
-        const data = await response.json();
-        state.statistics = data.attendanceStatus;
-        store.dispatch('Statistics/SET_STATISTICS', data.attendanceStatus);
-
-        state.attendedProgressBar = (
-          ((state.statistics.attendedLessons + state.statistics.skippedLessons) / state.statistics.totalLessons) *
-          100
-        ).toFixed(1);
-        state.skippedProgressBar = (
-          (state.statistics.skippedLessons / (state.statistics.skippedLessons + state.statistics.remainingSkips)) *
-          100
-        ).toFixed(1);
-
-        let tableKeys = {
-          attendedLessons: 'Attended Lessons',
-          skippedLessons: 'Skipped Lessons',
-          remainingLessons: 'Remaining Lessons',
-          remainingSkips: 'Remaining Skips',
-          totalLessons: 'Total Lessons Number'
-        };
-
-        state.statisticsTable = [];
-
-        for (let type of Object.keys(state.statistics)) {
-          if (type == 'course') continue;
-          state.statisticsTable.push({ type: tableKeys[type], value: state.statistics[type] });
-        }
-
-        store.dispatch('Statistics/SET_STATISTICS_TABLE', state.statisticsTable);
-
+      } catch {
         state.loadingData = false;
-      } else {
-        state.loadingData = false;
-        return toast.error('Some error has occured. Please try again later.');
+        return ElMessage.error({ message: 'Some error has occured. Please try again later.', grouping: true, showClose: true });
       }
     }
 
@@ -248,10 +280,10 @@ export default {
           datasets: [
             {
               label: 'Number',
-              data: [state.statistics.attendedLessons, state.statistics.skippedLessons],
-              backgroundColor: ['#ffd803', '#00ebc7'],
+              data: [state.statistics.attendedLessonsNumber, state.statistics.skippedLessonsNumber],
+              backgroundColor: ['#1857a5', '#6daad9'],
               hoverOffset: 4,
-              borderColor: '#121629'
+              borderColor: '#021627'
             }
           ]
         },
@@ -259,7 +291,7 @@ export default {
           plugins: {
             legend: {
               labels: {
-                color: '#b8c1ec',
+                color: '#021627',
                 font: {
                   size: 14
                 }
@@ -276,10 +308,10 @@ export default {
           datasets: [
             {
               label: 'Number',
-              data: [state.statistics.remainingLessons, state.statistics.remainingSkips],
-              backgroundColor: ['#ff8906', '#3da9fc'],
+              data: [state.statistics.remainingLessonsNumber, state.statistics.remainingSkipsNumber],
+              backgroundColor: ['#e23c55', '#ec93a0'],
               hoverOffset: 4,
-              borderColor: '#121629'
+              borderColor: '#021627'
             }
           ]
         },
@@ -288,7 +320,7 @@ export default {
             legend: {
               position: 'bottom',
               labels: {
-                color: '#b8c1ec',
+                color: '#021627',
                 font: {
                   size: 14
                 }
