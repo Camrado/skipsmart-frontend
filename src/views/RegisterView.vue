@@ -195,7 +195,7 @@ export default {
             const groups = await response.json();
 
             if (response.status === 200) {
-              state.groups = groups;
+              state.groups = groups.sort((a, b) => a.groupName.localeCompare(b.groupName));
             } else {
               ElMessage.error({ message: 'Server Error. Failed to fetch groups. Please try again later.', showClose: true });
               router.push('/');

@@ -162,7 +162,7 @@ export default {
             const groups = await response.json();
 
             if (response.status === 200) {
-              state.groups = groups;
+              state.groups = groups.sort((a, b) => a.groupName.localeCompare(b.groupName));
               state.groupId = store.getters['User/GET_GROUP_ID'];
 
               state.firstYearGroupIds = state.groups.slice(0, 5).map((group) => group.id);
