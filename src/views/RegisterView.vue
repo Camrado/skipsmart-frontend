@@ -288,8 +288,8 @@ export default {
       state.form.languageSubgroup = Number(state.form.languageSubgroup);
       state.form.facultySubgroup = Number(state.form.facultySubgroup);
       state.form.email = state.form.email.toLowerCase().trim();
-      state.form.firstName = state.form.email.trim();
-      state.form.lastName = state.form.email.trim();
+      state.form.firstName = state.form.firstName.trim();
+      state.form.lastName = state.form.lastName.trim();
 
       try {
         const response = await fetch(store.getters['GET_URL'] + '/users/register', {
