@@ -156,7 +156,9 @@ export default {
           };
         }
 
-        await Promise.all([getTimetable(), getAttendances()]);
+        await getTimetable();
+        await getAttendances();
+        // await Promise.all([getTimetable(), getAttendances()]);
 
         state.timetable.lessons.sort((a, b) => a.period - b.period);
 
@@ -187,31 +189,31 @@ export default {
           const languageSubgroup = store.getters['User/GET_LANGUAGE_SUBGROUP'];
           const facultySubgroup = store.getters['User/GET_FACULTY_SUBGROUP'];
 
-          if (state.timetable.lessons[0].courseName === 'UE000 Subject') {
-            state.timetable.lessons = lessons.filter((subject) => {
-              if (subject.languageSubgroup === 0 && subject.facultySubgroup === 0) return true;
-              if (subject.languageSubgroup === languageSubgroup && subject.facultySubgroup === 0) return true;
-              if (subject.languageSubgroup === 0 && subject.facultySubgroup === facultySubgroup) return true;
-            });
-          } else {
-            let filteredLessons = lessons.filter((subject) => {
-              if (subject.languageSubgroup === 0 && subject.facultySubgroup === 0) return true;
-              if (subject.languageSubgroup === languageSubgroup && subject.facultySubgroup === 0) return true;
-              if (subject.languageSubgroup === 0 && subject.facultySubgroup === facultySubgroup) return true;
-            });
+          // if (state.timetable.lessons[0].courseName === 'UE000 Subject') {
+          state.timetable.lessons = lessons.filter((subject) => {
+            if (subject.languageSubgroup === 0 && subject.facultySubgroup === 0) return true;
+            if (subject.languageSubgroup === languageSubgroup && subject.facultySubgroup === 0) return true;
+            if (subject.languageSubgroup === 0 && subject.facultySubgroup === facultySubgroup) return true;
+          });
+          // } else {
+          //   let filteredLessons = lessons.filter((subject) => {
+          //     if (subject.languageSubgroup === 0 && subject.facultySubgroup === 0) return true;
+          //     if (subject.languageSubgroup === languageSubgroup && subject.facultySubgroup === 0) return true;
+          //     if (subject.languageSubgroup === 0 && subject.facultySubgroup === facultySubgroup) return true;
+          //   });
 
-            for (let i = 0; i < state.timetable.lessons.length; i++) {
-              let lessonPeriod = state.timetable.lessons[i].period;
-              let lesson = filteredLessons.find((lesson) => Number(lesson.period) === Number(lessonPeriod));
+          //   for (let i = 0; i < filteredLessons.length; i++) {
+          //     let lessonPeriod = state.timetable.lessons[i].period;
+          //     let lesson = filteredLessons.find((lesson) => Number(lesson.period) === Number(lessonPeriod));
 
-              if (lesson) {
-                state.timetable.lessons[i].courseName = lesson.courseName;
-                state.timetable.lessons[i].courseId = lesson.courseId;
-                state.timetable.lessons[i].facultySubgroup = lesson.facultySubgroup;
-                state.timetable.lessons[i].languageSubgroup = lesson.languageSubgroup;
-              }
-            }
-          }
+          //     if (lesson) {
+          //       state.timetable.lessons[i].courseName = lesson.courseName;
+          //       state.timetable.lessons[i].courseId = lesson.courseId;
+          //       state.timetable.lessons[i].facultySubgroup = lesson.facultySubgroup;
+          //       state.timetable.lessons[i].languageSubgroup = lesson.languageSubgroup;
+          //     }
+          //   }
+          // }
         } else if (response.status === 500) {
           return ElMessage.error({
             message: 'Sorry. We have got some server errors. Please try again later.',
@@ -241,18 +243,14 @@ export default {
         if (response.status === 200) {
           const attendances = await response.json();
 
-          if (state.timetable.lessons[0].courseName === 'UE000 Subject') {
-            state.timetable.lessons = attendances;
-          } else {
-            for (let i = 0; i < state.timetable.lessons.length; i++) {
-              let lessonPeriod = state.timetable.lessons[i].period;
-              let attendance = attendances.find((subject) => Number(subject.period) === Number(lessonPeriod));
+          for (let i = 0; i < state.timetable.lessons.length; i++) {
+            let lessonPeriod = state.timetable.lessons[i].period;
+            let attendance = attendances.find((subject) => Number(subject.period) === Number(lessonPeriod));
 
-              if (attendance) {
-                state.timetable.lessons[i].hasAttended = attendance.hasAttended;
-              } else {
-                state.timetable.lessons[i].hasAttended = null;
-              }
+            if (attendance) {
+              state.timetable.lessons[i].hasAttended = attendance.hasAttended;
+            } else {
+              state.timetable.lessons[i].hasAttended = null;
             }
           }
         } else if (response.status === 500) {
