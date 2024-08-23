@@ -63,6 +63,7 @@ import dateToString from '@/assets/js/dateToString';
 import App from '@/App.vue';
 import { Check, Close, Upload, ArrowDownBold } from '@element-plus/icons-vue';
 import { ElMessage } from 'element-plus';
+import mixpanel from 'mixpanel-browser';
 
 export default {
   name: 'TimetableView',
@@ -309,6 +310,10 @@ export default {
             let markedDate = dateToString(timetableDate.value);
             store.dispatch('Timetable/REMOVE_MARKED_DATE', markedDate);
           }
+
+          mixpanel.track('Record Attendance', {
+            'Has Attended': lesson.hasAttended
+          });
         } else if (response.status === 500) {
           lesson.hasAttended = lastLessonAttended;
           return ElMessage.error({

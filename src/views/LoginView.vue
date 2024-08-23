@@ -44,6 +44,7 @@ import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import App from '@/App.vue';
 import { ElMessage } from 'element-plus';
+import mixpanel from 'mixpanel-browser';
 
 export default {
   name: 'LoginView',
@@ -110,12 +111,20 @@ export default {
             const userData = await getMeResponse.json();
 
             store.dispatch('User/SET_SIGNED_IN', true);
+            store.dispatch('User/SET_USER_ID', userData.id);
             store.dispatch('User/SET_FIRSTNAME', userData.firstName);
             store.dispatch('User/SET_LASTNAME', userData.lastName);
             store.dispatch('User/SET_EMAIL', userData.email);
             store.dispatch('User/SET_GROUP_ID', userData.groupId);
             store.dispatch('User/SET_LANGUAGE_SUBGROUP', userData.languageSubgroup);
             store.dispatch('User/SET_FACULTY_SUBGROUP', userData.facultySubgroup);
+
+            mixpanel.identify(userData.id);
+
+            mixpanel.people.set({
+              $name: `${userData.firstName} ${userData.lastName}`,
+              $email: userData.email
+            });
 
             localStorage.setItem(store.getters['User/GET_JWT_LKEY'], loginData.accessToken);
             let expirationDate = new Date(loginData.expirationDate);

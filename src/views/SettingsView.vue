@@ -8,7 +8,7 @@
       <div class="header-button"></div>
     </div>
 
-    <div class="container">
+    <div class="container" v-loading="state.settingsLoading">
       <div class="settings-header">
         <img src="../assets/images/profile-user.png" alt="Profile Image" />
         <div>
@@ -118,6 +118,7 @@ import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import App from '@/App.vue';
 import { ElMessage } from 'element-plus';
+import mixpanel from 'mixpanel-browser';
 
 export default {
   name: 'SettingsView',
@@ -128,6 +129,7 @@ export default {
     const { appMounted } = App.setup();
 
     const state = reactive({
+      settingsLoading: false,
       groupLoadingBtn: false,
       subgroupLoadingBtn: false,
       groups: [],
@@ -155,6 +157,8 @@ export default {
           router.push('/');
         } else {
           try {
+            state.settingsLoading = true;
+
             const response = await fetch(store.getters['GET_URL'] + '/groups/all', {
               method: 'GET'
             });
@@ -177,6 +181,8 @@ export default {
           } catch {
             ElMessage.error({ message: 'Server Error. Failed to fetch groups. Please try again later.', showClose: true });
             router.push('/');
+          } finally {
+            state.settingsLoading = false;
           }
         }
       }
@@ -290,6 +296,7 @@ export default {
       localStorage.removeItem(store.getters['User/GET_EXPIRATION_DATE_KEY']);
 
       store.dispatch('User/SET_SIGNED_IN', false);
+      store.dispatch('User/SET_USER_ID', undefined);
       store.dispatch('User/SET_FIRSTNAME', undefined);
       store.dispatch('User/SET_LASTNAME', undefined);
       store.dispatch('User/SET_EMAIL', undefined);
@@ -302,6 +309,8 @@ export default {
       store.dispatch('Timetable/SET_UNMARKED_DATES', []);
       store.dispatch('Statistics/CLEAR_STATISTICS');
       store.dispatch('Statistics/CLEAR_SUBJECTS_LIST');
+
+      mixpanel.reset();
 
       ElMessage.success({ message: "You've successfully logged out.", showClose: true });
       router.push('/');

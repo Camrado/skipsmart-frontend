@@ -147,6 +147,8 @@ import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import App from '@/App.vue';
 import { ElMessage } from 'element-plus';
+import uuidv4 from '@/assets/js/randomUUID';
+import mixpanel from 'mixpanel-browser';
 
 export default {
   name: 'RegisterView',
@@ -290,6 +292,7 @@ export default {
       state.form.email = state.form.email.toLowerCase().trim();
       state.form.firstName = state.form.firstName.trim();
       state.form.lastName = state.form.lastName.trim();
+      state.form.userId = uuidv4();
 
       try {
         const response = await fetch(store.getters['GET_URL'] + '/users/register', {
@@ -304,12 +307,28 @@ export default {
 
         if (response.status === 200) {
           store.dispatch('User/SET_SIGNED_IN', true);
+          store.dispatch('User/SET_USER_ID', state.form.userId);
           store.dispatch('User/SET_FIRSTNAME', state.form.firstName);
           store.dispatch('User/SET_LASTNAME', state.form.lastName);
           store.dispatch('User/SET_EMAIL', state.form.email);
           store.dispatch('User/SET_GROUP_ID', state.form.groupId);
           store.dispatch('User/SET_LANGUAGE_SUBGROUP', state.form.languageSubgroup);
           store.dispatch('User/SET_FACULTY_SUBGROUP', state.form.facultySubgroup);
+
+          mixpanel.identify(state.form.userId);
+
+          mixpanel.people.set({
+            $name: `${state.form.firstName} ${state.form.lastName}`,
+            $email: state.form.email
+          });
+
+          mixpanel.track('Sign Up', {
+            'First Name': state.form.firstName,
+            'Last Name': state.form.lastName,
+            Email: state.form.email,
+            'Group ID': state.form.groupId,
+            'Group Name': state.groups.find((group) => group.id === state.form.groupId).groupName
+          });
 
           localStorage.setItem(store.getters['User/GET_JWT_LKEY'], data.accessToken);
 

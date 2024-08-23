@@ -20,6 +20,7 @@ import Preloader from '@/components/Preloader.vue';
 import { useRoute, useRouter } from 'vue-router';
 import { GrowBottomNavigation } from 'bottom-navigation-vue';
 import 'bottom-navigation-vue/dist/style.css';
+import mixpanel from 'mixpanel-browser';
 
 export default {
   components: { Preloader, GrowBottomNavigation },
@@ -49,6 +50,12 @@ export default {
     let showPreloader = ref(true);
 
     onMounted(async () => {
+      mixpanel.init(process.env.VUE_APP_MIXPANEL_PROJECT_TOKEN, {
+        debug: true,
+        track_pageview: true,
+        persistence: 'localStorage'
+      });
+
       // if there is no jwt token or expireDate in localStorage
       if (
         !localStorage.getItem(store.getters['User/GET_JWT_LKEY']) ||
@@ -91,6 +98,7 @@ export default {
         if (response.status === 200) {
           const userData = await response.json();
 
+          store.dispatch('User/SET_USER_ID', userData.id);
           store.dispatch('User/SET_SIGNED_IN', true);
           store.dispatch('User/SET_FIRSTNAME', userData.firstName);
           store.dispatch('User/SET_LASTNAME', userData.lastName);
@@ -98,6 +106,21 @@ export default {
           store.dispatch('User/SET_GROUP_ID', userData.groupId);
           store.dispatch('User/SET_LANGUAGE_SUBGROUP', userData.languageSubgroup);
           store.dispatch('User/SET_FACULTY_SUBGROUP', userData.facultySubgroup);
+
+          mixpanel.identify(userData.id);
+
+          mixpanel.people.set({
+            $name: `${userData.firstName} ${userData.lastName}`,
+            $email: userData.email
+          });
+
+          mixpanel.track('Signed In Page View', {
+            'First Name': userData.firstName,
+            'Last Name': userData.lastName,
+            "User' Email": userData.email,
+            "User' Group ID": userData.groupId,
+            "User' Group Name": userData.groupName
+          });
         } else if (response.status === 401) {
           store.dispatch('User/SET_SIGNED_IN', false);
 

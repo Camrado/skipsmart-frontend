@@ -70,6 +70,7 @@ import Chart from 'chart.js/auto';
 import { InfoFilled } from '@element-plus/icons-vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import App from '@/App.vue';
+import mixpanel from 'mixpanel-browser';
 
 export default {
   name: 'AttendanceStatusView',
@@ -221,6 +222,11 @@ export default {
           const data = await response.json();
           state.statistics = data;
           store.dispatch('Statistics/SET_STATISTICS', data);
+
+          mixpanel.track('Look at Statistics', {
+            'Course Id': selectedSubject.value,
+            "User's Group Id": store.getters['User/GET_GROUP_ID']
+          });
 
           state.attendedProgressBar = (
             ((state.statistics.attendedLessonsNumber + state.statistics.skippedLessonsNumber) /

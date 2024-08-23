@@ -4,6 +4,7 @@ export const User = {
   state: {
     jwtKeyInLStorage: 'fnw3m43mn2fu52n3nxi4mqp23z3ifn4z44gh',
     expirationDateKey: 'expirationDate',
+    userId: undefined,
     groupId: undefined,
     isSignedIn: undefined,
     firstName: '',
@@ -16,6 +17,9 @@ export const User = {
   mutations: {
     SET_SIGNED_IN(state, content) {
       state.isSignedIn = content;
+    },
+    SET_USER_ID(state, content) {
+      state.userId = content;
     },
     SET_FIRSTNAME(state, content) {
       state.firstName = content;
@@ -41,6 +45,9 @@ export const User = {
     SET_SIGNED_IN({ commit }, isSignedIn) {
       commit('SET_SIGNED_IN', isSignedIn);
     },
+    SET_USER_ID({ commit }, userId) {
+      commit('SET_USER_ID', userId);
+    },
     SET_FIRSTNAME({ commit }, firstName) {
       commit('SET_FIRSTNAME', firstName);
     },
@@ -63,6 +70,7 @@ export const User = {
 
   getters: {
     GET_IS_SIGNED_IN: (state) => state.isSignedIn,
+    GET_USER_ID: (state) => state.userId,
     GET_FIRSTNAME: (state) => state.firstName,
     GET_LASTNAME: (state) => state.lastName,
     GET_EMAIL: (state) => state.email,
