@@ -320,12 +320,12 @@ export default {
       }
     }
 
-    function isDateDisabled(date) {
-      if (date > new Date() || date < new Date(2024, 8, 2, 0, 0, 0)) {
-        return true;
-      } else {
-        return false;
-      }
+    function isDateDisabled() {
+      // if (date > new Date() || date < new Date(2024, 8, 2, 0, 0, 0)) {
+      //   return true;
+      // } else {
+      return false;
+      // }
     }
 
     const isDateUnfilled = (date) => {
