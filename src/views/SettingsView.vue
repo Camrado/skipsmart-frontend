@@ -151,7 +151,7 @@ export default {
     const { appMounted } = App.setup();
 
     const state = reactive({
-      settingsLoading: false,
+      settingsLoading: true,
       groupLoadingBtn: false,
       subgroupLoadingBtn: false,
       groups: [],
