@@ -64,6 +64,7 @@ import App from '@/App.vue';
 import { Check, Close, Upload, ArrowDownBold } from '@element-plus/icons-vue';
 import { ElMessage } from 'element-plus';
 import mixpanel from 'mixpanel-browser';
+import L1_LANGUAGE_GROUPS from '@/assets/js/l1-language-teachers';
 
 export default {
   name: 'TimetableView',
@@ -190,31 +191,19 @@ export default {
           const languageSubgroup = store.getters['User/GET_LANGUAGE_SUBGROUP'];
           const facultySubgroup = store.getters['User/GET_FACULTY_SUBGROUP'];
 
-          // if (state.timetable.lessons[0].courseName === 'UE000 Subject') {
           state.timetable.lessons = lessons.filter((subject) => {
             if (subject.languageSubgroup === 0 && subject.facultySubgroup === 0) return true;
             if (subject.languageSubgroup === languageSubgroup && subject.facultySubgroup === 0) return true;
             if (subject.languageSubgroup === 0 && subject.facultySubgroup === facultySubgroup) return true;
           });
-          // } else {
-          //   let filteredLessons = lessons.filter((subject) => {
-          //     if (subject.languageSubgroup === 0 && subject.facultySubgroup === 0) return true;
-          //     if (subject.languageSubgroup === languageSubgroup && subject.facultySubgroup === 0) return true;
-          //     if (subject.languageSubgroup === 0 && subject.facultySubgroup === facultySubgroup) return true;
-          //   });
-
-          //   for (let i = 0; i < filteredLessons.length; i++) {
-          //     let lessonPeriod = state.timetable.lessons[i].period;
-          //     let lesson = filteredLessons.find((lesson) => Number(lesson.period) === Number(lessonPeriod));
-
-          //     if (lesson) {
-          //       state.timetable.lessons[i].courseName = lesson.courseName;
-          //       state.timetable.lessons[i].courseId = lesson.courseId;
-          //       state.timetable.lessons[i].facultySubgroup = lesson.facultySubgroup;
-          //       state.timetable.lessons[i].languageSubgroup = lesson.languageSubgroup;
-          //     }
-          //   }
-          // }
+          state.timetable.lessons = state.timetable.lessons.filter((subject) => {
+            if (subject.teacher === '') {
+              return true;
+            } else {
+              let myLanguageTeacher = L1_LANGUAGE_GROUPS.find((l1_group) => l1_group.group === languageSubgroup);
+              return subject.teacher === myLanguageTeacher.teacher;
+            }
+          });
         } else if (response.status === 500) {
           return ElMessage.error({
             message: 'Sorry. We have got some server errors. Please try again later.',
@@ -333,7 +322,7 @@ export default {
 
     function isDateDisabled() {
       // if (date > new Date() || date < new Date(2024, 8, 2, 0, 0, 0)) {
-      // return true;
+      //   return true;
       // } else {
       return false;
       // }

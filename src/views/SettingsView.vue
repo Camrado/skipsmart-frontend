@@ -60,7 +60,28 @@
           </el-form-item>
         </el-form>
 
-        <el-form status-icon label-position="top" v-if="!state.isTheGroupFirstYear">
+        <el-form status-icon label-position="top" v-if="state.isTheGroupSecondYear">
+          <el-form-item label="Language Subgroup Teacher">
+            <el-select v-model="state.languageSubgroup" placeholder="Language Subgroup Teacher">
+              <el-option
+                v-for="l1_group in L1_LANGUAGE_GROUPS"
+                :key="l1_group.group"
+                :label="l1_group.teacher + ' - ' + l1_group.language"
+                :value="l1_group.group"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+
+          <el-form-item label="Faculty Subgroup">
+            <el-select v-model="state.facultySubgroup" placeholder="Faculty Subgroup">
+              <el-option label="1" value="1"></el-option>
+              <el-option label="2" value="2"></el-option>
+              <el-option label="3" value="3"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-form>
+
+        <el-form status-icon label-position="top" v-if="!state.isTheGroupFirstYear && !state.isTheGroupSecondYear">
           <el-form-item label="Language Subgroup">
             <el-select v-model="state.languageSubgroup" placeholder="Language Subgroup">
               <el-option label="1" value="1"></el-option>
@@ -119,6 +140,7 @@ import { useRouter } from 'vue-router';
 import App from '@/App.vue';
 import { ElMessage } from 'element-plus';
 import mixpanel from 'mixpanel-browser';
+import L1_LANGUAGE_GROUPS from '@/assets/js/l1-language-teachers';
 
 export default {
   name: 'SettingsView',
@@ -137,7 +159,9 @@ export default {
       languageSubgroup: undefined,
       facultySubgroup: undefined,
       isTheGroupFirstYear: false,
-      firstYearGroupIds: []
+      firstYearGroupIds: [],
+      isTheGroupSecondYear: false,
+      secondYearGroupIds: []
     });
 
     const subgroupForFirstYearStudents = computed({
@@ -172,6 +196,9 @@ export default {
               state.firstYearGroupIds = state.groups.slice(0, 5).map((group) => group.id);
               state.isTheGroupFirstYear = state.firstYearGroupIds.includes(state.groupId);
 
+              state.secondYearGroupIds = state.groups.slice(5, 10).map((group) => group.id);
+              state.isTheGroupSecondYear = state.secondYearGroupIds.includes(state.groupId);
+
               state.languageSubgroup = store.getters['User/GET_LANGUAGE_SUBGROUP'];
               state.facultySubgroup = store.getters['User/GET_FACULTY_SUBGROUP'];
             } else {
@@ -191,12 +218,6 @@ export default {
     async function changeGroup() {
       if (state.groupId == store.getters['User/GET_GROUP_ID']) {
         return ElMessage.warning({ message: 'Change the group to proceed.', showClose: true });
-      } else if (
-        state.firstYearGroupIds.includes(state.groupId) &&
-        store.getters['User/GET_LANGUAGE_SUBGROUP'] != store.getters['User/GET_FACULTY_SUBGROUP']
-      ) {
-        state.groupId = store.getters['User/GET_GROUP_ID'];
-        return ElMessage.warning({ message: 'Subgroups must be the same to proceed.', showClose: true });
       }
       state.groupLoadingBtn = true;
 
@@ -213,6 +234,28 @@ export default {
         });
 
         if (response.status === 200) {
+          if (
+            state.secondYearGroupIds.includes(store.getters['User/GET_GROUP_ID']) ||
+            state.firstYearGroupIds.includes(state.groupId)
+          ) {
+            await fetch(store.getters['GET_URL'] + '/users/change-subgroups', {
+              method: 'PATCH',
+              headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                newLanguageSubgroup: Number(1),
+                newFacultySubgroup: Number(1)
+              })
+            });
+
+            state.facultySubgroup = 1;
+            state.languageSubgroup = 1;
+            store.dispatch('User/SET_LANGUAGE_SUBGROUP', state.languageSubgroup);
+            store.dispatch('User/SET_FACULTY_SUBGROUP', state.facultySubgroup);
+          }
+
           const data = await response.json();
 
           store.dispatch('User/SET_GROUP_ID', state.groupId);
@@ -223,6 +266,7 @@ export default {
           localStorage.setItem(store.getters['User/GET_EXPIRATION_DATE_KEY'], expirationDate);
 
           state.isTheGroupFirstYear = state.firstYearGroupIds.includes(state.groupId);
+          state.isTheGroupSecondYear = state.secondYearGroupIds.includes(state.groupId);
 
           store.dispatch('Timetable/CLEAR_TIMETABLE');
           store.dispatch('Timetable/SET_ARE_UNMARKED_DATES_LOADED', false);
@@ -316,7 +360,7 @@ export default {
       router.push('/');
     }
 
-    return { state, logout, store, changeGroup, changeSubgroups, subgroupForFirstYearStudents };
+    return { state, logout, store, changeGroup, changeSubgroups, subgroupForFirstYearStudents, L1_LANGUAGE_GROUPS };
   }
 };
 </script>

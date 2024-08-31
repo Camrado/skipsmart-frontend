@@ -72,7 +72,13 @@
           <h1>Create your account!</h1>
         </div>
 
-        <el-form :model="state.form" status-icon :rules="state.formRules" label-position="top" v-if="!state.isTheGroupFirstYear">
+        <el-form
+          :model="state.form"
+          status-icon
+          :rules="state.formRules"
+          label-position="top"
+          v-if="!state.isTheGroupFirstYear && !state.isTheGroupSecondYear"
+        >
           <el-form-item label="Language Subgroup">
             <el-select v-model="state.form.languageSubgroup" placeholder="Language Subgroup">
               <el-option label="1" value="1"></el-option>
@@ -80,10 +86,31 @@
             </el-select>
           </el-form-item>
 
+          <el-form-item label="Faculty Subgroup (Choose the same as Language Subgroup if you don't know)">
+            <el-select v-model="state.form.facultySubgroup" placeholder="Faculty Subgroup">
+              <el-option label="1" value="1"></el-option>
+              <el-option label="2" value="2"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-form>
+
+        <el-form :model="state.form" status-icon :rules="state.formRules" label-position="top" v-if="state.isTheGroupSecondYear">
+          <el-form-item label="Language Subgroup Teacher">
+            <el-select v-model="state.form.languageSubgroup" placeholder="Language Subgroup Teacher">
+              <el-option
+                v-for="l1_group in L1_LANGUAGE_GROUPS"
+                :key="l1_group.group"
+                :label="l1_group.teacher + ' - ' + l1_group.language"
+                :value="l1_group.group"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+
           <el-form-item label="Faculty Subgroup">
             <el-select v-model="state.form.facultySubgroup" placeholder="Faculty Subgroup">
               <el-option label="1" value="1"></el-option>
               <el-option label="2" value="2"></el-option>
+              <el-option label="3" value="3"></el-option>
             </el-select>
           </el-form-item>
         </el-form>
@@ -121,6 +148,13 @@
 
         <el-button @click="sumbitSignUpForm" :loading="state.loadingBtn">Sign Up</el-button>
 
+        <div class="warning">
+          <p>
+            By signing up, you understand and accept that SkipSmart doesn't take any responsibility for the attendance. You are
+            the only one who is responsible for your attendance.
+          </p>
+        </div>
+
         <div class="other-option">
           <hr />
           <p>Already have an account? <RouterLink to="/login">Log In</RouterLink></p>
@@ -148,6 +182,7 @@ import { useRouter } from 'vue-router';
 import App from '@/App.vue';
 import { ElMessage } from 'element-plus';
 import uuidv4 from '@/assets/js/randomUUID';
+import L1_LANGUAGE_GROUPS from '@/assets/js/l1-language-teachers';
 import mixpanel from 'mixpanel-browser';
 
 export default {
@@ -180,6 +215,7 @@ export default {
       showThirdSlide: false,
       showFourthSlide: false,
       isTheGroupFirstYear: false,
+      isTheGroupSecondYear: false,
       groups: []
     });
 
@@ -246,6 +282,14 @@ export default {
           state.isTheGroupFirstYear = true;
         } else {
           state.isTheGroupFirstYear = false;
+        }
+
+        let secondYearGroupIds = state.groups.slice(5, 10).map((group) => group.id);
+
+        if (secondYearGroupIds.includes(state.form.groupId)) {
+          state.isTheGroupSecondYear = true;
+        } else {
+          state.isTheGroupSecondYear = false;
         }
 
         state.showFirstSlide = false;
@@ -367,7 +411,8 @@ export default {
       showTheFirstSlide,
       showTheThirdSlide,
       showTheFourthSlide,
-      subgroupForFirstYearStudents
+      subgroupForFirstYearStudents,
+      L1_LANGUAGE_GROUPS
     };
   }
 };

@@ -156,6 +156,16 @@
       -ms-user-select: none;
       user-select: none;
     }
+
+    .warning {
+      margin-top: 30px;
+      font-family: 'Zain', sans-serif;
+      font-weight: 400;
+      font-style: normal;
+      font-size: 18px;
+      color: $accent-color;
+      text-align: center;
+    }
   }
 
   .other-option {

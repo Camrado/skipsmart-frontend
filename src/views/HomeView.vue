@@ -171,6 +171,10 @@
           <img src="../assets/images/logo-round-background.png" alt="SkipSmart Logo" />
           <span>SkipSmart</span>
         </div>
+        <div class="footer-note">
+          <p>We don't take any responsibility for the attendance records.</p>
+          <p>You are the only one who is responsible for your attendance.</p>
+        </div>
       </div>
     </div>
   </div>
