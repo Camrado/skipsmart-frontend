@@ -201,7 +201,7 @@ export default {
               return true;
             } else {
               let myLanguageTeacher = L1_LANGUAGE_GROUPS.find((l1_group) => l1_group.group === languageSubgroup);
-              return subject.teacher.trim() === myLanguageTeacher.teacher.trim();
+              return subject.teacher === myLanguageTeacher.teacher;
             }
           });
         } else if (response.status === 500) {

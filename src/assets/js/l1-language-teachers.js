@@ -5,7 +5,7 @@ const L1_LANGUAGE_GROUPS = [
   { group: 4, teacher: 'Vafa Guliyeva', language: 'French' },
   { group: 5, teacher: 'Aytan Babaliyeva', language: 'French' },
   { group: 6, teacher: 'Latchine Bayramova', language: 'French' },
-  { group: 7, teacher: 'Sveta Gadimova', language: 'English' },
+  { group: 7, teacher: 'Sveta Gadimova ', language: 'English' },
   { group: 8, teacher: 'Shabnam Aliyeva', language: 'English' }
 ];
 
