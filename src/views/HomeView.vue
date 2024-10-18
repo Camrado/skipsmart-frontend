@@ -159,7 +159,7 @@
           </el-collapse-item>
           <el-collapse-item>
             <template #title>How do I contact support if I have an issue?</template>
-            <div>You can contact the author by emailing i.mammadov@ufaz.az.</div>
+            <div>You can contact the author by emailing k.yalchin@ufaz.az.</div>
           </el-collapse-item>
         </el-collapse>
       </div>
