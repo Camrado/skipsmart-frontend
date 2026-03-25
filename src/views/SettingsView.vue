@@ -60,7 +60,7 @@
           </el-form-item>
         </el-form>
 
-        <el-form status-icon label-position="top" v-if="state.isTheGroupSecondYear">
+        <el-form status-icon label-position="top" v-if="state.isTheGroupThirdYear">
           <el-form-item label="Language Subgroup Teacher">
             <el-select v-model="state.languageSubgroup" placeholder="Language Subgroup Teacher">
               <el-option
@@ -81,7 +81,7 @@
           </el-form-item>
         </el-form>
 
-        <el-form status-icon label-position="top" v-if="!state.isTheGroupFirstYear && !state.isTheGroupSecondYear">
+        <el-form status-icon label-position="top" v-if="!state.isTheGroupFirstYear && !state.isTheGroupThirdYear">
           <el-form-item label="Language Subgroup">
             <el-select v-model="state.languageSubgroup" placeholder="Language Subgroup">
               <el-option label="1" value="1"></el-option>
@@ -160,8 +160,8 @@ export default {
       facultySubgroup: undefined,
       isTheGroupFirstYear: false,
       firstYearGroupIds: [],
-      isTheGroupSecondYear: false,
-      secondYearGroupIds: []
+      isTheGroupThirdYear: false,
+      thirdYearGroupIds: []
     });
 
     const subgroupForFirstYearStudents = computed({
@@ -196,8 +196,8 @@ export default {
               state.firstYearGroupIds = state.groups.slice(0, 5).map((group) => group.id);
               state.isTheGroupFirstYear = state.firstYearGroupIds.includes(state.groupId);
 
-              state.secondYearGroupIds = state.groups.slice(5, 10).map((group) => group.id);
-              state.isTheGroupSecondYear = state.secondYearGroupIds.includes(state.groupId);
+              state.thirdYearGroupIds = state.groups.slice(11, 16).map((group) => group.id);
+              state.isTheGroupThirdYear = state.thirdYearGroupIds.includes(state.groupId);
 
               state.languageSubgroup = store.getters['User/GET_LANGUAGE_SUBGROUP'];
               state.facultySubgroup = store.getters['User/GET_FACULTY_SUBGROUP'];
@@ -235,7 +235,7 @@ export default {
 
         if (response.status === 200) {
           if (
-            state.secondYearGroupIds.includes(store.getters['User/GET_GROUP_ID']) ||
+            state.thirdYearGroupIds.includes(store.getters['User/GET_GROUP_ID']) ||
             state.firstYearGroupIds.includes(state.groupId)
           ) {
             await fetch(store.getters['GET_URL'] + '/users/change-subgroups', {
@@ -266,7 +266,7 @@ export default {
           localStorage.setItem(store.getters['User/GET_EXPIRATION_DATE_KEY'], expirationDate);
 
           state.isTheGroupFirstYear = state.firstYearGroupIds.includes(state.groupId);
-          state.isTheGroupSecondYear = state.secondYearGroupIds.includes(state.groupId);
+          state.isTheGroupThirdYear = state.thirdYearGroupIds.includes(state.groupId);
 
           store.dispatch('Timetable/CLEAR_TIMETABLE');
           store.dispatch('Timetable/SET_ARE_UNMARKED_DATES_LOADED', false);

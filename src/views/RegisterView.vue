@@ -77,7 +77,7 @@
           status-icon
           :rules="state.formRules"
           label-position="top"
-          v-if="!state.isTheGroupFirstYear && !state.isTheGroupSecondYear"
+          v-if="!state.isTheGroupFirstYear && !state.isTheGroupThirdYear"
         >
           <el-form-item label="Language Subgroup">
             <el-select v-model="state.form.languageSubgroup" placeholder="Language Subgroup">
@@ -94,7 +94,7 @@
           </el-form-item>
         </el-form>
 
-        <el-form :model="state.form" status-icon :rules="state.formRules" label-position="top" v-if="state.isTheGroupSecondYear">
+        <el-form :model="state.form" status-icon :rules="state.formRules" label-position="top" v-if="state.isTheGroupThirdYear">
           <el-form-item label="Language Subgroup Teacher">
             <el-select v-model="state.form.languageSubgroup" placeholder="Language Subgroup Teacher">
               <el-option
@@ -215,7 +215,7 @@ export default {
       showThirdSlide: false,
       showFourthSlide: false,
       isTheGroupFirstYear: false,
-      isTheGroupSecondYear: false,
+      isTheGroupThirdYear: false,
       groups: []
     });
 
@@ -284,12 +284,12 @@ export default {
           state.isTheGroupFirstYear = false;
         }
 
-        let secondYearGroupIds = state.groups.slice(5, 10).map((group) => group.id);
+        let thirdYearGroupIds = state.groups.slice(11, 16).map((group) => group.id);
 
-        if (secondYearGroupIds.includes(state.form.groupId)) {
-          state.isTheGroupSecondYear = true;
+        if (thirdYearGroupIds.includes(state.form.groupId)) {
+          state.isTheGroupThirdYear = true;
         } else {
-          state.isTheGroupSecondYear = false;
+          state.isTheGroupThirdYear = false;
         }
 
         state.showFirstSlide = false;
