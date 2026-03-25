@@ -64,9 +64,13 @@
           <el-form-item label="Language Subgroup Teacher">
             <el-select v-model="state.languageSubgroup" placeholder="Language Subgroup Teacher">
               <el-option
-                v-for="l1_group in L1_LANGUAGE_GROUPS"
+                v-for="l1_group in L2_LANGUAGE_GROUPS"
                 :key="l1_group.group"
-                :label="l1_group.teacher + ' - ' + l1_group.language"
+                :label="
+                  l1_group.allFaculties
+                    ? l1_group.teacher + ' - with other faculties'
+                    : l1_group.teacher + ' - only with my faculty'
+                "
                 :value="l1_group.group"
               ></el-option>
             </el-select>
@@ -140,7 +144,7 @@ import { useRouter } from 'vue-router';
 import App from '@/App.vue';
 import { ElMessage } from 'element-plus';
 import mixpanel from 'mixpanel-browser';
-import L1_LANGUAGE_GROUPS from '@/assets/js/l1-language-teachers';
+import L2_LANGUAGE_GROUPS from '@/assets/js/l2-language-teachers';
 
 export default {
   name: 'SettingsView',
@@ -360,7 +364,15 @@ export default {
       router.push('/');
     }
 
-    return { state, logout, store, changeGroup, changeSubgroups, subgroupForFirstYearStudents, L1_LANGUAGE_GROUPS };
+    return {
+      state,
+      logout,
+      store,
+      changeGroup,
+      changeSubgroups,
+      subgroupForFirstYearStudents,
+      L2_LANGUAGE_GROUPS
+    };
   }
 };
 </script>

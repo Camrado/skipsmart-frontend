@@ -98,9 +98,13 @@
           <el-form-item label="Language Subgroup Teacher">
             <el-select v-model="state.form.languageSubgroup" placeholder="Language Subgroup Teacher">
               <el-option
-                v-for="l1_group in L1_LANGUAGE_GROUPS"
+                v-for="l1_group in L2_LANGUAGE_GROUPS"
                 :key="l1_group.group"
-                :label="l1_group.teacher + ' - ' + l1_group.language"
+                :label="
+                  l1_group.allFaculties
+                    ? l1_group.teacher + ' - with other faculties'
+                    : l1_group.teacher + ' - only with my faculty'
+                "
                 :value="l1_group.group"
               ></el-option>
             </el-select>
@@ -182,7 +186,7 @@ import { useRouter } from 'vue-router';
 import App from '@/App.vue';
 import { ElMessage } from 'element-plus';
 import uuidv4 from '@/assets/js/randomUUID';
-import L1_LANGUAGE_GROUPS from '@/assets/js/l1-language-teachers';
+import L2_LANGUAGE_GROUPS from '@/assets/js/l2-language-teachers';
 import mixpanel from 'mixpanel-browser';
 
 export default {
@@ -412,7 +416,7 @@ export default {
       showTheThirdSlide,
       showTheFourthSlide,
       subgroupForFirstYearStudents,
-      L1_LANGUAGE_GROUPS
+      L2_LANGUAGE_GROUPS
     };
   }
 };
