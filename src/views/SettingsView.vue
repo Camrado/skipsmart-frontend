@@ -51,11 +51,11 @@
       </div>
       <br />
       <div class="change-subgroups">
-        <el-form status-icon label-position="top" v-if="state.isTheGroupFirstYear">
+        <el-form status-icon label-position="top" v-if="!state.isTheGroupL1CS && !state.isTheGroupThirdYear">
           <el-form-item label="Subgroup">
-            <el-select v-model="subgroupForFirstYearStudents" placeholder="Subgroup">
-              <el-option label="1" value="1"></el-option>
-              <el-option label="2" value="2"></el-option>
+            <el-select v-model="subgroupForOtherYears" placeholder="Subgroup">
+              <el-option label="1" :value="1"></el-option>
+              <el-option label="2" :value="2"></el-option>
             </el-select>
           </el-form-item>
         </el-form>
@@ -78,25 +78,26 @@
 
           <el-form-item label="Faculty Subgroup">
             <el-select v-model="state.facultySubgroup" placeholder="Faculty Subgroup">
-              <el-option label="1" value="1"></el-option>
-              <el-option label="2" value="2"></el-option>
-              <el-option label="3" value="3"></el-option>
+              <el-option label="1" :value="1"></el-option>
+              <el-option label="2" :value="2"></el-option>
+              <el-option label="3" :value="3" v-if="state.isTheGroupL2CS"></el-option>
             </el-select>
           </el-form-item>
         </el-form>
 
-        <el-form status-icon label-position="top" v-if="!state.isTheGroupFirstYear && !state.isTheGroupThirdYear">
+        <el-form status-icon label-position="top" v-if="state.isTheGroupL1CS">
           <el-form-item label="Language Subgroup">
             <el-select v-model="state.languageSubgroup" placeholder="Language Subgroup">
-              <el-option label="1" value="1"></el-option>
-              <el-option label="2" value="2"></el-option>
+              <el-option label="1" :value="1"></el-option>
+              <el-option label="2" :value="2"></el-option>
             </el-select>
           </el-form-item>
 
           <el-form-item label="Faculty Subgroup">
             <el-select v-model="state.facultySubgroup" placeholder="Faculty Subgroup">
-              <el-option label="1" value="1"></el-option>
-              <el-option label="2" value="2"></el-option>
+              <el-option label="1" :value="1"></el-option>
+              <el-option label="2" :value="2"></el-option>
+              <el-option label="3" :value="3"></el-option>
             </el-select>
           </el-form-item>
         </el-form>
@@ -162,13 +163,13 @@ export default {
       groupId: '',
       languageSubgroup: undefined,
       facultySubgroup: undefined,
-      isTheGroupFirstYear: false,
-      firstYearGroupIds: [],
+      isTheGroupL1CS: false,
+      isTheGroupL2CS: false,
       isTheGroupThirdYear: false,
       thirdYearGroupIds: []
     });
 
-    const subgroupForFirstYearStudents = computed({
+    const subgroupForOtherYears = computed({
       get() {
         return state.languageSubgroup;
       },
@@ -197,8 +198,11 @@ export default {
               state.groups = groups.sort((a, b) => a.groupName.localeCompare(b.groupName));
               state.groupId = store.getters['User/GET_GROUP_ID'];
 
-              state.firstYearGroupIds = state.groups.slice(0, 5).map((group) => group.id);
-              state.isTheGroupFirstYear = state.firstYearGroupIds.includes(state.groupId);
+              const currentGroup = state.groups.find(group => group.id === state.groupId);
+              if (currentGroup) {
+                state.isTheGroupL1CS = currentGroup.groupName.includes('L1 CS1-24') || currentGroup.groupName.includes('L1 CS2-24');
+                state.isTheGroupL2CS = currentGroup.groupName.includes('L2 CS1-23') || currentGroup.groupName.includes('L2 CS2-23');
+              }
 
               state.thirdYearGroupIds = state.groups.slice(11, 16).map((group) => group.id);
               state.isTheGroupThirdYear = state.thirdYearGroupIds.includes(state.groupId);
@@ -238,9 +242,13 @@ export default {
         });
 
         if (response.status === 200) {
+          const newGroup = state.groups.find(g => g.id === state.groupId);
+          const isNewGroupL1CS = newGroup ? (newGroup.groupName.includes('L1 CS1-24') || newGroup.groupName.includes('L1 CS2-24')) : false;
+          const isNewGroupL2CS = newGroup ? (newGroup.groupName.includes('L2 CS1-23') || newGroup.groupName.includes('L2 CS2-23')) : false;
+
           if (
             state.thirdYearGroupIds.includes(store.getters['User/GET_GROUP_ID']) ||
-            state.firstYearGroupIds.includes(state.groupId)
+            (!state.thirdYearGroupIds.includes(state.groupId) && !isNewGroupL1CS)
           ) {
             await fetch(store.getters['GET_URL'] + '/users/change-subgroups', {
               method: 'PATCH',
@@ -269,7 +277,10 @@ export default {
           expirationDate.setDate(expirationDate.getDate() - 1);
           localStorage.setItem(store.getters['User/GET_EXPIRATION_DATE_KEY'], expirationDate);
 
-          state.isTheGroupFirstYear = state.firstYearGroupIds.includes(state.groupId);
+          if (newGroup) {
+            state.isTheGroupL1CS = isNewGroupL1CS;
+            state.isTheGroupL2CS = isNewGroupL2CS;
+          }
           state.isTheGroupThirdYear = state.thirdYearGroupIds.includes(state.groupId);
 
           store.dispatch('Timetable/CLEAR_TIMETABLE');
@@ -296,6 +307,9 @@ export default {
         state.languageSubgroup == store.getters['User/GET_LANGUAGE_SUBGROUP'] &&
         state.facultySubgroup == store.getters['User/GET_FACULTY_SUBGROUP']
       ) {
+        if (!state.isTheGroupL1CS && !state.isTheGroupThirdYear) {
+          return ElMessage.warning({ message: 'Change the subgroup to proceed.', showClose: true });
+        }
         return ElMessage.warning({ message: 'Change at least 1 subgroup to proceed.', showClose: true });
       }
       state.subgroupLoadingBtn = true;
@@ -370,7 +384,7 @@ export default {
       store,
       changeGroup,
       changeSubgroups,
-      subgroupForFirstYearStudents,
+      subgroupForOtherYears,
       L2_LANGUAGE_GROUPS
     };
   }
