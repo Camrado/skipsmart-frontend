@@ -1,6 +1,11 @@
 @import 'variables.scss';
 
 .el-message-box {
+  border-radius: 16px;
+  border: none;
+  box-shadow: 0 16px 32px rgba($text-color, 0.1);
+  padding-bottom: 16px;
+
   &__header {
     padding: 20px 20px 10px;
   }
@@ -8,7 +13,7 @@
   &__title {
     color: $primary-color;
     font-family: 'Josefin Sans', sans-serif;
-    font-weight: 600;
+    font-weight: 700;
     font-size: 20px;
   }
 
@@ -18,25 +23,31 @@
 
   &__message {
     font-family: 'Zain', sans-serif;
-    font-weight: 300;
-    font-size: 20px;
-    color: $text-color;
+    font-weight: 400;
+    font-size: 18px;
+    color: rgba($text-color, 0.8);
     line-height: 1.5;
   }
 
   &__btns {
+    padding: 10px 20px 0;
+    
     .el-button {
       font-family: 'Josefin Sans', sans-serif;
       font-weight: 600;
       font-size: 15px;
-      color: $background-color;
-      background-color: $accent-color;
-      border: 1px solid $accent-color;
+      padding: 14px 28px;
+      color: $white;
+      background-color: $primary-color;
+      border: none;
       border-radius: 50px !important;
-      transition: background 0.2s ease !important;
+      transition: all 0.3s ease !important;
+      box-shadow: 0 4px 12px rgba($primary-color, 0.2);
 
       &:hover {
-        background-color: lighten($accent-color, 6%) !important;
+        background-color: lighten($brand-blue, 5%) !important;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba($primary-color, 0.3);
       }
     }
   }
@@ -44,7 +55,7 @@
 
 .statistics-page {
   min-height: 100vh;
-  margin-bottom: 100px;
+  padding-bottom: 100px;
   background-color: $background-color;
   user-select: none;
   -webkit-user-select: none;
@@ -52,18 +63,19 @@
   -webkit-tap-highlight-color: transparent;
 
   .header {
-    position: relative;
+    position: sticky;
+    top: 0;
     z-index: 100;
-    background-color: rgba($background-color, 0.95);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    background-color: rgba($background-color, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     width: 100%;
     height: 64px;
     padding: 0 4vw;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid rgba($text-color, 0.07);
+    border-bottom: 1px solid rgba($text-color, 0.05);
 
     @media (min-width: 768px) {
       padding: 0 5%;
@@ -90,6 +102,7 @@
         font-weight: 700;
         font-size: 20px;
         color: $text-color;
+        letter-spacing: -0.5px;
       }
     }
   }
@@ -119,30 +132,32 @@
       }
 
       &__wrapper {
-        background-color: $statistics-subject-select-color;
-        padding: 14px 18px;
-        border-radius: 10px;
-        border-top-left-radius: 0;
-        border-bottom-right-radius: 0;
+        background-color: $white;
+        padding: 12px 18px;
+        border-radius: 14px;
+        box-shadow: 0 6px 16px rgba($text-color, 0.04);
+        border: 1px solid transparent;
+        transition: all 0.3s ease;
 
-        &.is-focused {
-          box-shadow: 0 0 0 1px $statistics-subject-select-active-color;
+        &:hover, &.is-focused {
+          border-color: rgba($primary-color, 0.2);
+          box-shadow: 0 8px 20px rgba($text-color, 0.06);
         }
       }
 
       &__selected-item {
-        color: $background-color;
+        color: $primary-color;
         font-family: 'Zain', sans-serif;
-        font-weight: 400;
-        font-size: 16px;
+        font-weight: 700;
+        font-size: 19px;
       }
 
       &__prefix {
-        margin-left: 10px;
+        margin-left: 8px;
       }
 
       &__suffix svg {
-        color: $background-color !important;
+        color: $primary-color !important;
       }
 
       &__inner {
@@ -155,8 +170,8 @@
         display: grid;
         grid-template-columns: 1fr 1fr;
         column-gap: 3rem;
-        align-items: start;
-        margin-top: 16px;
+        align-items: stretch;
+        margin-top: 24px;
       }
 
       .statistics-pie-charts {
@@ -183,22 +198,33 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 12px;
+      gap: 16px;
+      background-color: $white;
+      padding: 24px 16px;
+      border-radius: 20px;
+      box-shadow: 0 8px 24px rgba($text-color, 0.03);
+      border: 1px solid rgba($gray-line-color, 0.4);
 
       canvas {
-        width: 46vw !important;
-        height: 46vw !important;
-        max-width: 220px !important;
-        max-height: 220px !important;
+        width: 42vw !important;
+        height: 42vw !important;
+        max-width: 200px !important;
+        max-height: 200px !important;
       }
     }
 
     &-progress-bars {
       width: 100%;
-      margin-top: 32px;
+      margin-top: 24px;
       display: flex;
       flex-direction: column;
+      justify-content: center;
       gap: 20px;
+      background-color: $white;
+      padding: 24px 20px;
+      border-radius: 20px;
+      box-shadow: 0 8px 24px rgba($text-color, 0.03);
+      border: 1px solid rgba($gray-line-color, 0.4);
 
       .el-progress {
         flex: 1;
@@ -206,12 +232,16 @@
 
       .el-progress-bar {
         &__outer {
-          background: $statistics-progress-bar-color;
+          background: rgba($gray-line-color, 0.5);
+          border-radius: 50px;
         }
 
         &__innerText {
-          font-size: 15px;
-          color: $background-color;
+          font-family: 'Zain', sans-serif;
+          font-weight: 700;
+          font-size: 14px;
+          color: $white;
+          letter-spacing: 0.5px;
         }
       }
 
@@ -221,7 +251,7 @@
         gap: 12px;
 
         .el-progress-bar__inner {
-          background-color: $secondary-color !important;
+          background-color: $primary-color !important;
         }
       }
 
@@ -237,35 +267,62 @@
 
       .el-button {
         flex-shrink: 0;
-        width: 28px;
-        height: 28px;
+        width: 30px;
+        height: 30px;
         border-radius: 50% !important;
+        background-color: rgba($primary-color, 0.1);
+        color: $primary-color;
+        border: none;
+        transition: all 0.3s ease;
+
+        .el-icon {
+          font-size: 14px;
+        }
+
+        &:hover {
+          background-color: $primary-color;
+          color: $white;
+          transform: scale(1.1);
+        }
       }
     }
 
     &-table {
-      margin-top: 36px;
+      margin-top: 24px;
       width: 100%;
 
       .el-table {
-        background-color: $statistics-progress-bar-color !important;
-        --el-table-tr-bg-color: #{$statistics-progress-bar-color};
+        background-color: $white !important;
+        --el-table-tr-bg-color: #ffffff;
+        --el-table-row-hover-bg-color: #f8fafc;
+        --el-table-border-color: rgba(226, 232, 240, 0.6);
         font-family: 'Zain', sans-serif;
-        font-weight: 400;
-        font-size: clamp(17px, 2vw, 20px);
-        border-radius: 10px;
+        font-weight: 500;
+        font-size: clamp(16px, 1.8vw, 19px);
+        border-radius: 20px;
         overflow: hidden;
+        box-shadow: 0 8px 24px rgba($text-color, 0.03);
+        border: 1px solid rgba($gray-line-color, 0.4);
 
         &__header-wrapper {
           display: none;
         }
 
         .cell {
-          color: $primary-color;
+          color: $dark-text;
+          padding: 12px 20px;
+        }
+
+        .el-table__row {
+          td:last-child .cell {
+            color: $primary-color;
+            font-weight: 700;
+            text-align: right;
+          }
         }
 
         tr {
-          transition: background 0.15s ease;
+          transition: background 0.2s ease;
         }
       }
     }
