@@ -2,16 +2,14 @@
 
 .el-message-box {
   &__header {
-    padding: 20px 20px 10px 20px;
+    padding: 20px 20px 10px;
   }
 
   &__title {
     color: $primary-color;
     font-family: 'Josefin Sans', sans-serif;
-    font-optical-sizing: auto;
     font-weight: 600;
-    font-style: normal;
-    font-size: 22px;
+    font-size: 20px;
   }
 
   &__content {
@@ -19,24 +17,27 @@
   }
 
   &__message {
-    // padding: 20px;
     font-family: 'Zain', sans-serif;
     font-weight: 300;
-    font-style: normal;
-    font-size: 22px;
+    font-size: 20px;
     color: $text-color;
+    line-height: 1.5;
   }
 
   &__btns {
     .el-button {
       font-family: 'Josefin Sans', sans-serif;
-      font-optical-sizing: auto;
       font-weight: 600;
-      font-style: normal;
       font-size: 15px;
       color: $background-color;
       background-color: $accent-color;
       border: 1px solid $accent-color;
+      border-radius: 50px !important;
+      transition: background 0.2s ease !important;
+
+      &:hover {
+        background-color: lighten($accent-color, 6%) !important;
+      }
     }
   }
 }
@@ -44,67 +45,85 @@
 .statistics-page {
   min-height: 100vh;
   margin-bottom: 100px;
-  -webkit-tap-highlight-color: transparent;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
+  background-color: $background-color;
   user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
 
   .header {
     position: relative;
     z-index: 100;
-    top: 0;
-    left: 0;
-    background-color: $background-color;
+    background-color: rgba($background-color, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     width: 100%;
-    height: 70px;
-    padding: 3vw;
+    height: 64px;
+    padding: 0 4vw;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    border-bottom: 1px solid rgba($text-color, 0.07);
+
+    @media (min-width: 768px) {
+      padding: 0 5%;
+    }
+
+    @media (min-width: 1100px) {
+      padding: 0 calc((100% - 1200px) / 2 + 2rem);
+    }
 
     &-logo {
-      width: 50%;
       display: flex;
       align-items: center;
-
-      -webkit-touch-callout: none;
-      -webkit-user-select: none;
-      -khtml-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
+      gap: 10px;
       user-select: none;
+      -webkit-user-select: none;
 
       img {
-        width: 35px;
-        margin-right: 10px;
+        width: 32px;
+        height: 32px;
       }
 
       span {
         font-family: 'Comfortaa', sans-serif;
-        font-optical-sizing: auto;
         font-weight: 700;
-        font-style: normal;
-        font-size: 22px;
+        font-size: 20px;
         color: $text-color;
       }
     }
   }
 
   .statistics {
-    .el-select {
-      margin-top: 15px;
-      // margin-left: 5%;
+    padding-top: 24px;
+
+    @media (min-width: 768px) {
+      width: 90%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 2rem 0;
+    }
+
+    @media (min-width: 1100px) {
+      padding: 40px calc((100% - 1200px) / 2 + 2rem) 0;
       width: 100%;
+      max-width: 100%;
+    }
+
+    .el-select {
+      margin-top: 8px;
+      width: 100%;
+
+      @media (min-width: 768px) {
+        max-width: 480px;
+      }
 
       &__wrapper {
         background-color: $statistics-subject-select-color;
-        padding: 16px 20px;
+        padding: 14px 18px;
         border-radius: 10px;
-        border-top-left-radius: 0px;
-        border-bottom-right-radius: 0px;
+        border-top-left-radius: 0;
+        border-bottom-right-radius: 0;
 
         &.is-focused {
           box-shadow: 0 0 0 1px $statistics-subject-select-active-color;
@@ -113,8 +132,8 @@
 
       &__selected-item {
         color: $background-color;
+        font-family: 'Zain', sans-serif;
         font-weight: 400;
-        font-style: normal;
         font-size: 16px;
       }
 
@@ -131,25 +150,58 @@
       }
     }
 
+    @media (min-width: 900px) {
+      > div {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        column-gap: 3rem;
+        align-items: start;
+        margin-top: 16px;
+      }
+
+      .statistics-pie-charts {
+        grid-column: 1;
+        grid-row: 1;
+        margin-top: 0;
+      }
+
+      .statistics-progress-bars {
+        grid-column: 2;
+        grid-row: 1;
+        margin-top: 0;
+      }
+
+      .statistics-table {
+        grid-column: 1 / 3;
+        grid-row: 2;
+      }
+    }
+
     &-pie-charts {
-      margin-top: 30px;
+      margin-top: 28px;
       width: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
+      gap: 12px;
 
       canvas {
-        width: 48vw !important;
-        height: 48vw !important;
+        width: 46vw !important;
+        height: 46vw !important;
+        max-width: 220px !important;
+        max-height: 220px !important;
       }
     }
 
     &-progress-bars {
       width: 100%;
-      margin-top: 40px;
+      margin-top: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
 
       .el-progress {
-        width: 85% !important;
+        flex: 1;
       }
 
       .el-progress-bar {
@@ -158,25 +210,25 @@
         }
 
         &__innerText {
-          font-size: 17px;
-          color: $text-color;
+          font-size: 15px;
+          color: $background-color;
         }
       }
 
       &-one {
         display: flex;
-        justify-content: space-around;
         align-items: center;
-        margin-bottom: 20px;
+        gap: 12px;
 
         .el-progress-bar__inner {
           background-color: $secondary-color !important;
         }
       }
+
       &-two {
         display: flex;
-        justify-content: space-around;
         align-items: center;
+        gap: 12px;
 
         .el-progress-bar__inner {
           background-color: $accent-color !important;
@@ -184,22 +236,25 @@
       }
 
       .el-button {
-        width: 24px;
-        height: 24px;
+        flex-shrink: 0;
+        width: 28px;
+        height: 28px;
+        border-radius: 50% !important;
       }
     }
 
     &-table {
-      margin-top: 50px;
+      margin-top: 36px;
       width: 100%;
 
       .el-table {
         background-color: $statistics-progress-bar-color !important;
-        --el-table-tr-bg-color: $statistics-progress-bar-color;
+        --el-table-tr-bg-color: #{$statistics-progress-bar-color};
         font-family: 'Zain', sans-serif;
         font-weight: 400;
-        font-style: normal;
-        font-size: 21px;
+        font-size: clamp(17px, 2vw, 20px);
+        border-radius: 10px;
+        overflow: hidden;
 
         &__header-wrapper {
           display: none;
@@ -207,6 +262,10 @@
 
         .cell {
           color: $primary-color;
+        }
+
+        tr {
+          transition: background 0.15s ease;
         }
       }
     }

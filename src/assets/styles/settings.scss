@@ -1,107 +1,124 @@
 @import 'variables.scss';
 
 .settings-page {
+  min-height: 100vh;
+  background-color: $background-color;
+  padding-bottom: 80px;
+
   .header {
     position: relative;
     z-index: 100;
-    top: 0;
-    left: 0;
-    background-color: $background-color;
+    background-color: rgba($background-color, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     width: 100%;
-    height: 70px;
-    padding: 3vw;
+    height: 64px;
+    padding: 0 4vw;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    border-bottom: 1px solid rgba($text-color, 0.07);
+
+    @media (min-width: 768px) {
+      padding: 0 5%;
+    }
+
+    @media (min-width: 1100px) {
+      padding: 0 calc((100% - 1200px) / 2 + 2rem);
+    }
 
     &-logo {
-      width: 50%;
       display: flex;
       align-items: center;
-
-      -webkit-touch-callout: none;
-      -webkit-user-select: none;
-      -khtml-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
+      gap: 10px;
       user-select: none;
+      -webkit-user-select: none;
 
       img {
-        width: 35px;
-        margin-right: 10px;
+        width: 32px;
+        height: 32px;
       }
 
       span {
         font-family: 'Comfortaa', sans-serif;
-        font-optical-sizing: auto;
         font-weight: 700;
-        font-style: normal;
-        font-size: 22px;
+        font-size: 20px;
         color: $text-color;
       }
     }
   }
 
+  > .container {
+    padding-top: 32px;
+
+    @media (min-width: 768px) {
+      width: 90%;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 40px 2rem 0;
+    }
+
+    @media (min-width: 1100px) {
+      max-width: 800px;
+    }
+  }
+
   .settings-header {
-    margin-top: 30px;
     display: flex;
     align-items: center;
+    gap: 18px;
+    margin-bottom: 24px;
 
     img {
-      width: 70px;
-      height: 70px;
-      margin-right: 20px;
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid rgba($primary-color, 0.15);
     }
 
     div {
       h1 {
         font-family: 'Josefin Sans', sans-serif;
-        font-optical-sizing: auto;
         font-weight: 700;
-        font-style: normal;
-        font-size: 24px;
-        line-height: 1.2;
+        font-size: clamp(20px, 2.5vw, 26px);
         color: $primary-color;
+        line-height: 1.2;
       }
 
       h2 {
         font-family: 'Josefin Sans', sans-serif;
-        font-optical-sizing: auto;
         font-weight: 400;
-        font-style: normal;
-        font-size: 17px;
-        line-height: 1.2;
-        margin-bottom: 0;
+        font-size: clamp(14px, 1.6vw, 17px);
         color: $secondary-color;
+        margin-top: 4px;
       }
     }
   }
 
   hr {
-    margin: 15px 0 30px 0;
-    border-color: $secondary-color;
+    border: none;
+    border-top: 1px solid rgba($text-color, 0.1);
+    margin: 4px 0 28px 0;
   }
 
   h2 {
     font-family: 'Josefin Sans', sans-serif;
-    font-optical-sizing: auto;
     font-weight: 600;
-    font-style: normal;
-    font-size: 24px;
+    font-size: clamp(18px, 2vw, 22px);
     margin-bottom: 20px;
     color: $primary-color;
   }
 
   .el-form-item {
-    margin-bottom: 30px;
+    margin-bottom: 24px;
 
     label {
       font-family: 'Zain', sans-serif;
       font-weight: 400;
-      font-style: normal;
-      font-size: 22px;
+      font-size: 19px;
       color: $text-color;
-      margin-bottom: 5px !important;
+      margin-bottom: 4px !important;
     }
 
     .el-input__wrapper {
@@ -109,15 +126,14 @@
     }
 
     .el-select__wrapper {
-      padding: 15px;
+      padding: 14px 15px;
     }
 
     .el-input__inner,
     .el-select__selection {
       font-family: 'Zain', sans-serif;
       font-weight: 400;
-      font-style: normal;
-      font-size: 20px;
+      font-size: 18px;
     }
   }
 
@@ -128,32 +144,35 @@
     border-color: $primary-color !important;
     border-radius: 50px !important;
     width: 100%;
-    padding: 22px 25px;
+    padding: 20px 25px;
     font-family: 'Zain', sans-serif;
-    font-weight: 300;
-    font-style: normal;
-    font-size: 23px;
-
+    font-weight: 400;
+    font-size: 20px;
+    transition: background 0.2s ease, transform 0.2s ease !important;
     -webkit-tap-highlight-color: transparent;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
     user-select: none;
+    -webkit-user-select: none;
+
+    &:hover {
+      background-color: lighten($primary-color, 8%) !important;
+      transform: translateY(-1px);
+    }
   }
 
   .change-subgroups {
-    margin-top: 50px;
+    margin-top: 40px;
   }
 
   .logout {
-    margin-top: 50px;
-    margin-bottom: 180px;
+    margin-top: 40px;
 
     .el-button {
       background-color: $accent-color !important;
       border-color: $accent-color !important;
+
+      &:hover {
+        background-color: lighten($accent-color, 6%) !important;
+      }
     }
   }
 }
