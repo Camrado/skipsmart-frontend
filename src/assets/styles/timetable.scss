@@ -2,22 +2,23 @@
 
 .timetable {
   min-height: 100vh;
-  margin-bottom: 100px;
+  padding-bottom: 120px;
   background-color: $background-color;
 
   .header {
-    position: relative;
+    position: sticky;
+    top: 0;
     z-index: 100;
-    background-color: rgba($background-color, 0.95);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    background-color: rgba($background-color, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     width: 100%;
-    height: 64px;
+    height: 72px;
     padding: 0 4vw;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid rgba($text-color, 0.07);
+    border-bottom: 1px solid rgba($text-color, 0.05);
 
     @media (min-width: 768px) {
       padding: 0 5%;
@@ -30,20 +31,21 @@
     &-logo {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
       user-select: none;
       -webkit-user-select: none;
 
       img {
-        width: 32px;
-        height: 32px;
+        width: 36px;
+        height: 36px;
       }
 
       span {
         font-family: 'Comfortaa', sans-serif;
         font-weight: 700;
-        font-size: 20px;
+        font-size: 22px;
         color: $text-color;
+        letter-spacing: -0.5px;
       }
     }
   }
@@ -55,7 +57,7 @@
   }
 
   .timetable-date-container {
-    margin: 20px 0 28px 0;
+    margin: 32px 0 48px 0;
 
     .container {
       @media (min-width: 768px) {
@@ -74,31 +76,35 @@
 
     .el-input {
       width: 100%;
-      background-color: $timetable-date-color;
-      border-radius: 10px;
-      border-top-left-radius: 0;
-      border-bottom-right-radius: 0;
+      background-color: $white;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba($text-color, 0.05);
+      border: 1px solid transparent;
+      transition: all 0.3s ease;
+
+      &:hover {
+        border-color: rgba($primary-color, 0.2);
+      }
 
       &__wrapper {
-        padding: 8px 0;
-        background: none;
-        border-radius: 10px;
-        border-top-left-radius: 0;
-        border-bottom-right-radius: 0;
+        padding: 16px;
+        background: transparent;
+        border: none;
+        box-shadow: none !important;
       }
 
       &__prefix {
-        position: absolute;
-        left: 10%;
-        color: $background-color;
+        color: $primary-color;
+        font-size: 20px;
+        left: 20px;
       }
 
       &__inner {
         text-align: center;
         font-family: 'Zain', sans-serif;
-        font-weight: 400;
-        font-size: 20px;
-        color: $background-color;
+        font-weight: 700;
+        font-size: 24px;
+        color: $primary-color;
       }
     }
   }
@@ -122,7 +128,7 @@
     > .container {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 0 2rem;
+      gap: 0 3rem;
       align-items: start;
 
       > br {
@@ -134,8 +140,8 @@
   .timetable-row-container {
     position: relative;
     width: 100%;
-    height: 108px;
-    margin-bottom: 14px;
+    height: 140px; 
+    margin-bottom: 24px;
   }
 
   .timetable-row {
@@ -143,154 +149,156 @@
     height: 100%;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    background-color: $timetable-background-color;
-    border-radius: 14px;
-    border-top-left-radius: 0;
+    justify-content: flex-start;
+    background-color: $white;
+    border-radius: 20px;
     color: $text-color;
-    transition: box-shadow 0.2s ease;
+    box-shadow: 0 12px 30px rgba($text-color, 0.04);
+    border: 1px solid rgba($gray-line-color, 0.4);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    z-index: 1;
 
     &:hover {
-      box-shadow: 0 4px 16px rgba($text-color, 0.08);
+      box-shadow: 0 20px 40px rgba($text-color, 0.08);
+      transform: translateY(-4px) scale(1.01);
     }
 
     &-number {
       position: absolute;
-      top: 0;
-      left: 0;
-      padding: 5px 14px 5px 8px;
-      background-color: $timetable-period-color;
-      border-bottom-right-radius: 100%;
-      font-family: 'Comfortaa', sans-serif;
+      top: 50%;
+      left: -10px;
+      transform: translateY(-50%);
+      font-family: 'Josefin Sans', sans-serif;
       font-weight: 700;
-      font-size: 18px;
-      color: $text-color;
-      min-width: 36px;
-      text-align: center;
+      font-size: 140px; 
+      color: $primary-color;
+      opacity: 0.09; 
+      line-height: 1;
+      z-index: -1;
+      pointer-events: none;
     }
 
     &-subject {
-      width: 100%;
-      padding-top: 8px;
-      padding-left: 20px;
+      padding-left: 28px;
+      padding-right: 140px; 
       font-family: 'Zain', sans-serif;
-      font-weight: 500;
-      font-size: clamp(18px, 2.2vw, 22px);
-      color: $primary-color;
-      line-height: 1.3;
+      font-weight: 700;
+      font-size: clamp(22px, 2.5vw, 26px);
+      color: $dark-text;
+      line-height: 1.2;
+      margin-bottom: 24px; 
     }
 
     &-group {
       position: absolute;
-      right: 72px;
-      bottom: 8px;
-      font-family: 'Zain', sans-serif;
-      font-weight: 500;
-      font-style: italic;
-      font-size: 18px;
-      color: $timetable-group-color;
+      left: 80px;
+      bottom: 20px;
+      background: rgba($primary-color, 0.15);
+      color: $primary-color;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-family: 'Josefin Sans', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      letter-spacing: 0.5px;
+      font-style: normal;
     }
 
     &-buttons {
-      position: relative;
-      width: 68px;
-      height: 100%;
-      flex-shrink: 0;
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      gap: 12px;
+      background: transparent;
+      border: none;
+      width: auto;
+      height: auto;
 
-      .el-button:nth-child(1) {
-        position: absolute;
-        top: 0;
-        right: 0;
-        width: 48px;
-        height: 50%;
-        background-color: $timetable-check-sign-color;
-        color: $background-color;
-        border: none;
-        border-radius: 0;
-        border-top-right-radius: 12px;
-        transition: filter 0.15s ease;
-
-        &:hover {
-          filter: brightness(1.1);
-        }
-
-        .el-icon {
-          font-size: 16px;
-        }
-      }
-
-      .el-button:nth-child(2) {
-        position: absolute;
-        bottom: 0;
-        right: 0;
-        width: 48px;
-        height: 50%;
-        background-color: $timetable-cross-sign-color;
-        color: $background-color;
-        border: none;
-        border-radius: 0;
-        border-bottom-right-radius: 12px;
-        transition: filter 0.15s ease;
-
-        &:hover {
-          filter: brightness(1.1);
-        }
+      .el-button {
+        width: 52px;
+        height: 52px;
+        margin: 0;
+        border-radius: 50% !important;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid transparent;
+        background-color: $white;
+        box-shadow: 0 4px 12px rgba($text-color, 0.05);
 
         .el-icon {
-          font-size: 16px;
+          font-size: 22px;
+        }
+
+        &:nth-child(1) {
+          color: $gray-text;
+          border-color: rgba($color-success, 0.2);
+
+          &:hover {
+            background-color: $color-success;
+            color: $white;
+            transform: scale(1.1);
+            box-shadow: 0 8px 16px rgba($color-success, 0.3);
+          }
+        }
+
+        &:nth-child(2) {
+          color: $gray-text;
+          border-color: rgba($color-danger, 0.2);
+
+          &:hover {
+            background-color: $color-danger;
+            color: $white;
+            transform: scale(1.1);
+            box-shadow: 0 8px 16px rgba($color-danger, 0.3);
+          }
         }
       }
     }
   }
 
   .attended-lesson {
-    position: absolute;
-    width: 94%;
-    right: 0;
+    border-left: 8px solid $color-success;
+    background: linear-gradient(90deg, rgba($color-success, 0.08) 0%, $white 40%);
 
-    &::before {
-      transition: all 0.4s;
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -6%;
-      width: 4%;
-      height: 100%;
-      border-radius: 50px;
-      background-color: $timetable-attended-color;
+    .timetable-row-buttons .el-button:nth-child(1) {
+      background-color: $color-success;
+      color: $white;
+      border-color: $color-success;
+      box-shadow: 0 8px 16px rgba($color-success, 0.3);
     }
   }
 
   .skipped-lesson {
-    position: absolute;
-    width: 94%;
-    right: 0;
+    border-left: 8px solid $color-danger;
+    background: linear-gradient(90deg, rgba($color-danger, 0.06) 0%, $white 40%);
 
-    &::before {
-      content: '';
-      transition: all 0.4s;
-      border-radius: 50px;
-      position: absolute;
-      top: 0;
-      left: -6%;
-      width: 4%;
-      height: 100%;
-      background-color: $timetable-skipped-color;
+    .timetable-row-buttons .el-button:nth-child(2) {
+      background-color: $color-danger;
+      color: $white;
+      border-color: $color-danger;
+      box-shadow: 0 8px 16px rgba($color-danger, 0.3);
     }
   }
 }
 
 .red-marked-date {
-  color: red !important;
+  color: $color-danger !important;
+  font-weight: bold;
 
   &::after {
     position: absolute;
     content: '';
     border-radius: 50%;
-    width: 5px;
-    height: 5px;
-    background-color: red;
-    bottom: 5%;
-    right: calc(50% - 2.5px);
+    width: 6px;
+    height: 6px;
+    background-color: $color-danger;
+    bottom: 4px;
+    left: 50%;
+    transform: translateX(-50%);
   }
 }
