@@ -1,17 +1,20 @@
 @import 'variables.scss';
 
 .el-message-box {
+  border-radius: 16px;
+  border: none;
+  box-shadow: 0 16px 32px rgba($text-color, 0.1);
+  padding-bottom: 16px;
+
   &__header {
-    padding: 20px 20px 10px 20px;
+    padding: 20px 20px 10px;
   }
 
   &__title {
     color: $primary-color;
     font-family: 'Josefin Sans', sans-serif;
-    font-optical-sizing: auto;
-    font-weight: 600;
-    font-style: normal;
-    font-size: 22px;
+    font-weight: 700;
+    font-size: 20px;
   }
 
   &__content {
@@ -19,111 +22,142 @@
   }
 
   &__message {
-    // padding: 20px;
     font-family: 'Zain', sans-serif;
-    font-weight: 300;
-    font-style: normal;
-    font-size: 22px;
-    color: $text-color;
+    font-weight: 400;
+    font-size: 18px;
+    color: rgba($text-color, 0.8);
+    line-height: 1.5;
   }
 
   &__btns {
+    padding: 10px 20px 0;
+    
     .el-button {
       font-family: 'Josefin Sans', sans-serif;
-      font-optical-sizing: auto;
       font-weight: 600;
-      font-style: normal;
       font-size: 15px;
-      color: $background-color;
-      background-color: $accent-color;
-      border: 1px solid $accent-color;
+      padding: 14px 28px;
+      color: $white;
+      background-color: $primary-color;
+      border: none;
+      border-radius: 50px !important;
+      transition: all 0.3s ease !important;
+      box-shadow: 0 4px 12px rgba($primary-color, 0.2);
+
+      &:hover {
+        background-color: lighten($brand-blue, 5%) !important;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba($primary-color, 0.3);
+      }
     }
   }
 }
 
 .statistics-page {
   min-height: 100vh;
-  margin-bottom: 100px;
-  -webkit-tap-highlight-color: transparent;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
+  padding-bottom: 100px;
+  background-color: $background-color;
   user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
 
   .header {
-    position: relative;
-    z-index: 100;
+    position: sticky;
     top: 0;
-    left: 0;
-    background-color: $background-color;
+    z-index: 100;
+    background-color: rgba($background-color, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     width: 100%;
-    height: 70px;
-    padding: 3vw;
+    height: 64px;
+    padding: 0 4vw;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    border-bottom: 1px solid rgba($text-color, 0.05);
+
+    @media (min-width: 768px) {
+      padding: 0 5%;
+    }
+
+    @media (min-width: 1100px) {
+      padding: 0 calc((100% - 1200px) / 2 + 2rem);
+    }
 
     &-logo {
-      width: 50%;
       display: flex;
       align-items: center;
-
-      -webkit-touch-callout: none;
-      -webkit-user-select: none;
-      -khtml-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
+      gap: 10px;
       user-select: none;
+      -webkit-user-select: none;
 
       img {
-        width: 35px;
-        margin-right: 10px;
+        width: 32px;
+        height: 32px;
       }
 
       span {
         font-family: 'Comfortaa', sans-serif;
-        font-optical-sizing: auto;
         font-weight: 700;
-        font-style: normal;
-        font-size: 22px;
+        font-size: 20px;
         color: $text-color;
+        letter-spacing: -0.5px;
       }
     }
   }
 
   .statistics {
+    padding-top: 24px;
+
+    @media (min-width: 768px) {
+      width: 90%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 2rem 0;
+    }
+
+    @media (min-width: 1100px) {
+      padding: 40px calc((100% - 1200px) / 2 + 2rem) 0;
+      width: 100%;
+      max-width: 100%;
+    }
+
     .el-select {
-      margin-top: 15px;
-      // margin-left: 5%;
+      margin-top: 8px;
       width: 100%;
 
-      &__wrapper {
-        background-color: $statistics-subject-select-color;
-        padding: 16px 20px;
-        border-radius: 10px;
-        border-top-left-radius: 0px;
-        border-bottom-right-radius: 0px;
+      @media (min-width: 768px) {
+        max-width: 480px;
+      }
 
-        &.is-focused {
-          box-shadow: 0 0 0 1px $statistics-subject-select-active-color;
+      &__wrapper {
+        background-color: $white;
+        padding: 12px 18px;
+        border-radius: 14px;
+        box-shadow: 0 6px 16px rgba($text-color, 0.04);
+        border: 1px solid transparent;
+        transition: all 0.3s ease;
+
+        &:hover, &.is-focused {
+          border-color: rgba($primary-color, 0.2);
+          box-shadow: 0 8px 20px rgba($text-color, 0.06);
         }
       }
 
       &__selected-item {
-        color: $background-color;
-        font-weight: 400;
-        font-style: normal;
-        font-size: 16px;
+        color: $primary-color;
+        font-family: 'Zain', sans-serif;
+        font-weight: 700;
+        font-size: 19px;
       }
 
       &__prefix {
-        margin-left: 10px;
+        margin-left: 8px;
       }
 
       &__suffix svg {
-        color: $background-color !important;
+        color: $primary-color !important;
       }
 
       &__inner {
@@ -131,52 +165,100 @@
       }
     }
 
+    @media (min-width: 900px) {
+      > div {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        column-gap: 3rem;
+        align-items: stretch;
+        margin-top: 24px;
+      }
+
+      .statistics-pie-charts {
+        grid-column: 1;
+        grid-row: 1;
+        margin-top: 0;
+      }
+
+      .statistics-progress-bars {
+        grid-column: 2;
+        grid-row: 1;
+        margin-top: 0;
+      }
+
+      .statistics-table {
+        grid-column: 1 / 3;
+        grid-row: 2;
+      }
+    }
+
     &-pie-charts {
-      margin-top: 30px;
+      margin-top: 28px;
       width: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
+      gap: 16px;
+      background-color: $white;
+      padding: 24px 16px;
+      border-radius: 20px;
+      box-shadow: 0 8px 24px rgba($text-color, 0.03);
+      border: 1px solid rgba($gray-line-color, 0.4);
 
       canvas {
-        width: 48vw !important;
-        height: 48vw !important;
+        width: 42vw !important;
+        height: 42vw !important;
+        max-width: 200px !important;
+        max-height: 200px !important;
       }
     }
 
     &-progress-bars {
       width: 100%;
-      margin-top: 40px;
+      margin-top: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 20px;
+      background-color: $white;
+      padding: 24px 20px;
+      border-radius: 20px;
+      box-shadow: 0 8px 24px rgba($text-color, 0.03);
+      border: 1px solid rgba($gray-line-color, 0.4);
 
       .el-progress {
-        width: 85% !important;
+        flex: 1;
       }
 
       .el-progress-bar {
         &__outer {
-          background: $statistics-progress-bar-color;
+          background: rgba($gray-line-color, 0.5);
+          border-radius: 50px;
         }
 
         &__innerText {
-          font-size: 17px;
-          color: $text-color;
+          font-family: 'Zain', sans-serif;
+          font-weight: 700;
+          font-size: 14px;
+          color: $white;
+          letter-spacing: 0.5px;
         }
       }
 
       &-one {
         display: flex;
-        justify-content: space-around;
         align-items: center;
-        margin-bottom: 20px;
+        gap: 12px;
 
         .el-progress-bar__inner {
-          background-color: $secondary-color !important;
+          background-color: $primary-color !important;
         }
       }
+
       &-two {
         display: flex;
-        justify-content: space-around;
         align-items: center;
+        gap: 12px;
 
         .el-progress-bar__inner {
           background-color: $accent-color !important;
@@ -184,29 +266,63 @@
       }
 
       .el-button {
-        width: 24px;
-        height: 24px;
+        flex-shrink: 0;
+        width: 30px;
+        height: 30px;
+        border-radius: 50% !important;
+        background-color: rgba($primary-color, 0.1);
+        color: $primary-color;
+        border: none;
+        transition: all 0.3s ease;
+
+        .el-icon {
+          font-size: 14px;
+        }
+
+        &:hover {
+          background-color: $primary-color;
+          color: $white;
+          transform: scale(1.1);
+        }
       }
     }
 
     &-table {
-      margin-top: 50px;
+      margin-top: 24px;
       width: 100%;
 
       .el-table {
-        background-color: $statistics-progress-bar-color !important;
-        --el-table-tr-bg-color: $statistics-progress-bar-color;
+        background-color: $white !important;
+        --el-table-tr-bg-color: #ffffff;
+        --el-table-row-hover-bg-color: #f8fafc;
+        --el-table-border-color: rgba(226, 232, 240, 0.6);
         font-family: 'Zain', sans-serif;
-        font-weight: 400;
-        font-style: normal;
-        font-size: 21px;
+        font-weight: 500;
+        font-size: clamp(16px, 1.8vw, 19px);
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 8px 24px rgba($text-color, 0.03);
+        border: 1px solid rgba($gray-line-color, 0.4);
 
         &__header-wrapper {
           display: none;
         }
 
         .cell {
-          color: $primary-color;
+          color: $dark-text;
+          padding: 12px 20px;
+        }
+
+        .el-table__row {
+          td:last-child .cell {
+            color: $primary-color;
+            font-weight: 700;
+            text-align: right;
+          }
+        }
+
+        tr {
+          transition: background 0.2s ease;
         }
       }
     }

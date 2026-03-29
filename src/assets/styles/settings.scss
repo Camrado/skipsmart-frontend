@@ -1,159 +1,216 @@
 @import 'variables.scss';
 
 .settings-page {
+  min-height: 100vh;
+  background-color: $background-color;
+  padding-bottom: 80px;
+
   .header {
-    position: relative;
-    z-index: 100;
+    position: sticky;
     top: 0;
-    left: 0;
-    background-color: $background-color;
+    z-index: 100;
+    background-color: rgba($background-color, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     width: 100%;
-    height: 70px;
-    padding: 3vw;
+    height: 72px;
+    padding: 0 4vw;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    border-bottom: 1px solid rgba($text-color, 0.05);
+
+    @media (min-width: 768px) {
+      padding: 0 5%;
+    }
+
+    @media (min-width: 1100px) {
+      padding: 0 calc((100% - 1200px) / 2 + 2rem);
+    }
 
     &-logo {
-      width: 50%;
       display: flex;
       align-items: center;
-
-      -webkit-touch-callout: none;
-      -webkit-user-select: none;
-      -khtml-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
+      gap: 12px;
       user-select: none;
+      -webkit-user-select: none;
 
       img {
-        width: 35px;
-        margin-right: 10px;
+        width: 36px;
+        height: 36px;
       }
 
       span {
         font-family: 'Comfortaa', sans-serif;
-        font-optical-sizing: auto;
         font-weight: 700;
-        font-style: normal;
         font-size: 22px;
         color: $text-color;
+        letter-spacing: -0.5px;
       }
     }
   }
 
+  > .container {
+    padding-top: 40px;
+
+    @media (min-width: 768px) {
+      width: 90%;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 48px 2rem 0;
+    }
+
+    @media (min-width: 1100px) {
+      max-width: 800px;
+    }
+  }
+
   .settings-header {
-    margin-top: 30px;
     display: flex;
     align-items: center;
+    gap: 24px;
+    margin-bottom: 32px;
+    padding: 24px;
+    background-color: $white;
+    border-radius: 20px;
+    box-shadow: 0 8px 24px rgba($text-color, 0.03);
+    border: 1px solid rgba($gray-line-color, 0.4);
 
     img {
-      width: 70px;
-      height: 70px;
-      margin-right: 20px;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 4px 12px rgba($primary-color, 0.15);
+      border: 3px solid $white;
     }
 
     div {
       h1 {
         font-family: 'Josefin Sans', sans-serif;
-        font-optical-sizing: auto;
         font-weight: 700;
-        font-style: normal;
-        font-size: 24px;
-        line-height: 1.2;
+        font-size: clamp(22px, 2.5vw, 28px);
         color: $primary-color;
+        line-height: 1.2;
+        margin-bottom: 4px;
+        letter-spacing: -0.5px;
       }
 
       h2 {
-        font-family: 'Josefin Sans', sans-serif;
-        font-optical-sizing: auto;
+        font-family: 'Zain', sans-serif;
         font-weight: 400;
-        font-style: normal;
-        font-size: 17px;
-        line-height: 1.2;
-        margin-bottom: 0;
-        color: $secondary-color;
+        font-size: clamp(16px, 1.6vw, 19px);
+        color: rgba($text-color, 0.6);
       }
     }
   }
 
   hr {
-    margin: 15px 0 30px 0;
-    border-color: $secondary-color;
+    border: none;
+    border-top: 1px solid rgba($gray-line-color, 0.6);
+    margin: 32px 0;
   }
 
   h2 {
     font-family: 'Josefin Sans', sans-serif;
-    font-optical-sizing: auto;
-    font-weight: 600;
-    font-style: normal;
-    font-size: 24px;
-    margin-bottom: 20px;
+    font-weight: 700;
+    font-size: clamp(20px, 2vw, 24px);
+    margin-bottom: 24px;
     color: $primary-color;
   }
 
   .el-form-item {
-    margin-bottom: 30px;
+    margin-bottom: 24px;
 
     label {
       font-family: 'Zain', sans-serif;
-      font-weight: 400;
-      font-style: normal;
-      font-size: 22px;
-      color: $text-color;
-      margin-bottom: 5px !important;
+      font-weight: 700;
+      font-size: 18px;
+      color: $dark-text;
+      margin-bottom: 8px !important;
+      letter-spacing: 0.5px;
     }
 
     .el-input__wrapper {
-      padding: 3px 15px;
+      padding: 8px 16px;
+      background-color: $white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba($text-color, 0.03);
+      border: 1px solid rgba($gray-line-color, 0.5);
+      transition: all 0.3s ease;
+
+      &:hover, &.is-focused {
+        border-color: rgba($primary-color, 0.3);
+        box-shadow: 0 6px 16px rgba($primary-color, 0.08);
+      }
     }
 
     .el-select__wrapper {
-      padding: 15px;
+      padding: 12px 16px;
+      background-color: $white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba($text-color, 0.03);
+      border: 1px solid rgba($gray-line-color, 0.5);
+      transition: all 0.3s ease;
+
+      &:hover, &.is-focused {
+        border-color: rgba($primary-color, 0.3);
+        box-shadow: 0 6px 16px rgba($primary-color, 0.08);
+      }
     }
 
     .el-input__inner,
     .el-select__selection {
       font-family: 'Zain', sans-serif;
-      font-weight: 400;
-      font-style: normal;
-      font-size: 20px;
+      font-weight: 500;
+      font-size: 18px;
+      color: $text-color;
     }
   }
 
   .el-button {
     z-index: 2 !important;
-    color: $background-color !important;
+    color: $white !important;
     background-color: $primary-color !important;
-    border-color: $primary-color !important;
-    border-radius: 50px !important;
+    border: none !important;
+    border-radius: 12px !important;
     width: 100%;
-    padding: 22px 25px;
-    font-family: 'Zain', sans-serif;
-    font-weight: 300;
-    font-style: normal;
-    font-size: 23px;
-
+    padding: 22px 24px;
+    font-family: 'Josefin Sans', sans-serif;
+    font-weight: 600;
+    font-size: 18px;
+    transition: all 0.3s ease !important;
     -webkit-tap-highlight-color: transparent;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
     user-select: none;
+    -webkit-user-select: none;
+    box-shadow: 0 4px 12px rgba($primary-color, 0.15);
+    margin-top: 8px;
+
+    &:hover {
+      background-color: lighten($brand-blue, 4%) !important;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba($primary-color, 0.25);
+    }
   }
 
   .change-subgroups {
-    margin-top: 50px;
+    margin-top: 48px;
   }
 
   .logout {
-    margin-top: 50px;
-    margin-bottom: 180px;
+    margin-top: 64px;
 
     .el-button {
-      background-color: $accent-color !important;
-      border-color: $accent-color !important;
+      background-color: transparent !important;
+      border: 2px solid $color-danger !important;
+      color: $color-danger !important;
+      box-shadow: none;
+
+      &:hover {
+        background-color: $color-danger !important;
+        color: $white !important;
+        box-shadow: 0 8px 20px rgba($color-danger, 0.25);
+      }
     }
   }
 }
