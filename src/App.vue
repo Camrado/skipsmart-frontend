@@ -3,7 +3,7 @@
   <div class="test" v-touch:swipe.left="changePageLeft" v-touch:swipe.right="changePageRight">
     <router-view />
     <GrowBottomNavigation
-      v-if="store.getters['User/GET_IS_SIGNED_IN'] && !showPreloader"
+      v-if="store.getters['User/GET_IS_SIGNED_IN'] && !showPreloader && !route.path.startsWith('/admin')"
       :options="state.options"
       v-model="state.selected"
       style="padding: 0 10px"
@@ -100,6 +100,21 @@ export default {
 
           store.dispatch('User/SET_USER_ID', userData.id);
           store.dispatch('User/SET_SIGNED_IN', true);
+
+          let isAdmin = false;
+          try {
+            const payloadBase64 = token.split('.')[1];
+            // Decode base64 ignoring URL-safe characters
+            const base64 = payloadBase64.replace(/-/g, '+').replace(/_/g, '/');
+            const payloadDecoded = decodeURIComponent(atob(base64).split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+            const payload = JSON.parse(payloadDecoded);
+            isAdmin = payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] === 'Admin' || payload['role'] === 'Admin';
+          } catch (e) {
+            console.error('Failed to parse JWT payload', e);
+          }
+          store.dispatch('User/SET_IS_ADMIN', isAdmin);
           store.dispatch('User/SET_FIRSTNAME', userData.firstName);
           store.dispatch('User/SET_LASTNAME', userData.lastName);
           store.dispatch('User/SET_EMAIL', userData.email);
@@ -169,7 +184,7 @@ export default {
       }
     }
 
-    return { appMounted, showPreloader, store, changePageLeft, changePageRight, state };
+    return { appMounted, showPreloader, store, changePageLeft, changePageRight, state, route };
   }
 };
 </script>
