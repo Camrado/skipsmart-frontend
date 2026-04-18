@@ -2,13 +2,13 @@
   <div class="admin-view">
     <div class="header-actions">
       <h2>Groups</h2>
-      <el-button type="primary" @click="openCreateModal">Create Group</el-button>
+      <button class="scale-button admin-action-btn" @click="openCreateModal">Create Group</button>
     </div>
 
-    <el-table :data="groups" style="width: 100%" v-loading="loading" border stripe>
-      <el-table-column prop="groupName" label="Group Name" />
-      <el-table-column prop="edupageClassId" label="Edupage Class ID" />
-      <el-table-column label="Actions" width="180">
+    <el-table class="admin-table" :data="groups" style="width: 100%" v-loading="loading" border stripe>
+      <el-table-column prop="groupName" label="Group Name" align="center" min-width="120" />
+      <el-table-column prop="edupageClassId" label="Edupage Class ID" align="center" min-width="150" />
+      <el-table-column label="Actions" align="center" min-width="180">
         <template #default="scope">
           <el-button size="small" @click="openEditModal(scope.row)">Edit</el-button>
           <el-popconfirm title="Are you sure to delete this group?" @confirm="deleteGroup(scope.row.id)">
@@ -21,13 +21,13 @@
     </el-table>
 
     <!-- Dialog for Create / Edit -->
-    <el-dialog :title="isEdit ? 'Edit Group' : 'Create Group'" v-model="dialogVisible" width="90%" style="max-width: 500px;">
+    <el-dialog custom-class="admin-dialog" :title="isEdit ? 'Edit Group' : 'Create Group'" v-model="dialogVisible" width="90%">
       <el-form :model="form" :rules="rules" ref="formRef" label-position="top">
         <el-form-item label="Group Name" prop="groupName">
           <el-input v-model="form.groupName" />
         </el-form-item>
         <el-form-item label="Edupage Class ID" prop="edupageClassId">
-          <el-input-number v-model="form.edupageClassId" :min="1" />
+          <el-input-number v-model="form.edupageClassId" />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -184,22 +184,6 @@ export default {
 };
 </script>
 
-<style scoped>
-.admin-view {
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-}
-.header-actions {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-.header-actions h2 {
-  margin: 0;
-  color: #303133;
-  font-family: 'Inter', sans-serif;
-}
+<style lang="scss" scoped>
+@import '@/assets/styles/buttons.scss';
 </style>

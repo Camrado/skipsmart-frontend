@@ -3,7 +3,7 @@
     <div class="header-actions">
       <h2>Courses</h2>
       <div class="actions-right">
-        <el-select v-model="selectedGroupFilter" placeholder="Filter by Group" clearable @change="fetchCourses" style="width: 200px; margin-right: 15px;">
+        <el-select class="admin-select-filter" v-model="selectedGroupFilter" placeholder="Filter by Group" clearable @change="fetchCourses">
           <el-option
             v-for="group in groups"
             :key="group.id"
@@ -11,20 +11,20 @@
             :value="group.id"
           />
         </el-select>
-        <el-button type="primary" @click="openCreateModal">Create Course</el-button>
+        <button class="scale-button admin-action-btn" @click="openCreateModal">Create Course</button>
       </div>
     </div>
 
-    <el-table :data="courses" style="width: 100%" v-loading="loading" border stripe>
-      <el-table-column prop="courseName" label="Course Name" />
-      <el-table-column prop="semester" label="Semester">
+    <el-table class="admin-table" :data="courses" style="width: 100%" v-loading="loading" border stripe>
+      <el-table-column prop="courseName" label="Course Name" align="center" min-width="160" />
+      <el-table-column prop="semester" label="Semester" align="center" min-width="120">
         <template #default="scope">
           {{ scope.row.semester === 1 ? 'Fall' : 'Winter' }}
         </template>
       </el-table-column>
-      <el-table-column prop="hours" label="Hours" />
-      <el-table-column prop="groupName" label="Group" />
-      <el-table-column label="Actions" width="180">
+      <el-table-column prop="hours" label="Hours" align="center" min-width="100" />
+      <el-table-column prop="groupName" label="Group" align="center" min-width="120" />
+      <el-table-column label="Actions" align="center" min-width="180">
         <template #default="scope">
           <el-button size="small" @click="openEditModal(scope.row)">Edit</el-button>
           <el-popconfirm title="Are you sure to delete this course?" @confirm="deleteCourse(scope.row.id)">
@@ -37,13 +37,13 @@
     </el-table>
 
     <!-- Dialog for Create / Edit -->
-    <el-dialog :title="isEdit ? 'Edit Course' : 'Create Course'" v-model="dialogVisible" width="90%" style="max-width: 500px;">
+    <el-dialog custom-class="admin-dialog" :title="isEdit ? 'Edit Course' : 'Create Course'" v-model="dialogVisible" width="90%">
       <el-form :model="form" :rules="rules" ref="formRef" label-position="top">
         <el-form-item label="Course Name" prop="courseName">
           <el-input v-model="form.courseName" />
         </el-form-item>
         <el-form-item label="Semester" prop="semester">
-          <el-select v-model="form.semester" placeholder="Select semester" style="width: 100%">
+          <el-select class="admin-select-full" v-model="form.semester" placeholder="Select semester">
             <el-option label="Fall (1)" :value="1" />
             <el-option label="Winter (2)" :value="2" />
           </el-select>
@@ -52,7 +52,7 @@
           <el-input-number v-model="form.hours" :min="1" />
         </el-form-item>
         <el-form-item label="Group" prop="groupId">
-          <el-select v-model="form.groupId" placeholder="Select group" style="width: 100%" filterable>
+          <el-select class="admin-select-full" v-model="form.groupId" placeholder="Select group" filterable>
             <el-option
               v-for="group in groups"
               :key="group.id"
@@ -256,44 +256,6 @@ export default {
 };
 </script>
 
-<style scoped>
-.admin-view {
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-}
-.header-actions {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-.header-actions h2 {
-  margin: 0;
-  color: #303133;
-  font-family: 'Inter', sans-serif;
-}
-.actions-right {
-  display: flex;
-  align-items: center;
-}
-
-@media (max-width: 768px) {
-  .header-actions {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 15px;
-  }
-  .actions-right {
-    width: 100%;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 10px;
-  }
-  .actions-right .el-select {
-    width: 100% !important;
-    margin-right: 0 !important;
-  }
-}
+<style lang="scss" scoped>
+@import '@/assets/styles/buttons.scss';
 </style>

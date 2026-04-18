@@ -1,28 +1,36 @@
 <template>
   <div class="admin-layout">
-    <el-menu
-      :default-active="activeIndex"
-      class="admin-menu"
-      mode="horizontal"
-      background-color="#545c64"
-      text-color="#fff"
-      active-text-color="#ffd04b"
-      router
-    >
-      <el-menu-item index="/admin/groups">
-        <i class="fa-solid fa-users"></i>
-        <span>Manage Groups</span>
-      </el-menu-item>
-      <el-menu-item index="/admin/courses">
-        <i class="fa-solid fa-book"></i>
-        <span>Manage Courses</span>
-      </el-menu-item>
-      <div class="flex-grow"></div>
-      <el-menu-item index="/">
-        <i class="fa-solid fa-arrow-left"></i>
-        <span>Exit Admin Panel</span>
-      </el-menu-item>
-    </el-menu>
+    <header class="admin-header">
+      <div class="header-container">
+        <!-- Logo -->
+        <div class="admin-brand">
+          <img src="../assets/images/logo-round-background.png" alt="SkipSmart" class="admin-logo" />
+          <span>SkipSmart Admin</span>
+        </div>
+
+        <!-- Navigation Links -->
+        <nav class="admin-nav">
+          <router-link to="/admin/groups" class="nav-item" active-class="nav-item-active">
+            <i class="fa-solid fa-users"></i>
+            <span>Groups</span>
+          </router-link>
+          <router-link to="/admin/courses" class="nav-item" active-class="nav-item-active">
+            <i class="fa-solid fa-book"></i>
+            <span>Courses</span>
+          </router-link>
+        </nav>
+
+        <!-- Exit Button -->
+        <div class="header-exit">
+          <router-link to="/">
+            <button class="scale-button exit-btn">
+              <i class="fa-solid fa-arrow-right-from-bracket"></i>
+              <span>Exit Admin</span>
+            </button>
+          </router-link>
+        </div>
+      </div>
+    </header>
 
     <div class="admin-content">
       <router-view />
@@ -44,36 +52,6 @@ export default {
 };
 </script>
 
-<style scoped>
-.admin-layout {
-  min-height: 100vh;
-  background-color: #f5f7fa;
-}
-
-.flex-grow {
-  flex-grow: 1;
-}
-
-.admin-content {
-  padding: 20px;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-/* Add responsive adjustments for mobile */
-@media (max-width: 768px) {
-  .admin-menu {
-    overflow-x: auto;
-    white-space: nowrap;
-  }
-  .admin-menu .el-menu-item span {
-    display: none; /* Hide text on small screens, show only icons if needed, or adjust padding */
-  }
-  .admin-menu .el-menu-item {
-    padding: 0 15px;
-  }
-  .admin-content {
-    padding: 10px;
-  }
-}
+<style lang="scss">
+@import '@/assets/styles/admin.scss';
 </style>
