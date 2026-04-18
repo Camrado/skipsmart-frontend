@@ -204,9 +204,8 @@ export default {
                 state.isTheGroupL2CS = currentGroup.groupName.includes('L2 CS1-23') || currentGroup.groupName.includes('L2 CS2-23');
               }
 
-              state.thirdYearGroupIds = state.groups.slice(11, 16).map((group) => group.id);
-              state.isTheGroupThirdYear = state.thirdYearGroupIds.includes(state.groupId);
-
+              state.isTheGroupThirdYear = currentGroup.groupName.includes('L2') && currentGroup.groupName.includes('23');
+              
               state.languageSubgroup = store.getters['User/GET_LANGUAGE_SUBGROUP'];
               state.facultySubgroup = store.getters['User/GET_FACULTY_SUBGROUP'];
             } else {
