@@ -281,7 +281,7 @@ export default {
             state.isTheGroupL1CS = isNewGroupL1CS;
             state.isTheGroupL2CS = isNewGroupL2CS;
           }
-          state.isTheGroupThirdYear = state.thirdYearGroupIds.includes(state.groupId);
+          state.isTheGroupThirdYear = newGroup.groupName.includes('L2') && newGroup.groupName.includes('23');
 
           store.dispatch('Timetable/CLEAR_TIMETABLE');
           store.dispatch('Timetable/SET_ARE_UNMARKED_DATES_LOADED', false);

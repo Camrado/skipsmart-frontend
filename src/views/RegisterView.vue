@@ -288,8 +288,7 @@ export default {
           state.isTheGroupL2CS = currentGroup.groupName.includes('L2 CS1-23') || currentGroup.groupName.includes('L2 CS2-23');
         }
 
-        let thirdYearGroupIds = state.groups.slice(11, 16).map((group) => group.id);
-        state.isTheGroupThirdYear = thirdYearGroupIds.includes(state.form.groupId);
+        state.isTheGroupThirdYear = currentGroup.groupName.includes('L2') && currentGroup.groupName.includes('23');
 
         state.showFirstSlide = false;
         state.showSecondSlide = false;
