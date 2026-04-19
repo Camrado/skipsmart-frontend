@@ -357,6 +357,7 @@ export default {
       localStorage.removeItem(store.getters['User/GET_EXPIRATION_DATE_KEY']);
 
       store.dispatch('User/SET_SIGNED_IN', false);
+      store.dispatch('User/SET_IS_ADMIN', false);
       store.dispatch('User/SET_USER_ID', undefined);
       store.dispatch('User/SET_FIRSTNAME', undefined);
       store.dispatch('User/SET_LASTNAME', undefined);

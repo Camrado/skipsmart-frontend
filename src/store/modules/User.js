@@ -11,7 +11,8 @@ export const User = {
     lastName: '',
     email: '',
     languageSubgroup: undefined,
-    facultySubgroup: undefined
+    facultySubgroup: undefined,
+    isAdmin: false
   },
 
   mutations: {
@@ -38,6 +39,9 @@ export const User = {
     },
     SET_FACULTY_SUBGROUP(state, content) {
       state.facultySubgroup = content;
+    },
+    SET_IS_ADMIN(state, content) {
+      state.isAdmin = content;
     }
   },
 
@@ -65,6 +69,9 @@ export const User = {
     },
     SET_FACULTY_SUBGROUP({ commit }, subgroup) {
       commit('SET_FACULTY_SUBGROUP', subgroup);
+    },
+    SET_IS_ADMIN({ commit }, isAdmin) {
+      commit('SET_IS_ADMIN', isAdmin);
     }
   },
 
@@ -77,6 +84,7 @@ export const User = {
     GET_GROUP_ID: (state) => state.groupId,
     GET_LANGUAGE_SUBGROUP: (state) => state.languageSubgroup,
     GET_FACULTY_SUBGROUP: (state) => state.facultySubgroup,
+    GET_IS_ADMIN: (state) => state.isAdmin,
 
     GET_JWT_LKEY: (state) => state.jwtKeyInLStorage,
     GET_EXPIRATION_DATE_KEY: (state) => state.expirationDateKey
