@@ -29,6 +29,7 @@ export default {
   img {
     margin-top: -10vh;
     width: 50vw;
+    max-width: 200px;
   }
 }
 </style>
