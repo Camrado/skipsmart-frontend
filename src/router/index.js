@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import HomeView from '../views/HomeView.vue';
 import store from '../store';
+import { jwtDecode } from 'jwt-decode';
 
 const routes = [
   {
@@ -102,28 +103,19 @@ router.resolve({
 
 router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAdmin)) {
-    let isAdmin = store.getters['User/GET_IS_ADMIN'];
+    let isAdmin = false;
+    const token = localStorage.getItem(store.getters['User/GET_JWT_LKEY']);
 
-    if (!isAdmin) {
-      const token = localStorage.getItem(store.getters['User/GET_JWT_LKEY']);
-      if (token) {
-        try {
-          const payloadBase64 = token.split('.')[1];
-          const base64 = payloadBase64.replace(/-/g, '+').replace(/_/g, '/');
-          const payloadDecoded = decodeURIComponent(atob(base64).split('').map(function (c) {
-            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-          }).join(''));
-          const payload = JSON.parse(payloadDecoded);
-          isAdmin = payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] === 'Admin' || payload['role'] === 'Admin';
-
-          if (isAdmin) {
-            store.dispatch('User/SET_IS_ADMIN', true);
-          }
-        } catch (e) {
-          console.error('Failed to parse JWT payload in router guard', e);
-        }
+    if (token) {
+      try {
+        const payload = jwtDecode(token);
+        isAdmin = payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] === 'Admin' || payload['role'] === 'Admin';
+      } catch (e) {
+        console.error('Failed to parse JWT payload in router guard', e);
       }
     }
+
+    store.dispatch('User/SET_IS_ADMIN', isAdmin);
 
     if (!isAdmin) {
       next({ name: 'home' });

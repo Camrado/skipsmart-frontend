@@ -21,6 +21,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { GrowBottomNavigation } from 'bottom-navigation-vue';
 import 'bottom-navigation-vue/dist/style.css';
 import mixpanel from 'mixpanel-browser';
+import { jwtDecode } from 'jwt-decode';
 
 export default {
   components: { Preloader, GrowBottomNavigation },
@@ -103,13 +104,7 @@ export default {
 
           let isAdmin = false;
           try {
-            const payloadBase64 = token.split('.')[1];
-            // Decode base64 ignoring URL-safe characters
-            const base64 = payloadBase64.replace(/-/g, '+').replace(/_/g, '/');
-            const payloadDecoded = decodeURIComponent(atob(base64).split('').map(function(c) {
-                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-            }).join(''));
-            const payload = JSON.parse(payloadDecoded);
+            const payload = jwtDecode(token);
             isAdmin = payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] === 'Admin' || payload['role'] === 'Admin';
           } catch (e) {
             console.error('Failed to parse JWT payload', e);

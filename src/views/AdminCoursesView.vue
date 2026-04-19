@@ -194,45 +194,44 @@ export default {
 
     const saveCourse = async () => {
       if (!formRef.value) return;
-      await formRef.value.validate(async (valid) => {
-        if (valid) {
-          saving.value = true;
-          try {
-            const url = isEdit.value 
-              ? `${store.getters['GET_URL']}/courses/${form.id}`
-              : `${store.getters['GET_URL']}/courses`;
-            const method = isEdit.value ? 'PUT' : 'POST';
-            
-            const bodyData = {
-              courseName: form.courseName,
-              semester: form.semester,
-              groupId: form.groupId,
-              hours: form.hours
-            };
-            if (isEdit.value) {
-              bodyData.courseId = form.id;
-            }
-
-            const response = await fetch(url, {
-              method,
-              headers: getAuthHeaders(),
-              body: JSON.stringify(bodyData)
-            });
-
-            if (response.ok) {
-              ElMessage.success(isEdit.value ? 'Course updated successfully' : 'Course created successfully');
-              dialogVisible.value = false;
-              fetchCourses();
-            } else {
-              ElMessage.error('Failed to save course');
-            }
-          } catch (e) {
-            ElMessage.error('Error saving course');
-          } finally {
-            saving.value = false;
+      const valid = await formRef.value.validate().catch(() => false);
+      if (valid) {
+        saving.value = true;
+        try {
+          const url = isEdit.value 
+            ? `${store.getters['GET_URL']}/courses/${form.id}`
+            : `${store.getters['GET_URL']}/courses`;
+          const method = isEdit.value ? 'PUT' : 'POST';
+          
+          const bodyData = {
+            courseName: form.courseName,
+            semester: form.semester,
+            groupId: form.groupId,
+            hours: form.hours
+          };
+          if (isEdit.value) {
+            bodyData.courseId = form.id;
           }
+
+          const response = await fetch(url, {
+            method,
+            headers: getAuthHeaders(),
+            body: JSON.stringify(bodyData)
+          });
+
+          if (response.ok) {
+            ElMessage.success(isEdit.value ? 'Course updated successfully' : 'Course created successfully');
+            dialogVisible.value = false;
+            fetchCourses();
+          } else {
+            ElMessage.error('Failed to save course');
+          }
+        } catch (e) {
+          ElMessage.error('Error saving course');
+        } finally {
+          saving.value = false;
         }
-      });
+      }
     };
 
     return {

@@ -132,38 +132,37 @@ export default {
 
     const saveGroup = async () => {
       if (!formRef.value) return;
-      await formRef.value.validate(async (valid) => {
-        if (valid) {
-          saving.value = true;
-          try {
-            const url = isEdit.value 
-              ? `${store.getters['GET_URL']}/groups/${form.id}`
-              : `${store.getters['GET_URL']}/groups`;
-            const method = isEdit.value ? 'PUT' : 'POST';
-            const bodyData = isEdit.value 
-              ? { groupId: form.id, groupName: form.groupName, edupageClassId: form.edupageClassId }
-              : { groupName: form.groupName, edupageClassId: form.edupageClassId };
+      const valid = await formRef.value.validate().catch(() => false);
+      if (valid) {
+        saving.value = true;
+        try {
+          const url = isEdit.value 
+            ? `${store.getters['GET_URL']}/groups/${form.id}`
+            : `${store.getters['GET_URL']}/groups`;
+          const method = isEdit.value ? 'PUT' : 'POST';
+          const bodyData = isEdit.value 
+            ? { groupId: form.id, groupName: form.groupName, edupageClassId: form.edupageClassId }
+            : { groupName: form.groupName, edupageClassId: form.edupageClassId };
 
-            const response = await fetch(url, {
-              method,
-              headers: getAuthHeaders(),
-              body: JSON.stringify(bodyData)
-            });
+          const response = await fetch(url, {
+            method,
+            headers: getAuthHeaders(),
+            body: JSON.stringify(bodyData)
+          });
 
-            if (response.ok) {
-              ElMessage.success(isEdit.value ? 'Group updated successfully' : 'Group created successfully');
-              dialogVisible.value = false;
-              fetchGroups();
-            } else {
-              ElMessage.error('Failed to save group');
-            }
-          } catch (e) {
-            ElMessage.error('Error saving group');
-          } finally {
-            saving.value = false;
+          if (response.ok) {
+            ElMessage.success(isEdit.value ? 'Group updated successfully' : 'Group created successfully');
+            dialogVisible.value = false;
+            fetchGroups();
+          } else {
+            ElMessage.error('Failed to save group');
           }
+        } catch (e) {
+          ElMessage.error('Error saving group');
+        } finally {
+          saving.value = false;
         }
-      });
+      }
     };
 
     return {
