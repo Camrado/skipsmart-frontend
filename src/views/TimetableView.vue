@@ -64,7 +64,7 @@ import App from '@/App.vue';
 import { Check, Close, Upload, ArrowDownBold } from '@element-plus/icons-vue';
 import { ElMessage } from 'element-plus';
 import mixpanel from 'mixpanel-browser';
-import L1_LANGUAGE_GROUPS from '@/assets/js/l1-language-teachers';
+
 
 export default {
   name: 'TimetableView',
@@ -187,23 +187,7 @@ export default {
 
         if (response.status === 200) {
           const lessons = await response.json();
-
-          const languageSubgroup = store.getters['User/GET_LANGUAGE_SUBGROUP'];
-          const facultySubgroup = store.getters['User/GET_FACULTY_SUBGROUP'];
-
-          state.timetable.lessons = lessons.filter((subject) => {
-            if (subject.languageSubgroup === 0 && subject.facultySubgroup === 0) return true;
-            if (subject.languageSubgroup === languageSubgroup && subject.facultySubgroup === 0) return true;
-            if (subject.languageSubgroup === 0 && subject.facultySubgroup === facultySubgroup) return true;
-          });
-          state.timetable.lessons = state.timetable.lessons.filter((subject) => {
-            if (subject.teacher === '') {
-              return true;
-            } else {
-              let myLanguageTeacher = L1_LANGUAGE_GROUPS.find((l1_group) => l1_group.group === languageSubgroup);
-              return subject.teacher === myLanguageTeacher.teacher;
-            }
-          });
+          state.timetable.lessons = lessons;
         } else if (response.status === 500) {
           return ElMessage.error({
             message: 'Sorry. We have got some server errors. Please try again later.',

@@ -1,27 +1,41 @@
-$text-color: #021627;
-$background-color: #f9f7f6;
-$primary-color: #03336d;
-$secondary-color: #6daad9;
-$accent-color: #e23c55;
+$brand-blue: #0f176f;
+$brand-light-blue: #eff6ff;
+$dark-text: #0f172a;
+$light-bg: #f8fafc;
+$white: #ffffff;
+$gray-border: #e2e8f0;
+$gray-text: #64748b;
 
-$preloader-color: #9b2839;
+$color-success: #10b981;
+$color-danger: #f43f5e;
 
-$feature-text-color: #6091b8;
-$feature-color: #80bff3;
+$background-color: $light-bg;
+$text-color: $dark-text;
+$primary-color: $brand-blue;
+$secondary-color: $brand-light-blue;
+$accent-color: $color-danger;
+$preloader-color: $brand-blue; 
+$gray-line-color: $gray-border;
 
-$block-4-background-color: #ddecff;
+$feature-text-color: $brand-blue;
+$feature-color: $brand-light-blue;
+$block-4-background-color: $white;
 
-$gray-line-color: #d6dcdd;
+$timetable-background-color: $white;
+$timetable-period-color: $gray-text;
+$timetable-date-color: $brand-blue;
+$timetable-group-color: $gray-text;
 
-$timetable-background-color: #e9e9e9;
-$timetable-period-color: #cacaca;
-$timetable-date-color: #6091b8;
-$timetable-check-sign-color: #39ce72;
-$timetable-cross-sign-color: #e45368;
-$timetable-group-color: #456986;
-$timetable-attended-color: #39ce72;
-$timetable-skipped-color: #e45368;
+$timetable-check-sign-color: $color-success;
+$timetable-cross-sign-color: $color-danger;
+$timetable-attended-color: $color-success;
+$timetable-skipped-color: $color-danger;
 
-$statistics-subject-select-color: #42866c;
-$statistics-subject-select-active-color: #1cd38d;
-$statistics-progress-bar-color: #d1c9c9;
+$statistics-subject-select-color: $gray-text;
+$statistics-subject-select-active-color: $brand-blue;
+$statistics-progress-bar-color: $gray-border;
+
+$border-radius: 8px;
+$border-radius-lg: 12px;
+$box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+$transition-speed: 0.3s;

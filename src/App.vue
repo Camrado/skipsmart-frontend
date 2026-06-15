@@ -3,7 +3,7 @@
   <div class="test" v-touch:swipe.left="changePageLeft" v-touch:swipe.right="changePageRight">
     <router-view />
     <GrowBottomNavigation
-      v-if="store.getters['User/GET_IS_SIGNED_IN'] && !showPreloader"
+      v-if="store.getters['User/GET_IS_SIGNED_IN'] && !showPreloader && !route.path.startsWith('/admin')"
       :options="state.options"
       v-model="state.selected"
       style="padding: 0 10px"
@@ -21,6 +21,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { GrowBottomNavigation } from 'bottom-navigation-vue';
 import 'bottom-navigation-vue/dist/style.css';
 import mixpanel from 'mixpanel-browser';
+import { jwtDecode } from 'jwt-decode';
 
 export default {
   components: { Preloader, GrowBottomNavigation },
@@ -100,6 +101,15 @@ export default {
 
           store.dispatch('User/SET_USER_ID', userData.id);
           store.dispatch('User/SET_SIGNED_IN', true);
+
+          let isAdmin = false;
+          try {
+            const payload = jwtDecode(token);
+            isAdmin = payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] === 'Admin' || payload['role'] === 'Admin';
+          } catch (e) {
+            console.error('Failed to parse JWT payload', e);
+          }
+          store.dispatch('User/SET_IS_ADMIN', isAdmin);
           store.dispatch('User/SET_FIRSTNAME', userData.firstName);
           store.dispatch('User/SET_LASTNAME', userData.lastName);
           store.dispatch('User/SET_EMAIL', userData.email);
@@ -169,7 +179,7 @@ export default {
       }
     }
 
-    return { appMounted, showPreloader, store, changePageLeft, changePageRight, state };
+    return { appMounted, showPreloader, store, changePageLeft, changePageRight, state, route };
   }
 };
 </script>

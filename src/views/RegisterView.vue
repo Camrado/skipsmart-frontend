@@ -77,30 +77,27 @@
           status-icon
           :rules="state.formRules"
           label-position="top"
-          v-if="!state.isTheGroupFirstYear && !state.isTheGroupSecondYear"
+          v-if="!state.isTheGroupL1CS && !state.isTheGroupThirdYear"
         >
-          <el-form-item label="Language Subgroup">
-            <el-select v-model="state.form.languageSubgroup" placeholder="Language Subgroup">
-              <el-option label="1" value="1"></el-option>
-              <el-option label="2" value="2"></el-option>
-            </el-select>
-          </el-form-item>
-
-          <el-form-item label="Faculty Subgroup (Choose the same as Language Subgroup if you don't know)">
-            <el-select v-model="state.form.facultySubgroup" placeholder="Faculty Subgroup">
-              <el-option label="1" value="1"></el-option>
-              <el-option label="2" value="2"></el-option>
+          <el-form-item label="Subgroup">
+            <el-select v-model="subgroupForOtherYears" placeholder="Subgroup">
+              <el-option label="1" :value="1"></el-option>
+              <el-option label="2" :value="2"></el-option>
             </el-select>
           </el-form-item>
         </el-form>
 
-        <el-form :model="state.form" status-icon :rules="state.formRules" label-position="top" v-if="state.isTheGroupSecondYear">
+        <el-form :model="state.form" status-icon :rules="state.formRules" label-position="top" v-if="state.isTheGroupThirdYear">
           <el-form-item label="Language Subgroup Teacher">
             <el-select v-model="state.form.languageSubgroup" placeholder="Language Subgroup Teacher">
               <el-option
-                v-for="l1_group in L1_LANGUAGE_GROUPS"
+                v-for="l1_group in L2_LANGUAGE_GROUPS"
                 :key="l1_group.group"
-                :label="l1_group.teacher + ' - ' + l1_group.language"
+                :label="
+                  l1_group.allFaculties
+                    ? l1_group.teacher + ' - with other faculties'
+                    : l1_group.teacher + ' - only with my faculty'
+                "
                 :value="l1_group.group"
               ></el-option>
             </el-select>
@@ -108,18 +105,26 @@
 
           <el-form-item label="Faculty Subgroup">
             <el-select v-model="state.form.facultySubgroup" placeholder="Faculty Subgroup">
-              <el-option label="1" value="1"></el-option>
-              <el-option label="2" value="2"></el-option>
-              <el-option label="3" value="3"></el-option>
+              <el-option label="1" :value="1"></el-option>
+              <el-option label="2" :value="2"></el-option>
+              <el-option label="3" :value="3" v-if="state.isTheGroupL2CS"></el-option>
             </el-select>
           </el-form-item>
         </el-form>
 
-        <el-form :model="state.form" status-icon :rules="state.formRules" label-position="top" v-if="state.isTheGroupFirstYear">
-          <el-form-item label="Subgroup">
-            <el-select v-model="subgroupForFirstYearStudents" placeholder="Subgroup">
-              <el-option label="1" value="1"></el-option>
-              <el-option label="2" value="2"></el-option>
+        <el-form :model="state.form" status-icon :rules="state.formRules" label-position="top" v-if="state.isTheGroupL1CS">
+          <el-form-item label="Language Subgroup">
+            <el-select v-model="state.form.languageSubgroup" placeholder="Language Subgroup">
+              <el-option label="1" :value="1"></el-option>
+              <el-option label="2" :value="2"></el-option>
+            </el-select>
+          </el-form-item>
+
+          <el-form-item label="Faculty Subgroup (Choose the same as Language Subgroup if you don't know)">
+            <el-select v-model="state.form.facultySubgroup" placeholder="Faculty Subgroup">
+              <el-option label="1" :value="1"></el-option>
+              <el-option label="2" :value="2"></el-option>
+              <el-option label="3" :value="3"></el-option>
             </el-select>
           </el-form-item>
         </el-form>
@@ -182,7 +187,7 @@ import { useRouter } from 'vue-router';
 import App from '@/App.vue';
 import { ElMessage } from 'element-plus';
 import uuidv4 from '@/assets/js/randomUUID';
-import L1_LANGUAGE_GROUPS from '@/assets/js/l1-language-teachers';
+import L2_LANGUAGE_GROUPS from '@/assets/js/l2-language-teachers';
 import mixpanel from 'mixpanel-browser';
 
 export default {
@@ -214,8 +219,9 @@ export default {
       showSecondSlide: false,
       showThirdSlide: false,
       showFourthSlide: false,
-      isTheGroupFirstYear: false,
-      isTheGroupSecondYear: false,
+      isTheGroupL1CS: false,
+      isTheGroupL2CS: false,
+      isTheGroupThirdYear: false,
       groups: []
     });
 
@@ -264,7 +270,7 @@ export default {
       }
     }
 
-    const subgroupForFirstYearStudents = computed({
+    const subgroupForOtherYears = computed({
       get() {
         return state.form.languageSubgroup;
       },
@@ -276,21 +282,13 @@ export default {
 
     function showTheThirdSlide() {
       if (state.form.groupId) {
-        let firstYearGroupIds = state.groups.slice(0, 5).map((group) => group.id);
-
-        if (firstYearGroupIds.includes(state.form.groupId)) {
-          state.isTheGroupFirstYear = true;
-        } else {
-          state.isTheGroupFirstYear = false;
+        const currentGroup = state.groups.find(group => group.id === state.form.groupId);
+        if (currentGroup) {
+          state.isTheGroupL1CS = currentGroup.groupName.includes('L1 CS1-24') || currentGroup.groupName.includes('L1 CS2-24');
+          state.isTheGroupL2CS = currentGroup.groupName.includes('L2 CS1-23') || currentGroup.groupName.includes('L2 CS2-23');
         }
 
-        let secondYearGroupIds = state.groups.slice(5, 10).map((group) => group.id);
-
-        if (secondYearGroupIds.includes(state.form.groupId)) {
-          state.isTheGroupSecondYear = true;
-        } else {
-          state.isTheGroupSecondYear = false;
-        }
+        state.isTheGroupThirdYear = currentGroup.groupName.includes('L2') && currentGroup.groupName.includes('23');
 
         state.showFirstSlide = false;
         state.showSecondSlide = false;
@@ -411,8 +409,8 @@ export default {
       showTheFirstSlide,
       showTheThirdSlide,
       showTheFourthSlide,
-      subgroupForFirstYearStudents,
-      L1_LANGUAGE_GROUPS
+      subgroupForOtherYears,
+      L2_LANGUAGE_GROUPS
     };
   }
 };

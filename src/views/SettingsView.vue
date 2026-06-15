@@ -51,22 +51,26 @@
       </div>
       <br />
       <div class="change-subgroups">
-        <el-form status-icon label-position="top" v-if="state.isTheGroupFirstYear">
+        <el-form status-icon label-position="top" v-if="!state.isTheGroupL1CS && !state.isTheGroupThirdYear">
           <el-form-item label="Subgroup">
-            <el-select v-model="subgroupForFirstYearStudents" placeholder="Subgroup">
-              <el-option label="1" value="1"></el-option>
-              <el-option label="2" value="2"></el-option>
+            <el-select v-model="subgroupForOtherYears" placeholder="Subgroup">
+              <el-option label="1" :value="1"></el-option>
+              <el-option label="2" :value="2"></el-option>
             </el-select>
           </el-form-item>
         </el-form>
 
-        <el-form status-icon label-position="top" v-if="state.isTheGroupSecondYear">
+        <el-form status-icon label-position="top" v-if="state.isTheGroupThirdYear">
           <el-form-item label="Language Subgroup Teacher">
             <el-select v-model="state.languageSubgroup" placeholder="Language Subgroup Teacher">
               <el-option
-                v-for="l1_group in L1_LANGUAGE_GROUPS"
+                v-for="l1_group in L2_LANGUAGE_GROUPS"
                 :key="l1_group.group"
-                :label="l1_group.teacher + ' - ' + l1_group.language"
+                :label="
+                  l1_group.allFaculties
+                    ? l1_group.teacher + ' - with other faculties'
+                    : l1_group.teacher + ' - only with my faculty'
+                "
                 :value="l1_group.group"
               ></el-option>
             </el-select>
@@ -74,25 +78,26 @@
 
           <el-form-item label="Faculty Subgroup">
             <el-select v-model="state.facultySubgroup" placeholder="Faculty Subgroup">
-              <el-option label="1" value="1"></el-option>
-              <el-option label="2" value="2"></el-option>
-              <el-option label="3" value="3"></el-option>
+              <el-option label="1" :value="1"></el-option>
+              <el-option label="2" :value="2"></el-option>
+              <el-option label="3" :value="3" v-if="state.isTheGroupL2CS"></el-option>
             </el-select>
           </el-form-item>
         </el-form>
 
-        <el-form status-icon label-position="top" v-if="!state.isTheGroupFirstYear && !state.isTheGroupSecondYear">
+        <el-form status-icon label-position="top" v-if="state.isTheGroupL1CS">
           <el-form-item label="Language Subgroup">
             <el-select v-model="state.languageSubgroup" placeholder="Language Subgroup">
-              <el-option label="1" value="1"></el-option>
-              <el-option label="2" value="2"></el-option>
+              <el-option label="1" :value="1"></el-option>
+              <el-option label="2" :value="2"></el-option>
             </el-select>
           </el-form-item>
 
           <el-form-item label="Faculty Subgroup">
             <el-select v-model="state.facultySubgroup" placeholder="Faculty Subgroup">
-              <el-option label="1" value="1"></el-option>
-              <el-option label="2" value="2"></el-option>
+              <el-option label="1" :value="1"></el-option>
+              <el-option label="2" :value="2"></el-option>
+              <el-option label="3" :value="3"></el-option>
             </el-select>
           </el-form-item>
         </el-form>
@@ -140,7 +145,7 @@ import { useRouter } from 'vue-router';
 import App from '@/App.vue';
 import { ElMessage } from 'element-plus';
 import mixpanel from 'mixpanel-browser';
-import L1_LANGUAGE_GROUPS from '@/assets/js/l1-language-teachers';
+import L2_LANGUAGE_GROUPS from '@/assets/js/l2-language-teachers';
 
 export default {
   name: 'SettingsView',
@@ -158,13 +163,13 @@ export default {
       groupId: '',
       languageSubgroup: undefined,
       facultySubgroup: undefined,
-      isTheGroupFirstYear: false,
-      firstYearGroupIds: [],
-      isTheGroupSecondYear: false,
-      secondYearGroupIds: []
+      isTheGroupL1CS: false,
+      isTheGroupL2CS: false,
+      isTheGroupThirdYear: false,
+      thirdYearGroupIds: []
     });
 
-    const subgroupForFirstYearStudents = computed({
+    const subgroupForOtherYears = computed({
       get() {
         return state.languageSubgroup;
       },
@@ -193,12 +198,14 @@ export default {
               state.groups = groups.sort((a, b) => a.groupName.localeCompare(b.groupName));
               state.groupId = store.getters['User/GET_GROUP_ID'];
 
-              state.firstYearGroupIds = state.groups.slice(0, 5).map((group) => group.id);
-              state.isTheGroupFirstYear = state.firstYearGroupIds.includes(state.groupId);
+              const currentGroup = state.groups.find(group => group.id === state.groupId);
+              if (currentGroup) {
+                state.isTheGroupL1CS = currentGroup.groupName.includes('L1 CS1-24') || currentGroup.groupName.includes('L1 CS2-24');
+                state.isTheGroupL2CS = currentGroup.groupName.includes('L2 CS1-23') || currentGroup.groupName.includes('L2 CS2-23');
+              }
 
-              state.secondYearGroupIds = state.groups.slice(5, 10).map((group) => group.id);
-              state.isTheGroupSecondYear = state.secondYearGroupIds.includes(state.groupId);
-
+              state.isTheGroupThirdYear = currentGroup.groupName.includes('L2') && currentGroup.groupName.includes('23');
+              
               state.languageSubgroup = store.getters['User/GET_LANGUAGE_SUBGROUP'];
               state.facultySubgroup = store.getters['User/GET_FACULTY_SUBGROUP'];
             } else {
@@ -234,9 +241,13 @@ export default {
         });
 
         if (response.status === 200) {
+          const newGroup = state.groups.find(g => g.id === state.groupId);
+          const isNewGroupL1CS = newGroup ? (newGroup.groupName.includes('L1 CS1-24') || newGroup.groupName.includes('L1 CS2-24')) : false;
+          const isNewGroupL2CS = newGroup ? (newGroup.groupName.includes('L2 CS1-23') || newGroup.groupName.includes('L2 CS2-23')) : false;
+
           if (
-            state.secondYearGroupIds.includes(store.getters['User/GET_GROUP_ID']) ||
-            state.firstYearGroupIds.includes(state.groupId)
+            state.thirdYearGroupIds.includes(store.getters['User/GET_GROUP_ID']) ||
+            (!state.thirdYearGroupIds.includes(state.groupId) && !isNewGroupL1CS)
           ) {
             await fetch(store.getters['GET_URL'] + '/users/change-subgroups', {
               method: 'PATCH',
@@ -265,8 +276,11 @@ export default {
           expirationDate.setDate(expirationDate.getDate() - 1);
           localStorage.setItem(store.getters['User/GET_EXPIRATION_DATE_KEY'], expirationDate);
 
-          state.isTheGroupFirstYear = state.firstYearGroupIds.includes(state.groupId);
-          state.isTheGroupSecondYear = state.secondYearGroupIds.includes(state.groupId);
+          if (newGroup) {
+            state.isTheGroupL1CS = isNewGroupL1CS;
+            state.isTheGroupL2CS = isNewGroupL2CS;
+          }
+          state.isTheGroupThirdYear = newGroup.groupName.includes('L2') && newGroup.groupName.includes('23');
 
           store.dispatch('Timetable/CLEAR_TIMETABLE');
           store.dispatch('Timetable/SET_ARE_UNMARKED_DATES_LOADED', false);
@@ -292,6 +306,9 @@ export default {
         state.languageSubgroup == store.getters['User/GET_LANGUAGE_SUBGROUP'] &&
         state.facultySubgroup == store.getters['User/GET_FACULTY_SUBGROUP']
       ) {
+        if (!state.isTheGroupL1CS && !state.isTheGroupThirdYear) {
+          return ElMessage.warning({ message: 'Change the subgroup to proceed.', showClose: true });
+        }
         return ElMessage.warning({ message: 'Change at least 1 subgroup to proceed.', showClose: true });
       }
       state.subgroupLoadingBtn = true;
@@ -340,6 +357,7 @@ export default {
       localStorage.removeItem(store.getters['User/GET_EXPIRATION_DATE_KEY']);
 
       store.dispatch('User/SET_SIGNED_IN', false);
+      store.dispatch('User/SET_IS_ADMIN', false);
       store.dispatch('User/SET_USER_ID', undefined);
       store.dispatch('User/SET_FIRSTNAME', undefined);
       store.dispatch('User/SET_LASTNAME', undefined);
@@ -360,7 +378,15 @@ export default {
       router.push('/');
     }
 
-    return { state, logout, store, changeGroup, changeSubgroups, subgroupForFirstYearStudents, L1_LANGUAGE_GROUPS };
+    return {
+      state,
+      logout,
+      store,
+      changeGroup,
+      changeSubgroups,
+      subgroupForOtherYears,
+      L2_LANGUAGE_GROUPS
+    };
   }
 };
 </script>
